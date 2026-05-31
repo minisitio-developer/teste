@@ -1,0 +1,206 @@
+#st-1 {
+    font-family: "Helvetica Neue", Verdana, Helvetica, Arial, sans-serif;
+    direction: ltr;
+    display: block;
+    opacity: 1;
+    text-align: left;
+    z-index: 94034;
+}
+
+#st-1 .st-btn {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -moz-transition: opacity 0.2s ease-in, top 0.2s ease-in;
+    -ms-transition: opacity 0.2s ease-in, top 0.2s ease-in;
+    -o-transition: opacity 0.2s ease-in, top 0.2s ease-in;
+    -webkit-transition: opacity 0.2s ease-in, top 0.2s ease-in;
+    transition: opacity 0.2s ease-in, top 0.2s ease-in;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 11px;
+    height: 32px;
+    line-height: 32px;
+    margin-right: 8px;
+    padding: 0 10px;
+    position: relative;
+    text-align: center;
+    top: 0;
+    vertical-align: top;
+    white-space: nowrap;
+    color: #fff
+}
+
+#st-1 .st-btn[data-network='facebook'] {
+    background-color: #4267B2;
+}
+
+#st-1 .st-btn[data-network='twitter'] {
+    background-color: #000000;
+}
+
+#st-1.st-has-labels .st-btn {
+    min-width: 120px;
+}
+
+#st-1 .st-btn[data-network='email'] {
+    background-color: #7d7d7d;
+}
+
+#st-1 .st-btn[data-network='whatsapp'] {
+    background-color: #25d366;
+}
+
+#st-1 .st-btn[data-network='sharethis'] {
+    background-color: #95D03A;
+}
+
+#st-1 .st-btn>img {
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+    position: relative;
+    top: 8px;
+    vertical-align: top;
+}
+
+#st-1 .st-btn:hover {
+    opacity: .8;
+    top: -4px;
+}
+
+.st-label {
+    padding: 0 5px 0
+}
+
+.user-actions>div {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.user-actions .master-icone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user-actions>.master-icone>span {
+    font-size: 10px;
+    float: left;
+}
+
+.user-actions .master-icone>img {
+    width: 22px;
+}
+
+.user-actions .master-descricao {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-actions .btn {
+    padding: 7px 14px;
+    font-size: 14px;
+    text-transform: uppercase;
+    border-radius: 0;
+}
+
+.user-actions .btn-default:hover,
+.btn-default:focus,
+.btn-default:active {
+    border: 1px solid #A8AEB3;
+    color: #fff;
+    background: #A8AEB3;
+    transform: scale(1.05);
+    /* padding: 6px 13px; */
+}
+
+.linksUteis img {
+    width: 28px;
+}
+
+.linksUteis .btn {
+    padding: 6px 5px;
+    border: 1px solid #4f4f4f;
+    border-radius: 5px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 0px;
+    text-decoration: none;
+}
+
+.btn-default {
+    border: 1px solid #EDEDED;
+    color: #A8AEB3;
+    background: transparent;
+    padding: 6px 13px;
+}
+
+.area-master {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+    width: 200px;
+
+}
+
+.lista-cart>li>a {
+    text-decoration: none;
+}
+
+.user-actions .dropdown-item:focus,
+.user-actions .dropdown-item:hover {
+    color: var(--bs-dropdown-link-hover-color);
+    background-color: #ffcc29;
+}
+
+@media (max-width: 768px) {
+    .user-actions {
+        width: 100%;
+        margin: auto;
+    }
+
+    .user-actions>div {
+        flex-direction: column;
+        padding: 0 33px;
+    }
+
+    .user-actions>div>a {
+        width: 100%;
+    }
+
+    .user-actions>div>div {
+        width: 100%;
+    }
+
+    .user-actions>div>div>button {
+        width: 100%;
+    }
+
+    .user-actions>div>div>button>i {
+        position: absolute;
+        right: 10px;
+    }
+
+    .swal2-popup {
+        width: 90% !important;
+    }
+
+    .cart-digital-modal > a {
+        /* font-size: 10px; */
+    }
+
+    .cart-digital-modal > a > img {
+        /* width: 40px !important; */
+    }
+}

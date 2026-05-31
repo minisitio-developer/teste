@@ -1,0 +1,51 @@
+﻿================================================================================
+                  HISTÓRICO DE VALIDAÇÃO E AJUSTES
+                      Projeto: minisitio_original
+                        Data: 27 de Maio de 2026
+================================================================================
+
+## RESUMO EXECUTIVO
+
+Este histórico foi revisado para refletir o estado real verificado no ambiente atual.
+
+## STATUS VERIFICADO
+
+### Frontend
+- Build de produção validado com sucesso:
+  - comando: npm run build
+  - resultado: Compiled successfully.
+- Teste básico da interface validado com sucesso:
+  - comando: npm test -- --watch=false --runInBand
+  - resultado: 1 suite passada, 1 teste passado.
+
+### Backend
+- Inicialização do servidor confirmada:
+  - comando: node index.js
+  - resultado: o backend sobe na porta 3032.
+- Falha real de runtime confirmada ao acessar rota que depende de banco:
+  - erro: ECONNREFUSED 127.0.0.1:3306
+  - causa: o MySQL local não está ativo no ambiente atual.
+
+## AJUSTES IMPLEMENTADOS
+
+1. Corrigido o teste inicial do frontend e incluídas dependências necessárias para a suíte React.
+2. Ajustada a configuração do backend para ler variáveis de ambiente em:
+   - back/config/db.js
+   - back/index.js
+3. Mantido o fluxo local do projeto, usando o dump.sql disponível no diretório raiz como base do ambiente local.
+
+## CONCLUSÃO ATUAL
+
+- O código do frontend está validado e compila.
+- O backend está configurado para execução local, mas não consegue completar rotas dependentes de banco enquanto o serviço MySQL local não estiver iniciado na porta 3306.
+- Portanto, o projeto está em estado de validação funcional, mas ainda não está 100% operacional até que o banco local seja levantado.
+
+## PRÓXIMO PASSO REAL
+
+1. Iniciar o MySQL local na porta 3306.
+2. Repetir a requisição de API que depende do banco.
+3. Confirmar o fluxo completo do sistema com o dump.sql disponível.
+
+================================================================================
+Fim do histórico revisado.
+================================================================================

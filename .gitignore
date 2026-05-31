@@ -1,0 +1,33 @@
+# Dependências
+node_modules/
+back/node_modules/
+front/node_modules/
+
+# Builds e arquivos de build do react-scripts
+build/
+front/build/
+
+# Configurações locais / segredos
+.env
+back/.env
+front/.env
+*.local
+
+# Logs
+*.log
+front/front.log
+front/testlog.txt
+front/buildlog.txt
+front/build-final.log
+front/build-log.txt
+front/build-output.log
+front/build-tree.txt
+backend_start.log
+
+# Arquivos de Sistema
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.gemini/
+.antigravityignore

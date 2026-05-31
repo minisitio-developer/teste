@@ -1,0 +1,542 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:300|Montserrat:700,400);
+
+#btn-prev {
+    background-color: #ffcc29;
+    color: #000;
+    padding: 10px 40px;
+    font-size: 20px;
+}
+
+#btn-next {
+    background-color: #4f4f4f;
+    color: #fff;
+    padding: 10px 40px;
+    font-size: 20px;
+}
+
+#title-caderno {
+    box-shadow: 0 6px 4px rgba(228, 228, 228, 0.95);
+    font-size: 35px;
+    font-weight: bold;
+
+}
+
+.titulo-cinza {
+    background-color: #4f4f4f !important;
+    color: #ffffff !important;
+    padding: 10px;
+}
+
+.border-cinza {
+    border: 2px solid #edecec;
+
+}
+
+.btn-comprar {
+
+    padding: 10px 40px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.masonry-item {
+    /* break-inside: avoid; */
+    margin-bottom: 1em;
+    background-color: lightgray;
+    border: 1px solid lightblue;
+    border-radius: 20px;
+    /*  padding: 15px; */
+    box-sizing: border-box;
+    border: 1px solid lime
+}
+
+.btn-qrcode {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    /*    width: 319px;
+    height: 52px; */
+}
+
+.fraseHeader {
+    font-family: Montserrat, Helvetica, Times, serif;
+    font-weight: bold;
+
+}
+
+.fraseHeader span {
+    border: 2px solid #ffcc29;
+    border-radius: 5px;
+
+}
+
+/* @media (min-width: 576px) {
+    .masonry-layout {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 992px) {
+    .masonry-layout {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 1200px) {
+    .masonry-layout {
+        column-count: 2;
+    }
+} */
+
+.my-masonry-grid {
+    /* display: -webkit-box; */
+    /* Not needed if autoprefixing */
+    /*  display: -ms-flexbox; */
+    /* Not needed if autoprefixing */
+    display: flex;
+    margin-left: -30px;
+    /* gutter size offset */
+    width: auto;
+}
+
+.my-masonry-grid_column {
+    padding-left: 30px;
+    /* gutter size */
+    background-clip: padding-box;
+}
+
+/* Style your items */
+.my-masonry-grid_column>div {
+    /* change div to reference your elements you put in <Masonry> */
+    background: grey;
+    margin-bottom: 30px;
+}
+
+@keyframes pulse-classificado {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
+    }
+
+    100% {
+        box-shadow: 0 0 0 8px rgba(255, 215, 0, 1);
+    }
+}
+
+.pulsating-border {
+    animation: pulse-classificado 2s infinite;
+}
+
+
+.caderno .lista {
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.caderno .titulo {
+    background-color: #ffcc29;
+    padding: 10px 0;
+    min-height: 52px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.titulo {
+    width: 100%;
+    min-height: 60px;
+    box-shadow: 0 1px 4px rgba(228, 228, 228, 0.95);
+    z-index: 9999;
+    /* margin-bottom: 50px; */
+    text-align: center;
+}
+
+.classificado {
+    height: 812px;
+    overflow-y: scroll;
+    background-color: #edecec;
+    margin-bottom: 20px;
+}
+
+.cinza,
+.titulo-cinza {
+    background-color: #4f4f4f !important;
+    color: #ffffff !important;
+}
+
+/* .list-unstyled {
+    padding-left: 0;
+    list-style: none;
+} */
+
+.classificado ul li {
+    border-bottom: 1px solid #ccc;
+    position: relative;
+    text-align: left;
+}
+
+.classificado a {
+    text-decoration: none;
+    color: #000;
+    display: block;
+    padding: 10px;
+}
+
+.classificado span {
+    float: right;
+    background: #4f4f4f;
+    color: #fff;
+    padding: 10px;
+    min-width: 122px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.classificado ul li:hover {
+    background-color: #d9d9d9;
+}
+
+.classificado ul li {
+    border-bottom: 1px solid #ccc;
+    position: relative;
+}
+
+.caderno .cartao>.conteudo img {
+    width: 100%;
+    height: 245px;
+}
+
+.cartao {
+    min-height: 320px;
+    /* width: 100%; */
+    border: solid;
+    border-top-color: currentcolor;
+    border-right-color: currentcolor;
+    border-bottom-color: currentcolor;
+    border-left-color: currentcolor;
+    border-color: #4F4F4F;
+    border-top-color: rgb(79, 79, 79);
+    border-right-color: rgb(79, 79, 79);
+    border-bottom-color: rgb(79, 79, 79);
+    border-left-color: rgb(79, 79, 79);
+        border-radius: 5px;
+}
+
+.cartao {
+    background-color: #edecec;
+    margin-bottom: 20px;
+}
+
+.cartao>div {
+    /* overflow: hidden; */
+    padding: 5px 5px;
+    gap: 10px;
+}
+
+.caderno .cartao>.links img {
+    width: 35px;
+    height: 35px;
+}
+
+.caderno .btn {
+    /* padding: 10px 40px; */
+    filter: drop-shadow(2px 4px 6px black);
+}
+
+.caderno .btn-class {
+    padding: 10px 12px;
+    filter: drop-shadow(2px 4px 6px black);
+    text-decoration: none;
+}
+
+.proximo:hover {
+    /* background-color: #ffcc29; */
+    background-color: #e6b824;
+    /* cinza um pouco mais escuro no hover */
+}
+
+/* 3 */
+.btn-3 {
+    /*  background: rgb(0, 172, 238);
+    background: linear-gradient(0deg, rgba(0, 172, 238, 1) 0%, rgba(2, 126, 251, 1) 100%);
+    width: 130px;
+    height: 40px;
+    line-height: 42px;
+    padding: 0;
+    border: none; */
+
+}
+
+.btn-3 span {
+    /*     position: relative;
+    display: block;
+    width: 100%;
+    height: 100%; */
+}
+
+.btn-3:before,
+.btn-3:after {
+    position: absolute;
+    content: "";
+    right: 0;
+    top: 0;
+    background: rgb(0, 0, 0);
+    transition: all 0.3s ease;
+}
+
+.btn-3:before {
+    height: 0%;
+    width: 2px;
+}
+
+.btn-3:after {
+    width: 0%;
+    height: 2px;
+}
+
+.btn-3:hover {
+    /* background: transparent; */
+    box-shadow: none;
+}
+
+.btn-3:hover:before {
+    height: 100%;
+}
+
+.btn-3:hover:after {
+    width: 100%;
+}
+
+.btn-3 span:hover {
+    /*  color: rgba(2, 126, 251, 1); */
+    background-color: #ffcc29;
+}
+
+.btn-3 span:before,
+.btn-3 span:after {
+    position: absolute;
+    content: "";
+    left: 0;
+    bottom: 0;
+    background: rgb(0, 0, 0);
+    transition: all 0.3s ease;
+}
+
+.btn-3 span:before {
+    width: 2px;
+    height: 0%;
+}
+
+.btn-3 span:after {
+    width: 0%;
+    height: 2px;
+}
+
+.btn-3 span:hover:before {
+    height: 100%;
+}
+
+.btn-3 span:hover:after {
+    width: 100%;
+}
+
+.caderno-geral .borda-verde {
+    background: green;
+    padding: 4px;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.caderno-geral .borda-amarela {
+    background: yellow;
+    padding: 4px;
+    border-radius: 10px;
+}
+
+.caderno-geral .borda-azul {
+    background: blue;
+    padding: 4px;
+    border-radius: 10px;
+}
+
+.caderno-geral .conteudo {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    /* ajuste conforme seu layout */
+}
+
+.area-qrcode-caderno {
+    position: relative;
+}
+
+.area-qrcode-caderno img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+}
+
+
+@media (max-width: 768px) {
+    .caderno-geral .title-caderno {
+        font-size: 18px;
+    }
+
+    .caderno #title-caderno {
+        font-size: 18px;
+    }
+
+    .caderno-geral .classificado a {
+        font-size: 10px;
+    }
+
+    .caderno-geral .classificado div {
+        min-width: 40px;
+        width: 70%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .caderno-geral .classificado span {
+        min-width: 90px;
+    }
+
+    .caderno-geral .caderno .titulo {
+        padding: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .caderno-geral .caderno .titulo h2 {
+        font-size: 18px;
+        margin: 0;
+    }
+
+    .caderno-geral .sumario {
+        order: 2;
+    }
+
+    .new-mosaico img {
+        width: 100%;
+        height: 75px;
+    }
+
+    .area-btns-classificado {
+        /*  flex-direction: column;
+        gap: 10px; */
+    }
+
+    .area-btns-classificado a {
+        font-size: 10px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+    }
+
+    .area-btns-classificado a i {
+        font-size: 24px !important;
+        margin-right: 6px !important;
+    }
+
+    .area-btns-classificado button {
+        font-size: 10px !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 5px;
+        height: 40px;
+        padding-left: 10px !important;
+    }
+
+    .caderno .btn-class {
+        padding: 10px 10px;
+    }
+
+    .fraseHeader {
+        font-size: 11px !important;
+        font-family: Montserrat, Helvetica, Times, serif;
+        text-align: center;
+    }
+
+    .fraseHeader span {
+        padding: 0px !important;
+
+    }
+
+}
+
+.caderno-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+.caderno-container {
+  width: 100%;
+  padding: 0 16px;
+  /* max-width: 1140px; */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .caderno-container { max-width: 980px; }
+}
+
+@media (max-width: 992px) {
+  .caderno-container { max-width: 720px; }
+  .caderno .lista { flex-direction: column; }
+  .caderno .lista .sumario, .caderno .lista .teste { width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .caderno-container { max-width: 540px; padding: 0 12px; }
+  .caderno .lista { gap: 10px; }
+  .classificado { height: 400px; }
+}
+
+/* Support for <div class="container caderno"> (override Bootstrap container for this page) */
+.container.caderno {
+  width: 100%;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+}
+
+/* limit the inner framed area and keep it responsive */
+.container.caderno > .borda-verde,
+.container.caderno .borda-verde {
+  width: 100%;
+  max-width: 1140px;
+}
+
+@media (max-width: 1200px) {
+  .container.caderno > .borda-verde,
+  .container.caderno .borda-verde { max-width: 980px; }
+}
+
+@media (max-width: 992px) {
+  .container.caderno > .borda-verde,
+  .container.caderno .borda-verde { max-width: 720px; }
+}
+
+@media (max-width: 768px) {
+  .container.caderno > .borda-verde,
+  .container.caderno .borda-verde { max-width: 540px; padding: 0 12px; }
+}
+
+/*0-==================================================================*/

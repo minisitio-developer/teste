@@ -1,0 +1,334 @@
+import { useEffect, useState, useRef, useContext } from 'react';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import { masterPath } from '../config/config';
+
+
+
+//import 'bootstrap/dist/css/bootstrap.min.css';
+/* import 'font-awesome/css/font-awesome.min.css'; */
+import '../assets/css/cadernoClassificado.css';
+
+import MosaicoWebCard from '../components/MosaicoWebCard';
+import Mosaico from '../components/Mosaico';
+import Busca from '../components/Busca';
+import Nav from '../components/Nav';
+import Footer from '../components/Footer';
+import CardClassificado from './classificados/CardClassificado';
+import Letter from './classificados/Letter';
+import QrcodeMosaico from '../plugins/QrcodeMosaico';
+import SafeImage from '../components/SafeMosaico';
+import ButtonCapa from '../components/ButtonCapa';
+
+import { Modal, Button } from 'react-bootstrap';
+import { QrCode } from "lucide-react";
+
+//CONTEXT
+import { useBusca } from '../context/BuscaContext';
+import { QrcodeCadernoContext } from '../context/QrcodeCadernoContext';
+
+
+function Caderno(props) {
+
+  //contexto
+  const { theme, toggleTheme } = useContext(QrcodeCadernoContext);
+  const { result, setResult } = useBusca();
+
+  const [nomeAtividade, setNomeAtividade] = useState([]);
+  const [minisitio, setMinisitio] = useState([]);
+  const [classificados, setClassificados] = useState([]);
+  const [pathImg, setPathImg] = useState([]);
+  const [mosaicoImg, setMosaicoImg] = useState([]);
+  const [smoot, setSmoot] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [nmAnuncio, setNmAnuncio] = useState(null);
+  const [qtdaPerfil, setQtdaPerfil] = useState(0);
+  const [show, setShow] = useState(false);
+
+  const location = useLocation();
+
+  const pegarParam = new URLSearchParams(location.search);
+
+  const book = pegarParam.get('book');
+  const id = pegarParam.get('id');
+
+  const { caderno, estado } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function buscarAtividade() {
+      try {
+        const res = await fetch(`${masterPath.url}/anuncios/${book}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        const minisitio = await res.json();
+
+        setMinisitio(minisitio);
+
+        const codigosAtividades = minisitio.anuncios.map((item) => item.codAtividade);
+        const valores = [...new Set(codigosAtividades)];
+
+        const codigosTable = await fetch(`${masterPath.url}/atividade/6`).then(response => response.json());
+        const atividadesEncontradas = codigosTable.filter((item) => valores.includes(item.id));
+
+        setNomeAtividade(atividadesEncontradas);
+
+        console.log("Final", atividadesEncontradas, nomeAtividade);
+      } catch (error) {
+        console.error('Erro ao buscar atividades:', error);
+      }
+    }
+
+    //buscarAtividade();
+  }, [book]);
+
+
+  const teste = useRef(null)
+
+  useEffect(() => {
+    setLoading(true);
+    document.querySelector('.caderno').style.filter = "blur(3px)";
+
+    fetch(`${masterPath.url}/admin/anuncio/classificado/${caderno}/${estado}`)
+      .then(x => x.json())
+      .then(res => {
+        if (res.success) {
+          //setClassificados(res.data);
+          setPathImg(res.teste.rows);
+          setMosaicoImg(res.mosaico);
+          setQtdaPerfil(res.totalRegistros);
+          //setLoading(false);
+          //document.querySelector('.caderno').style.filter = "none";
+        }
+
+      })
+
+  }, []);
+
+  /*
+  * capa01 = ADMINISTRAÇÃO REGIONAL / PREFEITURA
+  * capa02 = EMERGÊNCIA
+  * capa03 = HOSPITAIS PÚBLICOS
+  * capa04 = SECRETARIA DE TURISMO
+  * capa05 = EVENTOS NA CIDADE
+  * capa06 = UTILIDADE PÚBLICA
+  * capa07 = CÂMARA DE VEREADORES/CÂMARA DISTRITAL
+  * capa08 = INFORMAÇÕES
+  */
+
+  let capa01 = pathImg[0] ? pathImg[0].descImagem : null;
+  let capa02 = pathImg[1] ? pathImg[1].descImagem : null;
+  let capa03 = pathImg[2] ? pathImg[2].descImagem : null;
+  let capa04 = pathImg[3] ? pathImg[3].descImagem : null;
+  let capa05 = pathImg[4] ? pathImg[4].descImagem : null;
+  let capa06 = pathImg[5] ? pathImg[5].descImagem : null;
+  let capa07 = pathImg[6] ? pathImg[6].descImagem : null;
+  let capa08 = pathImg[7] ? pathImg[7].descImagem : null;
+
+  function buscarTodosClassificado() {
+    fetch(`${masterPath.url}/admin/espacos/read?page=${1}`)
+      .then((x) => x.json())
+      .then((res) => {
+        //console.log(res);
+        setResult(res.anuncios);
+        navigate("/caderno/maceio_27");
+      })
+  };
+
+  function definePage(param) {
+    const itemIndex = param;
+    const itemsPerPage = 10;
+
+    const pageNumber = Math.ceil(itemIndex / itemsPerPage);
+
+    //console.log(pageNumber);
+    return pageNumber;
+  }
+
+  useEffect(() => {
+    fetch(`${masterPath.url}/admin/lista/test/${caderno}/${estado}`)
+      .then((x) => x.json())
+      .then((res) => {
+        setClassificados(res.data);
+        setLoading(false);
+        document.querySelector('.caderno').style.filter = "none";
+      })
+    //fetchDataInBatches(`${masterPath.url}/admin/lista/test/${caderno}/${estado}`)
+  }, [])
+
+  const capas = [
+    "ADMINISTRAÇÃO REGIONAL / PREFEITURA",
+    "EMERGÊNCIA",
+    "UTILIDADE PÚBLICA",
+    "HOSPITAIS PÚBLICOS",
+    "CÂMARA DE VEREADORES - CÂMARA DISTRITAL",
+    "SECRETARIA DE TURISMO",
+    "INFORMAÇÕES",
+    "EVENTOS NA CIDADE"
+  ]
+
+
+  const selectCapa = (capa) => {
+    let result = pathImg.find((item) => item.codAtividade == capa);
+
+    if (!result) return null;
+
+    return result;
+  }
+
+
+  const handleClose = () => {
+    setShow(false);
+    //props.setShowState(false);
+  };
+
+
+
+  return (
+    <div className="App caderno-geral">
+
+      {loading &&
+        <button class="buttonload" style={{ display: "block" }}>
+          <i class="fa fa-spinner fa-spin"></i>Carregando
+        </button>
+      }
+
+
+      <header>
+        <Mosaico logoTop={true} borda="flex" /* mosaicoImg={mosaicoImg} */ />
+        {/*  <MosaicoWebCard logoTop={true} borda="flex" mosaicoImg={mosaicoImg}  nmAnuncio={`${masterPath.domain}/caderno-geral/${caderno}/${estado}`} />  */}
+      </header>
+      <main>
+        <Busca paginaAtual={"caderno"} uf={estado} caderno={caderno} />
+
+        {/*         <h2className='py-4'>Existem {minisitio.totalPaginas} páginas no Caderno {localStorage.getItem("caderno: ")} - {localStorage.getItem("uf: ")}. Você está vendo a página {minisitio.paginaAtual}.</h2>
+ */}
+
+        { }
+        <div className='container text-center my-4 new-mosaico'>
+          {/*        <img src={`${masterPath.url}/files/mosaico/${mosaicoImg}`} alt="mosaico"
+            onError={(e) => {
+              console.log("erro ao carregar imagem do mosaico");
+              e.target.style.display = "none"; // esconde a imagem
+              // ou substitui:
+              // e.target.src = "/images/fallback.png";
+            }}
+          /> */}
+          {mosaicoImg.length > 0 && (
+            <SafeImage
+              src={`${masterPath.url}/files/mosaico/${mosaicoImg}`}
+              alt="mosaico"
+              fallback="/images/fallback.png"
+            />
+          )}
+
+
+        </div>
+        <div className='container caderno'>
+
+          <div class="borda-verde">
+            <div class="borda-amarela">
+              <div class="borda-azul">
+                <div class="conteudo">
+                  <h1 id="title-caderno" className='py-2 title-caderno'>Capa do Caderno {caderno} - {estado}</h1>
+                  {/*  <div className="area-qrcode-caderno">
+                        <QrcodeMosaico nmAnuncio={`${masterPath.domain}/caderno-geral/${props.caderno}/${props.estado}`} size={114}/>
+                        <img src="/assets/img/logo.png" alt="" />
+                    </div> */}
+                  <div className='col-md-12'>
+                    <div className='row py-3'>
+                      <ButtonCapa caderno={caderno} estado={estado} buscarTodosClassificado={buscarTodosClassificado} />
+                      {/*         <div className="col-md-12 col-xs-12 text-center d-flex justify-content-center area-btns-classificado">
+                      
+                        <a href={`/cadernos/${caderno}_${estado}?caderno=${caderno}&estado=${estado}`} className="btn proximo btn-class" onClick={buscarTodosClassificado}>
+                          <i className="fa fa-file-text mx-0"></i> Ver caderno classificado</a>
+                        <button className='btn btn-success mx-2 btn-qrcode' onClick={() => setShow(true)}><QrCode /><span className='mx-2'>Gerar qrcode</span></button>
+                      </div> */}
+
+                    </div>
+
+                    {/*       <Modal show={show} onHide={handleClose} size="lg" centered>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Capa do Caderno {caderno} - {estado}</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body className="text-center">
+                        <div className="area-qrcode-caderno">
+                          <QrcodeMosaico nmAnuncio={`${masterPath.domain}/caderno-geral/${caderno}/${estado}`} />
+                          <img src="/assets/img/logo.png" alt="" />
+                        </div>
+                      </Modal.Body>
+                      <Modal.Footer>
+                      </Modal.Footer>
+                    </Modal> */}
+
+
+                    <div className="row lista">
+                      <ul className="col-md-6 col-sm-6 col-xs-12 list-unstyled sumario">
+                        <li className="titulo">
+                          <h2>Sumário do Classificado</h2>
+                          <span>({qtdaPerfil} - Perfis / Minisitios)</span>
+                        </li>
+                        <li className="classificado">
+                          <ul className="list-unstyled">
+                            {classificados.map(item => (
+                              /* "/caderno/maceio/ziiz_569885_27" */
+                              capas.includes(item.codAtividade) ?
+                                <li key={item.id}>
+                                  <a href="#">
+                                    <div>{item.codAtividade}</div>
+                                    <span>{item.quantidade} resultado</span>
+                                  </a>
+                                </li>
+                                :
+                                <li key={item.id}>
+                                  <a href={`/caderno/${item.descAnuncio}_${item.codAnuncio}_${item.codUf}?page=1&book=${item.codCaderno}&id=${item.codAnuncio}&index=${item.page}&caderno=${item.codCaderno}&estado=${item.codUf}`} onClick={definePage}>
+                                    <div>{item.nomeAmigavel}</div>
+                                    <span>{item.quantidade} resultado</span>
+                                  </a>
+                                </li>
+
+                            ))}
+                          </ul>
+                        </li>
+                        <CardClassificado title={"UTILIDADE PÚBLICA"} pathImg={capa06} data={selectCapa("UTILIDADE PÚBLICA")} />
+                        <CardClassificado title={"CÂMARA DE VEREADORES/CÂMARA DISTRITAL"} pathImg={capa07} data={selectCapa("CÂMARA DE VEREADORES - CÂMARA DISTRITAL")} />
+                        <CardClassificado title={"INFORMAÇÕES"} pathImg={capa08} data={selectCapa("INFORMAÇÕES")} />
+                      </ul>
+                      <ul className="col-md-6 col-sm-6 col-xs-12 list-unstyled teste">
+                        <CardClassificado title={"ADMINISTRAÇÃO REGIONAL / PREFEITURA"} pathImg={capa01} data={selectCapa("ADMINISTRAÇÃO REGIONAL / PREFEITURA")} />
+                        <CardClassificado title={"EMERGÊNCIA"} pathImg={capa02} data={selectCapa("EMERGÊNCIA")} />
+                        <CardClassificado title={"HOSPITAIS PÚBLICOS"} pathImg={capa03} data={selectCapa("HOSPITAIS PÚBLICOS")} />
+                        <CardClassificado title={"SECRETARIA DE TURISMO"} pathImg={capa04} data={selectCapa("SECRETARIA DE TURISMO")} />
+                        <CardClassificado title={"EVENTOS NA CIDADE"} pathImg={capa05} data={selectCapa("EVENTOS NA CIDADE")} />
+                      </ul>
+
+                    </div>
+                    <Letter estado={estado} caderno={caderno} />
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+
+
+      </main>
+
+      <footer>
+        <Nav styleclassName="Nav" />
+        <Footer />
+      </footer>
+    </div >
+  );
+}
+
+export default Caderno;
