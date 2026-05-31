@@ -49,3 +49,65 @@ Este histórico foi revisado para refletir o estado real verificado no ambiente 
 ================================================================================
 Fim do histórico revisado.
 ================================================================================
+
+================================================================================
+                  HISTORICO DE CONFIGURACAO LOCAL E GIT
+                      Projeto: minisitio_original
+                        Data: 31 de Maio de 2026
+================================================================================
+
+## RESUMO EXECUTIVO
+
+Sessao dedicada a subir o projeto completamente em ambiente local e inicializar
+o repositorio Git para controle de versao.
+
+## BANCO DE DADOS
+
+- Identificado container Docker 'minisitio-db' (MariaDB 10.11) parado.
+- Iniciado com: docker start minisitio-db
+- Banco ativo: minisitio_local | Porta host: 3307 | Usuario: root | Senha: root
+- Tabelas presentes: anuncio, atividade, caderno, desconto, uf, usuario
+- Conexao confirmada sem erros ECONNREFUSED.
+
+## VARIAVEIS DE AMBIENTE
+
+- Criado arquivo back/.env com configuracoes de desenvolvimento local:
+  - DB_HOST=127.0.0.1 / DB_PORT=3307 / DB_NAME=minisitio_local
+  - DB_USER=root / DB_PASSWORD=root
+  - PORT=3032 / NODE_ENV=development
+  - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
+  - JWT_SECRET e JWT_EXPIRE definidos para desenvolvimento
+
+## DEPENDENCIAS
+
+- Instalado pacote dotenv no backend (ausente no node_modules).
+- Demais pacotes ja presentes.
+
+## SERVICOS LOCAIS
+
+- Backend (node index.js) escutando na porta 3032, sem erros de banco.
+- Frontend (npx http-server build -p 3000) disponivel em http://localhost:3000
+- Ambos verificados via Get-NetTCPConnection:
+  - :: 3032 (Listen) -- Backend (Node.js)
+  - 0.0.0.0 3000 (Listen) -- Frontend (http-server)
+
+## CONTROLE DE VERSAO (GIT)
+
+- Repositorio Git inicializado na raiz: git init
+- Criado .gitignore na raiz cobrindo:
+  - node_modules/, build/, .env, back/.env, *.log, .DS_Store
+- Autor configurado localmente: Leoncio / leoncio@example.com
+- Commit inicial realizado:
+  'feat: initial commit with security and quality improvements'
+
+## CONCLUSAO
+
+- Projeto 100% operacional em ambiente local.
+- Backend conectado ao banco sem erros.
+- Frontend servindo build de producao na porta 3000.
+- Repositorio Git inicializado com commit inicial registrado.
+- Proximo passo: criar repositorio no GitHub e executar git push.
+
+================================================================================
+Fim do historico - 31 de Maio de 2026.
+================================================================================
