@@ -6,4 +6,5 @@
 - Commit criado com a mensagem "COMMIT EXECUTADO COM SUCESSO !!!".
 - Mudanças foram poussadas para a branch master no GitHub.
 - Nenhum erro foi encontrado durante o push e o histórico já reflete o novo estado do projeto.
-- Próximo passo: publicação local concluída; backend rodando na porta 3032 e frontend na 3000.
+- Próximo passo: publicação local concluída; backend rodando na porta 3032 e frontend na 3000 (pasta front)
+- Versão local funcional, UFS carregada, institucional visível e erros de rede corrigidos.
