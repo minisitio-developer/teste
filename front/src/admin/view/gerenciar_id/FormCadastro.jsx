@@ -79,7 +79,7 @@ const FormCadastro = () => {
         setShowSpinner(true);
         let codigoDoMaster = e.target.value;
         usuarios.find((item) => {
-            if (item.codUsuario == codigoDoMaster) {
+            if (item.codUsuario === codigoDoMaster) {
                 fetch(`${masterPath.url}/admin/desconto/ddd/${item.codUf}`)
                     .then((x) => x.json())
                     .then((res) => {
@@ -175,7 +175,7 @@ const FormCadastro = () => {
                         })
                     } else {
                         setShowSpinner(false);
-                        //if(res.message.original.code == 'ER_DUP_ENTRY') {
+                        //if(res.message.original.code === 'ER_DUP_ENTRY') {
                         Swal.fire({
                             title: 'falha!',
                             text: res.message.errors[0].message,
@@ -312,7 +312,7 @@ const FormCadastro = () => {
                                 <option value="1">Sim</option>
                             </select>
                         </div>
-                        {patrocinio == 1 &&
+                        {patrocinio === 1 &&
                             <div className="form-group d-flex flex-column align-items-center py-3">
                                 <FieldsetPatrocinador numeroPatrocinador={1} linkPatrocinio={handleChange} miniPreview={true} setImgs={setImgs} />
                                 <FieldsetPatrocinador numeroPatrocinador={2} linkPatrocinio={handleChange} miniPreview={true} setImgs={setImgs} />
@@ -333,10 +333,10 @@ const FormCadastro = () => {
                                 <option value="1">Sim</option>
                             </select>
                         </div>
-                        {saldo == 1 &&
+                        {saldo === 1 &&
                             <div className="form-group d-flex flex-column align-items-center py-3">
-                                <div class="control-group w-50" style={{ display: "block" }}><label for="adicionar_saldo" class="control-label optional">Adicionar Saldo:</label>
-                                    <div class="controls">
+                                <div className="control-group w-50" style={{ display: "block" }}><label for="adicionar_saldo" className="control-label optional">Adicionar Saldo:</label>
+                                    <div className="controls">
                                         <input type="text" name="adicionar_saldo" id="adicionar_saldo" className="w-100" />
                                     </div>
                                 </div>

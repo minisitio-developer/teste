@@ -17,7 +17,7 @@ const PrivateRoute = ({ children, role, isAdmin }) => {
         if (!user) return <Navigate to="/login" />;
         if (role && user.codTipoUsuario !== role) return <Navigate to="/forbidden" />;
 
-        if (isAdmin && user.codTipoUsuario == 3) return <Navigate to="/login" />;
+        if (isAdmin && user.codTipoUsuario === 3) return <Navigate to="/login" />;
 
        return children;
     }

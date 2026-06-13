@@ -137,7 +137,7 @@ function PainelAdmin() {
         setShowSpinner(true);
         let nuDocumento = "";
 
-        if (cpf.length == 11) {
+        if (cpf.length === 11) {
             nuDocumento = cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
         } else {
             nuDocumento = cpf.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
@@ -174,13 +174,13 @@ function PainelAdmin() {
                     <div className='col-md-12'>
                         <div className='row'>
                             <div className="col-md-12 col-xs-12 text-center">
-                                <div class="col-md-12">
-                                    <ul class="list-inline pull-right">
-                                        <li><a href="/12178481426/cadastro" class="btn cinza btnMenu">Dados pessoais</a></li>
-                                        <li><a href="/12178481426/criar-anuncio" class="btn cinza btnMenu">Criar anúncio</a></li>
-                                        <li><a href="/12178481426/ver-anuncios" class="btn cinza btnMenu">Listar Espaços</a></li>
-                                        <li><a href="/resources/img/galeria-area-do-assinante.zip" class="btn cinza btnMenu">Galeria de imagens</a></li>
-                                        <li><a href="/login" class="btn cinza btnMenu" onClick={sair}>Sair</a></li>
+                                <div className="col-md-12">
+                                    <ul className="list-inline pull-right">
+                                        <li><a href="/12178481426/cadastro" className="btn cinza btnMenu">Dados pessoais</a></li>
+                                        <li><a href="/12178481426/criar-anuncio" className="btn cinza btnMenu">Criar anúncio</a></li>
+                                        <li><a href="/12178481426/ver-anuncios" className="btn cinza btnMenu">Listar Espaços</a></li>
+                                        <li><a href="/resources/img/galeria-area-do-assinante.zip" className="btn cinza btnMenu">Galeria de imagens</a></li>
+                                        <li><a href="/login" className="btn cinza btnMenu" onClick={sair}>Sair</a></li>
                                     </ul>
                                 </div>
                             </div>

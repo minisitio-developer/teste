@@ -24,7 +24,7 @@ function Home() {
       <Busca paginaAtual={"home"} />
       <Nav styleClass="none" />
       <div className="d-flex justify-content-center align-items-center" style={{ height: "500px" }}>
-       {/*  <a href="/"><img src="../assets/img/logo.png" className="" /></a> */}
+       {/*  <a href="/"><img alt="" src="../assets/img/logo.png" className="" /></a> */}
       </div>
       <Footer />
     </div >

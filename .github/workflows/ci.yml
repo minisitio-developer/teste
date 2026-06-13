@@ -8,7 +8,7 @@ on:
 
 jobs:
   backend:
-    name: Backend — Lint & Test
+    name: Backend — Verificação
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -26,7 +26,15 @@ jobs:
         run: npm ci
 
       - name: Verificar sintaxe (node --check)
-        run: node --check index.js || true
+        run: node --check index.js
+
+      - name: Verificar syntaxe de todos os módulos
+        run: |
+          for f in config/*.js controllers/*.js controllers/**/*.js models/*.js routes/*.js middlewares/*.js crons/*.js; do
+            if [ -f "$f" ]; then
+              node --check "$f" || echo "AVISO: $f"
+            fi
+          done
 
       - name: Testes (se existirem)
         run: npm test || true
@@ -57,6 +65,13 @@ jobs:
           DISABLE_ESLINT_PLUGIN: true
           CI: false
         run: npm run build
+
+      - name: Verificar tamanho do bundle
+        run: |
+          echo "=== Bundle Size ==="
+          du -sh build/
+          echo "=== JS Files ==="
+          ls -lh build/static/js/ 2>/dev/null || true
 
       - name: Upload artefato do build
         uses: actions/upload-artifact@v4

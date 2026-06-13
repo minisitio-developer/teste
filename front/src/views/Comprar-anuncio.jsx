@@ -59,11 +59,11 @@ function ComprarAnuncio() {
 
       //console.log(posicao);
 
-      if(radioCheck != 1) {
+      if(radioCheck !== 1) {
         if (posicao <= limite && posicao >= -1875) {
           document.querySelector(".simulacao").style.cssText =
             "position: fixed; top: 0px; margin-top: 20px; width: 47%";
-        } else if (posicao <= -1875 && radioCheck != 1) {
+        } else if (posicao <= -1875 && radioCheck !== 1) {
           document.querySelector(".simulacao").style.position = "relative";
           document.querySelector(".simulacao").style.top = "73.5%"; //1810PX
           document.querySelector(".simulacao").style.marginTop = "0px";
@@ -75,12 +75,12 @@ function ComprarAnuncio() {
         }
       }
 
-      if(radioCheck == 1) {
+      if(radioCheck === 1) {
         console.log(radioCheck)
-        if (posicao <= limite && posicao >= -600 && radioCheck == 1) {
+        if (posicao <= limite && posicao >= -600 && radioCheck === 1) {
           document.querySelector(".simulacao").style.cssText =
             "position: fixed; top: 0px; margin-top: 20px; width: 47%";
-        } else if (posicao <= -600 && radioCheck == 1) {
+        } else if (posicao <= -600 && radioCheck === 1) {
           document.querySelector(".simulacao").style.position = "relative";
           document.querySelector(".simulacao").style.top = "56.5%"; //"633px"
           document.querySelector(".simulacao").style.marginTop = "0px";
@@ -188,7 +188,7 @@ function ComprarAnuncio() {
   function aplicarCupom(e) {
     let codId = e.target.value;
 
-    if(codId.length == 11) {
+    if(codId.length === 11) {
       fetch(`${masterPath.url}/admin/desconto/buscar/${codId}`)
       .then((x) => x.json())
       .then((res) => {
@@ -239,7 +239,7 @@ function ComprarAnuncio() {
                       id="codTipoAnuncio-1"
                       value="1"
                       onClick={(e) => {setRadioCheck(e.target.value); setShowMap("none")}}
-                      checked={radioCheck == 1}
+                      checked={radioCheck === 1}
                     />
                     Básico
                   </label>
@@ -250,7 +250,7 @@ function ComprarAnuncio() {
                       id="codTipoAnuncio-2"
                       value="2"
                       onClick={(e) => {setRadioCheck(e.target.value); setShowMap("block")}}
-                      checked={radioCheck == 2}
+                      checked={radioCheck === 2}
                     />
                     Simples
                   </label>
@@ -261,7 +261,7 @@ function ComprarAnuncio() {
                       id="codTipoAnuncio-3"
                       value="3"
                       onClick={(e) => setRadioCheck(e.target.value)}
-                      checked={radioCheck == 3}
+                      checked={radioCheck === 3}
                     />
                     Completo
                   </label>
@@ -335,13 +335,13 @@ function ComprarAnuncio() {
                 {/* <Marcadores /> */}
 
                 <div className="row">
-                  <div class="col-md-4 col-xs-12">
-                    <div class="form-group input-icon margin-top-10">
-                      <i class="fa fa-compass icone-form p-0"></i>
+                  <div className="col-md-4 col-xs-12">
+                    <div className="form-group input-icon margin-top-10">
+                      <i className="fa fa-compass icone-form p-0"></i>
                       <select
                         name="codUf"
                         id="codUf4"
-                        class="form-control"
+                        className="form-control"
                         onChange={executarSelecao}
                       >
                         <option value="" selected="selected">
@@ -360,13 +360,13 @@ function ComprarAnuncio() {
                     </div>
                   </div>
 
-                  <div class="col-md-8 col-xs-12">
-                    <div class="form-group selectCaderno form-group input-icon margin-top-10">
-                      <i class="fa fa-map-marker icone-form p-0"></i>
+                  <div className="col-md-8 col-xs-12">
+                    <div className="form-group selectCaderno form-group input-icon margin-top-10">
+                      <i className="fa fa-map-marker icone-form p-0"></i>
                       <select
                         name="codCaderno"
                         id="codUf5"
-                        class="form-control"
+                        className="form-control"
                       >
                         <option value="">- CIDADE -</option>
                         {caderno.map(
@@ -399,7 +399,7 @@ function ComprarAnuncio() {
                   />
                 </div>
 
-                {radioCheck != 1 && <ChooseFile codigoUser={codUser} />}
+                {radioCheck !== 1 && <ChooseFile codigoUser={codUser} />}
                 
                 <div className="input-icon margin-top-10">
                   <i className="fa fa-map-marker"></i>
@@ -427,7 +427,7 @@ function ComprarAnuncio() {
                   />
                 </div>}
 
-                {/* {radioCheck != 1 && <MapContainer cep={cep} />} */}
+                {/* {radioCheck !== 1 && <MapContainer cep={cep} />} */}
                 <MapContainer cep={cep} showMap={showMap}/>
 
 
@@ -467,7 +467,7 @@ function ComprarAnuncio() {
 
             {/* Detalhes do anuncio */}
 
-            {radioCheck != 1 && <div className="assinatura webcard" style={{ display: "block" }}>
+            {radioCheck !== 1 && <div className="assinatura webcard" style={{ display: "block" }}>
               <h2>Detalhes do Anúncio</h2>
             </div>}
             {radioCheck != 1 && <div
@@ -536,7 +536,7 @@ function ComprarAnuncio() {
                         id="descTipoPessoa-pf"
                         value="pf"
                         onChange={(e) => setPersonType(e.target.value)}
-                        checked={personType == "pf"}
+                        checked={personType === "pf"}
                       />
                       Pessoa física
                     </label>
@@ -548,7 +548,7 @@ function ComprarAnuncio() {
                         id="descTipoPessoa-pj"
                         value="pj"
                         onChange={(e) => setPersonType(e.target.value)}
-                        checked={personType == "pj"}
+                        checked={personType === "pj"}
                       />
                       Pessoa jurídica
                     </label>{" "}
@@ -585,12 +585,12 @@ function ComprarAnuncio() {
                   placeholder="Digite o seu e-mail"
                 />{" "}
               </div>
-             {radioCheck != 1 && <div class="input-icon margin-top-10">
+             {radioCheck !== 1 && <div className="input-icon margin-top-10">
                 <h4 className="text-start pt-2">Responsável pela Indicação (opcional)</h4>
-                <div class="input-icon margin-top-10" id="codigoPromocional">
-                  <i class="fa fa-credit-card"></i>
+                <div className="input-icon margin-top-10" id="codigoPromocional">
+                  <i className="fa fa-credit-card"></i>
 
-                  <input type="text" name="discountHash" id="discountHash" value="" class="form-control" placeholder="Digite seu código" />
+                  <input type="text" name="discountHash" id="discountHash" value="" className="form-control" placeholder="Digite seu código" />
                   <input type="hidden" name="discountValue" value="" id="discountValue" />    
                 </div>
                 <h5 className="text-start">Ao inserir o código não esqueça dos pontos. (Ex: 99.1234.9874)</h5>
@@ -600,13 +600,13 @@ function ComprarAnuncio() {
 
             {/* Forma de Pagamento */}
 
-            {radioCheck != 1 && <div
+            {radioCheck !== 1 && <div
               className="assinatura webcard formaPagamento"
               style={{ display: "block" }}
             >
               <h2>Forma de Pagamento</h2>
             </div>}
-            {radioCheck != 1 && <div
+            {radioCheck !== 1 && <div
               className="codigo-promocional webcard formaPagamento"
               style={{ display: "block" }}
             >
@@ -647,7 +647,7 @@ function ComprarAnuncio() {
                   <i className="fa fa-download"></i>
                 </div>
                 <div className="col-md-11">
-                  <a href="/resources/pdfs/formulario_pa.pdf" target="_blank">
+                  <a href="/resources/pdfs/formulario_pa.pdf" target="_blank" rel="noreferrer">
                     <h3>Faça o download do formulário</h3>
                   </a>
                 </div>
@@ -675,7 +675,7 @@ function ComprarAnuncio() {
                 <div className="cartao p-4">
                   <div className="conteudo semImagem">
                     <h2 className="nome-empresa text-start">{(descAnuncio) ? descAnuncio : "Nome da empresa"}</h2>
-                    {radioCheck != 1 && <h4
+                    {radioCheck !== 1 && <h4
                       className="slogan webcard text-start"
                       style={{ display: "block" }}
                     >
@@ -689,7 +689,7 @@ function ComprarAnuncio() {
                       <i className="fa fa-phone"></i>{" "}
                       <span className="sim-tel">{(descTelefone) ? descTelefone : "(xx) xxxx-xxxx"}</span>
                     </p>
-                    {radioCheck != 1 && <p
+                    {radioCheck !== 1 && <p
                       className="webcard text-start"
                       style={{ display: "block" }}
                     >
@@ -697,10 +697,10 @@ function ComprarAnuncio() {
                       <span className="cel">{(descCelular) ? descCelular : "(xx) xxxxx-xxxx"}</span>
                     </p>}
                   </div>
-                  <div class="conteudo comImagem" style={{ display: "none" }}>
-                    <img src="/resources/upload/istockphoto_1442417585_612x612_20240428_215703.jpg" height={191}/>
+                  <div className="conteudo comImagem" style={{ display: "none" }}>
+                    <img src="/resources/upload/istockphoto_1442417585_612x612_20240428_215703.jpg" height={191} alt="Imagem de exemplo"/>
                   </div>
-                  {radioCheck != 1 && <div id="area-icons-actions" className="col-md-6">
+                  {radioCheck !== 1 && <div id="area-icons-actions" className="col-md-6">
                     <Tooltip text={"Mídias"}>
                       <div className="dropdown">
                         <button
@@ -741,7 +741,7 @@ function ComprarAnuncio() {
                       <i>
                         <img
                           src="../assets/img/link_mapa.png"
-                          alt=""
+                          alt="Link para o Mapa"
                           height={40}
                         />
                       </i>
@@ -751,7 +751,7 @@ function ComprarAnuncio() {
                       <i>
                         <img
                           src="../assets/img/link_site.png"
-                          alt=""
+                          alt="Link para o Site"
                           height={40}
                         />
                       </i>
@@ -760,7 +760,7 @@ function ComprarAnuncio() {
                       <i>
                         <img
                           src="../assets/img/link_promocao.png"
-                          alt=""
+                          alt="Link para a Promoção"
                           height={40}
                         />
                       </i>
@@ -801,15 +801,15 @@ function ComprarAnuncio() {
                 </div>
                 <div className="assinatura margin-top-20">
 
-                  {radioCheck != 1 && <h2 className="webcard">
+                  {radioCheck !== 1 && <h2 className="webcard">
                     <span className="preco">R$ {precoFixo},00</span>/mês
                   </h2>}
-                  {radioCheck == 1 && <h2 className="simples uppercase">
+                  {radioCheck === 1 && <h2 className="simples uppercase">
                     Grátis
                   </h2>}
                 </div>
                 <div className="margin-top-20">
-                {radioCheck != 1 && <p className="webcard" style={{ display: "block" }}>
+                {radioCheck !== 1 && <p className="webcard" style={{ display: "block" }}>
                     *A duração da assinatura é de 12 meses, portanto válido até
                     14/04/2025.
                   </p>}

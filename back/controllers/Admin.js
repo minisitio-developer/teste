@@ -1994,7 +1994,7 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
         const pin = await Pin.findOne({ order: [['createdAt', 'DESC']] });
 
         // Verifica se o resultado está vazio
-        if (pin.length === 0) {
+        if (!pin) {
             return res.status(404).json({ message: 'Pin não encontrado' });
         }
 

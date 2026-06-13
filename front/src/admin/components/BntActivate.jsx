@@ -12,7 +12,7 @@ const BtnActivate = (props) => {
 
     useEffect(() => {
         //console.log(props.data)
-        if (props.data == 1) {
+        if (props.data === 1) {
             setStatus('Ativado');
         } else {
             setStatus('Desativado');
@@ -42,7 +42,7 @@ const BtnActivate = (props) => {
             .then((res) => {
                 //setShowSpinner(false);
                 if (res.success) {
-                    if (status == "Ativado") {
+                    if (status === "Ativado") {
                         setStatus('Desativado');
                     } else {
                         setStatus('Ativado');

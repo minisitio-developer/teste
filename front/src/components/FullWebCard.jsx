@@ -155,7 +155,7 @@ function FullWebCard(props) {
                                             {(resultLocal.certificado_logo != null && resultLocal.certificado_logo != "") &&
                                                 <img src={`${masterPath.url}/files/logoCertificado/${resultLocal.certificado_logo}`} className='rounded' height="50" style={{ height: "64px" }} alt="logo" />
                                             }
-                                            {(resultLocal.certificado_logo == "" || resultLocal.certificado_logo == null) &&
+                                            {(resultLocal.certificado_logo === "" || resultLocal.certificado_logo === null) &&
                                                 <p>LOGO</p>
                                             }
 
@@ -238,7 +238,7 @@ function FullWebCard(props) {
                                             rel="noopener noreferrer"
                                         >Compre agora</a>
                                     }
-                                    {resultLocal.link_comprar == "" &&
+                                    {resultLocal.link_comprar === "" &&
                                         <a href="#" className="btn proximo link-cinza d-flex justify-content-center align-items-center w-50" style={{ filter: "grayscale(1)", webkitFilter: "grayscale(1)" }}>Compre agora</a>
                                     }
 
@@ -271,27 +271,27 @@ function FullWebCard(props) {
                             {/* <!-- Trigger the modal with a button --> */}
                             {/*                        <button
                             type="button"
-                            class="btn btn-info btn-lg"
+                            className="btn btn-info btn-lg"
                             data-bs-toggle="modal"
                             data-bs-target="#myModal">
                                 Open Modal
                         </button> */}
 
                             {/*  <!-- Modal --> */}
-                            <div class="modal fade" id="myModal" role="dialog">
-                                <div class="modal-dialog">
+                            <div className="modal fade" id="myModal" role="dialog">
+                                <div className="modal-dialog">
 
                                     {/*     <!-- Modal content--> */}
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <h4 class="modal-title">Modal Header</h4>
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <button type="button" className="close" data-dismiss="modal">&times;</button>
+                                            <h4 className="modal-title">Modal Header</h4>
                                         </div>
-                                        <div class="modal-body">
+                                        <div className="modal-body">
                                             <p>Some text in the modal.</p>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <div className="modal-footer">
+                                            <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
 
@@ -334,7 +334,7 @@ function FullWebCard(props) {
                                 <a href={resultLocal.descParceiroLink !== "0" ? resultLocal.descParceiroLink : ""} target="_blank" data-toggle="tooltip" title="parceiro" rel="noopener  noreferrer">
                                     <i className='link-cinza flex justify-center border-cinza'>
                                         {resultLocal.descParceiro != null ?
-                                            <img src={`${masterPath.url}/files/logoParceiro/${resultLocal.descParceiro}`} width={150} height={58} className='rounded my-1' alt="parceiro" /> : <img src="../assets/img/teste/aperto-de-mao.png" width={100} height={66} />
+                                            <img src={`${masterPath.url}/files/logoParceiro/${resultLocal.descParceiro}`} width={150} height={58} className='rounded my-1' alt="parceiro" /> : <img alt="" src="../assets/img/teste/aperto-de-mao.png" width={100} height={66} />
                                         }
 
                                     </i>

@@ -96,8 +96,8 @@ function Institucional() {
     return (
         <div className="painel-admin institucional admin-inst">
 
-            {showSpinner && <button class="buttonload">
-                <i class="fa fa-spinner fa-spin"></i>Carregando
+            {showSpinner && <button className="buttonload">
+                <i className="fa fa-spinner fa-spin"></i>Carregando
             </button>}
 
             <header>
@@ -109,44 +109,44 @@ function Institucional() {
                             Voltar
                         </Button> */}
                     Institucional</h1>
-                <div class="container my-3">
+                <div className="container my-3">
                     <div className='my-3'>
                         <Button as="button" variant="none" type="button" size='lg' className='border' onClick={() => navigate('/admin/configuracoes')}>
                             <img src="/assets/img/icons/seta-esquerda.png" alt="voltar" width={20}/>
                             <span className='px-2'>Voltar</span>
                         </Button>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="bg-cinza margin-bottom-20 rounded">
-                                <h2 class="px-2"><i class="fa fa-clock-o"></i> A Empresa</h2>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <div className="bg-cinza margin-bottom-20 rounded">
+                                <h2 className="px-2"><i className="fa fa-clock-o"></i> A Empresa</h2>
                                 <textarea name="inst_empresa" value={data.inst_empresa} onChange={handleSelectChange}></textarea>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="bg-cinza margin-bottom-20 rounded">
-                                <h2 class="px-2"><i class="fa fa-clock-o"></i> Objetivo</h2>
+                        <div className="col-md-6">
+                            <div className="bg-cinza margin-bottom-20 rounded">
+                                <h2 className="px-2"><i className="fa fa-clock-o"></i> Objetivo</h2>
                                 <textarea name="inst_objetivo" value={data.inst_objetivo} onChange={handleSelectChange}></textarea>
                             </div>
                         </div>
                     </div>
-                    <div class="row py-4">
-                        <div class="col-md-6">
-                            <div class="bg-cinza margin-bottom-20 rounded">
-                                <h2 class="px-2"><i class="fa fa-wifi"></i> Nossa visão</h2>
+                    <div className="row py-4">
+                        <div className="col-md-6">
+                            <div className="bg-cinza margin-bottom-20 rounded">
+                                <h2 className="px-2"><i className="fa fa-wifi"></i> Nossa visão</h2>
                                 <textarea name="inst_visao" value={data.inst_visao} onChange={handleSelectChange}></textarea>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="bg-cinza rounded">
-                                <h2 class="px-2"><i class="fa fa-globe"></i> Nossa missão</h2>
+                        <div className="col-md-6">
+                            <div className="bg-cinza rounded">
+                                <h2 className="px-2"><i className="fa fa-globe"></i> Nossa missão</h2>
                                 <textarea name="inst_missao" value={data.inst_missao} onChange={handleSelectChange}></textarea>
                             </div>
                         </div>
                     </div>
-                    {/*       <div class="row">
-                        <div class="col-md-12 margin-bottom-20">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3839.160478293487!2d-47.89486528457415!3d-15.79548998905047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a3aef5b363915%3A0x664043907f15a04d!2sVen%C3%A2ncio+Shopping!5e0!3m2!1spt-BR!2sbr!4v1490820737178" width="100%" height="350" frameborder="0" style={{ "border": "0" }} allowfullscreen=""></iframe>
+                    {/*       <div className="row">
+                        <div className="col-md-12 margin-bottom-20">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3839.160478293487!2d-47.89486528457415!3d-15.79548998905047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a3aef5b363915%3A0x664043907f15a04d!2sVen%C3%A2ncio+Shopping!5e0!3m2!1spt-BR!2sbr!4v1490820737178" width="100%" height="350" frameBorder="0" style={{ "border": "0" }} allowFullScreen=""></iframe>
                         </div>
                     </div> */}
                     <div className='text-center py-3'>

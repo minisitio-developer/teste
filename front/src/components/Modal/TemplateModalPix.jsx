@@ -45,7 +45,7 @@ const TemplateModalPromo = (props) => {
          
           <div className="modal-body" ref={contentPromo}>
           <div className='title-promo-ms'>
-            <img src="../assets/img/logo50.png" className="logo-modal-promo" />
+            <img alt="" src="../assets/img/logo50.png" className="logo-modal-promo" />
             <h4>Promoção com minisitio</h4>
           </div>
             <img src={`${masterPath.url}/files/2/${props.path}`} className='w-100' alt="promoção" />

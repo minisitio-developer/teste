@@ -75,7 +75,7 @@ function Cardlist(props) {
                 />
 
               }
-              {/* props.codImg == "teste" &&
+              {/* props.codImg === "teste" &&
      <img
        src="../assets/img/logo.png"
        alt="Foto"
@@ -111,9 +111,9 @@ function Cardlist(props) {
                       <div className="endereco label-ativity">{props.anuncio.codAtividade}</div>
 
                       {/*    {caderno.map((item) => {
-             if (item.codCaderno == props.codCity) {
+             if (item.codCaderno === props.codCity) {
                //console.log(uf)
-               //const estado = uf.find(estado => estado.id_uf == props.anuncio.codUf)
+               //const estado = uf.find(estado => estado.id_uf === props.anuncio.codUf)
 
                return <span>{item.descEndereco}</span>
                
@@ -128,9 +128,9 @@ function Cardlist(props) {
                       <div className="endereco label-address">{!props.anuncio.descEndereco ? "Endereço não informado" : props.anuncio.descEndereco}</div>
                       {/*  <span>{props.anuncio.descEndereco}</span> */}
                       {/*  {caderno.map((item) => {
-             if (item.codCaderno == props.codCity) {
+             if (item.codCaderno === props.codCity) {
                //console.log(uf)
-               //  const estado = uf.find(estado => estado.id_uf == props.anuncio.codUf)
+               //  const estado = uf.find(estado => estado.id_uf === props.anuncio.codUf)
 
                return <span>{item.descEndereco}</span>
                //return <span>{item.nomeCaderno} - {item.UF} </span>  

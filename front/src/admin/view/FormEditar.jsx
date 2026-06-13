@@ -62,7 +62,7 @@ const FormCadastro = () => {
         var validation = false;
 
         document.querySelectorAll('[name="pwd"]').forEach((item) => {
-            if (item.value == "") {
+            if (item.value === "") {
                 item.style.border = "1px solid red";
                 validation = false;
                 return;
@@ -73,7 +73,7 @@ const FormCadastro = () => {
         });
 
         document.querySelectorAll('select').forEach((item) => {
-            if (item.value == "") {
+            if (item.value === "") {
                 item.style.border = "1px solid red";
                 validation = false;
                 return;
@@ -333,7 +333,7 @@ const FormCadastro = () => {
                                 <option value="" selected="selected">- Selecione uma cidade -</option>
                                 {
                                     caderno.map((cidades) => (
-                                        cidades.codUf == ufSelected &&
+                                        cidades.codUf === ufSelected &&
                                         <option value={cidades.codCaderno}>{cidades.nomeCaderno}</option>
                                     ))
                                 }

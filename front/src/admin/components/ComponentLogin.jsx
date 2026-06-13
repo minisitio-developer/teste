@@ -81,7 +81,7 @@ function Login() {
                     let nuDocumento = res.data.descCPFCNPJ;
                     console.log(tipoUsuario)
 
-                    if (tipoUsuario == 2 || tipoUsuario == 3 || tipoUsuario == 5) {
+                    if (tipoUsuario === 2 || tipoUsuario === 3 || tipoUsuario === 5) {
                         sessionStorage.setItem('authTokenMN', true);
                         //sessionStorage.setItem('userLogged', res.data);
                         //sessionStorage.setItem('userLogged', res.type);

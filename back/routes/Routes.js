@@ -40,7 +40,7 @@ const RecuperarSenha = require('../controllers/RecuperarSenha.js');
 
 //module.exports = router;
 
-module.exports = (io) => {
+module.exports = (io, loginLimiter) => {
     const router = express.Router();
     router.use(function timelog(req, res, next) {
         //auth();
@@ -63,7 +63,7 @@ module.exports = (io) => {
     router.get('/api/admin/usuario', Admin.listarUsuarios);
 
     //Login
-    router.post('/api/entrar', Login.login);
+    router.post('/api/entrar', loginLimiter, Login.login);
     router.post('/api/test-connection', auth, (req, res) => res.json({ success: true }));
     router.post('/api/is-auth', authVerification, Login.sessionVerification);
 

@@ -167,7 +167,7 @@ const FormCadastro = () => {
                         <div className="form-group d-flex flex-column align-items-center py-3">
                             {/*    <label htmlFor="pwd" className="w-50 px-1">Imagem:</label>
                             <input type="file" className="form-control h-25 w-50" id="endereco" placeholder="" name="pwd" /> */}
-                            {caderno.descImagem == 0 && <ChooseFile codigoUser={param} largura={"w-50"} preview={false} teste={handleChange2} miniPreview={true} local={'mosaico'} />}
+                            {caderno.descImagem === 0 && <ChooseFile codigoUser={param} largura={"w-50"} preview={false} teste={handleChange2} miniPreview={true} local={'mosaico'} />}
                             {caderno.descImagem != 0 && <ChooseFile codigoUser={param} largura={"w-50"}
                                 codImg={caderno.descImagem}
                                 preview={false}

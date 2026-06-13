@@ -151,43 +151,43 @@ export const generatePdfold = (props) => {
             width: 100px !important;
         }
     </style>
-    <div class="pdf-generator p-0">
-        <div class="container-fluid">
-            <div class="row p-0 cartao">
-                <div class="apoio">
+    <div className="pdf-generator p-0">
+        <div className="container-fluid">
+            <div className="row p-0 cartao">
+                <div className="apoio">
                     <h2>Nome da empresa</h2>
                 </div>
-                <div class="row pdf-content">
-                    <div class="conteudo text-start webcardsimples">
+                <div className="row pdf-content">
+                    <div className="conteudo text-start webcardsimples">
                         <a href="/local/porto-velho/hotel avenida ii_327591">
                             <h2>${"props.data.descAnuncio"}</h2>
-                            <p><i class="fa fa-map-marker"></i> ${"props.data.descEndereco"}</p>
-                            <p><i class="fa fa-phone"></i> ${"props.data.descTelefone"}</p>
+                            <p><i className="fa fa-map-marker"></i> ${"props.data.descEndereco"}</p>
+                            <p><i className="fa fa-phone"></i> ${"props.data.descTelefone"}</p>
                         </a>
                     </div>
                 </div>
-                <div class="metadados">
-                    <div class="col-md-12">
-                        <i class="fa fa-info"></i>
+                <div className="metadados">
+                    <div className="col-md-12">
+                        <i className="fa fa-info"></i>
                         <h4>Testes</h4>
                     </div>
-                    <div class="col-md-12">
-                        <i class="fa fa-map-marker"></i>
+                    <div className="col-md-12">
+                        <i className="fa fa-map-marker"></i>
                         <h4>Endereço fake</h4>
                     </div>
-                    <div class="col-md-12">
-                        <i class="fa fa-phone"></i>
+                    <div className="col-md-12">
+                        <i className="fa fa-phone"></i>
                         <h4>(xx) xxxx-xxxx</h4>
                     </div>
-                    <div class="col-md-12">
-                        <i class="fa fa-globe"></i>
+                    <div className="col-md-12">
+                        <i className="fa fa-globe"></i>
                         <h4>
                             <a href="https://example.com" data-toggle="tooltip" title="Site">
                                 https://example.com
                             </a>
                         </h4>
                     </div>
-                    <div class="col-md-12 logo-minisistio">
+                    <div className="col-md-12 logo-minisistio">
                         <i>
                             <img src="/assets/img/logo.png" alt="" />
                         </i>

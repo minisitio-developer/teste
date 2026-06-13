@@ -30,7 +30,7 @@ function UploadImage(props) {
       setMostrarLabel(false);
     }
 
-    if (props.codImg == 0 || props.codImg == "" || props.codImg == undefined) {
+    if (props.codImg === 0 || props.codImg === "" || props.codImg === undefined) {
       setMostrarMiniPreview(true);
       setMostrarLabel(true);
     } else {
@@ -56,7 +56,7 @@ setMostrarLabel(false)
     setMostrarLabel(false);
 
 
-    if (props.preview == true) {
+    if (props.preview === true) {
       document.querySelector('.comImagem img').src = URL.createObjectURL(acceptedFiles[0]);
       document.querySelector('.semImagem').style.display = 'none';
       document.querySelector('.comImagem').style.display = 'block';
@@ -102,7 +102,7 @@ setMostrarLabel(false)
       'cartao_digital': "",
 
     });
-    if (props.preview == true) {
+    if (props.preview === true) {
       document.querySelector('.semImagem').style.display = 'block';
       document.querySelector('.comImagem').style.display = 'none';
     } else {
@@ -134,10 +134,10 @@ setMostrarLabel(false)
           >
 
 
-            {!mostrarMiniPreview ? <a href={`${masterPath.url}/files/3/${props.codImg}`} target="_blank" rel="noopener noreferrer" class="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver cartão digital</a> : ""} 
+            {!mostrarMiniPreview ? <a href={`${masterPath.url}/files/3/${props.codImg}`} target="_blank" rel="noopener noreferrer" className="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver cartão digital</a> : ""} 
 
 
-            {imagem ? <a href={`${masterPath.url}/files/3/${imagem.name}`} target="_blank" rel="noopener noreferrer" class="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver cartão digital</a> : ""} 
+            {imagem ? <a href={`${masterPath.url}/files/3/${imagem.name}`} target="_blank" rel="noopener noreferrer" className="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver cartão digital</a> : ""} 
             {mostrarLabel && <span {...getRootProps()}>{textLabel}</span>}
 
 
@@ -149,11 +149,11 @@ setMostrarLabel(false)
           </span>
 
           {!mostrarLabel && !mostrarMiniPreview && (
-            <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i class="fa fa-times-circle"></i></a>
+            <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i className="fa fa-times-circle"></i></a>
           )} 
 
           {!mostrarLabel && imagem && (
-            <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i class="fa fa-times-circle"></i></a>
+            <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i className="fa fa-times-circle"></i></a>
           )}
 
           {mostrarLabel &&

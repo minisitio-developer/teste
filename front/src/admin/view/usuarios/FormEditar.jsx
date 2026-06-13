@@ -69,7 +69,7 @@ const FormCadastro = () => {
         var validation = false;
 
         document.querySelectorAll('[name="pwd"]').forEach((item) => {
-            if (item.value == "") {
+            if (item.value === "") {
                 item.style.border = "1px solid red";
                 validation = false;
                 return;
@@ -80,7 +80,7 @@ const FormCadastro = () => {
         });
 
         document.querySelectorAll('select').forEach((item) => {
-            if (item.value == "") {
+            if (item.value === "") {
                 item.style.border = "1px solid red";
                 validation = false;
                 return;
@@ -124,7 +124,7 @@ const FormCadastro = () => {
             fetch(`${masterPath.url}/admin/usuario/update/${param}?doc=${numberCPF}`, config)
                 .then((x) => {
 
-                    if (x.status == 401) {
+                    if (x.status === 401) {
                         alert("Sessão expirada, faça login para continuar.");
                         navigate('/login');
                         window.location.reload();
@@ -379,7 +379,7 @@ const FormCadastro = () => {
                                 {/*   <option value="" selected="selected">- Selecione uma cidade -</option> */}
                                 {
                                     caderno.map((cidades) => (
-                                        cidades.UF == ufSelected &&
+                                        cidades.UF === ufSelected &&
                                         <option value={cidades.nomeCaderno}>{cidades.nomeCaderno}</option>
                                     ))
                                 }

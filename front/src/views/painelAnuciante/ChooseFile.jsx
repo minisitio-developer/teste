@@ -39,7 +39,7 @@ function UploadImage(props) {
     if (!mostrarMiniPreview) {
       setMostrarLabel(false);
     }
-    if (props.codImg == 0) {
+    if (props.codImg === 0) {
        //console.log(props.codImg)
       setImagem(false);
       setMostrarLabel(true);
@@ -79,7 +79,7 @@ function UploadImage(props) {
     }
 
     // Verifica as dimensões da imagem (100x100)
-    if (props.origin == 'descImagem') {
+    if (props.origin === 'descImagem') {
 
       const file = acceptedFiles[0];
       if (!file) return;
@@ -114,7 +114,7 @@ function UploadImage(props) {
         }; */
 
 
-      if (props.preview == true) {
+      if (props.preview === true) {
         document.querySelector('.comImagem img').src = URL.createObjectURL(acceptedFiles[0]);
         document.querySelector('.semImagem').style.display = 'none';
         document.querySelector('.comImagem').style.display = 'block';
@@ -169,7 +169,7 @@ function UploadImage(props) {
       [props.origin]: null
     }));
 
-    if (props.preview == true) {
+    if (props.preview === true) {
       document.querySelector('.semImagem').style.display = 'block';
       document.querySelector('.comImagem').style.display = 'none';
 
@@ -206,18 +206,18 @@ function UploadImage(props) {
             
           >
 
-            {!mostrarMiniPreview ? <img src={`${masterPath.url}/files/descImagem/${props.codImg}`} width={50} style={{ fontSize: "15px" }} /> : ""}
-            {!mostrarMiniPreview ? <a href={`${masterPath.url}/files/descImagem/${props.codImg}`} target="_blank" rel="noopener noreferrer" class="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
-            {/* {!mostrarMiniPreview && <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i class="fa fa-times-circle"></i></a>} */}
+            {!mostrarMiniPreview ? <img alt="" src={`${masterPath.url}/files/descImagem/${props.codImg}`} width={50} style={{ fontSize: "15px" }} /> : ""}
+            {!mostrarMiniPreview ? <a href={`${masterPath.url}/files/descImagem/${props.codImg}`} target="_blank" rel="noopener noreferrer" className="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
+            {/* {!mostrarMiniPreview && <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i className="fa fa-times-circle"></i></a>} */}
 
 
             {/* console.log(mostrarLabel) */}
-            {imagem ? <img src={URL.createObjectURL(imagem)} width={50} style={{ fontSize: "15px" }} /> : ""}
-            {imagem ? <a href={`${masterPath.url}/files/descImagem/${imagem.name}`} target="_blank" rel="noopener noreferrer" class="pull-right d-flex mx-2" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
+            {imagem ? <img alt="" src={URL.createObjectURL(imagem)} width={50} style={{ fontSize: "15px" }} /> : ""}
+            {imagem ? <a href={`${masterPath.url}/files/descImagem/${imagem.name}`} target="_blank" rel="noopener noreferrer" className="pull-right d-flex mx-2" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
             {mostrarLabel && <span {...getRootProps()}>{textLabel}</span>}
 
             {/*    {!mostrarLabel && 
-                             {imagem && <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i class="fa fa-times-circle"></i></a>}
+                             {imagem && <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i className="fa fa-times-circle"></i></a>}
                  } */}
 
 
@@ -225,11 +225,11 @@ function UploadImage(props) {
           </span>
 
           {!mostrarLabel && !mostrarMiniPreview && (
-          <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i class="fa fa-times-circle"></i></a>
+          <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i className="fa fa-times-circle"></i></a>
           )}
 
            {!mostrarLabel && imagem && (
-          <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i class="fa fa-times-circle"></i></a>
+          <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i className="fa fa-times-circle"></i></a>
           )}
 
           {mostrarLabel &&

@@ -33,7 +33,7 @@ function UploadImage(props) {
       setMostrarLabel(false);
     }
 
-    if (props.codImg == 0 || props.codImg == "" || props.codImg == undefined) {
+    if (props.codImg === 0 || props.codImg === "" || props.codImg === undefined) {
       setMostrarMiniPreview(true);
       setMostrarLabel(true);
     } else {
@@ -108,7 +108,7 @@ function UploadImage(props) {
     setMostrarLabel(true);
     setMostrarMiniPreview(true);
 
-    if (props.preview == true) {
+    if (props.preview === true) {
 
     } else {
       /*  setImagem(false);
@@ -143,12 +143,12 @@ function UploadImage(props) {
             {/* PRIORIDADE: imagem recém-enviada */}
             {imagem ? (
               <>
-                <img src={URL.createObjectURL(imagem)} width={50} style={{ fontSize: "15px" }} />
+                <img alt="" src={URL.createObjectURL(imagem)} width={50} style={{ fontSize: "15px" }} />
                 <a
                   href={URL.createObjectURL(imagem)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="pull-right d-flex mx-2" id="btnVerImagem" title="verimagem"
+                  className="pull-right d-flex mx-2" id="btnVerImagem" title="verimagem"
                 >
                   Ver imagem
                 </a>
@@ -157,12 +157,12 @@ function UploadImage(props) {
               /* FALLBACK: imagem do backend */
               props.codImg && !mostrarMiniPreview && (
                 <>
-                  <img src={`${masterPath.url}/files/${props.local}/${props.codImg}`} width={50} style={{ fontSize: "15px" }} />
+                  <img alt="" src={`${masterPath.url}/files/${props.local}/${props.codImg}`} width={50} style={{ fontSize: "15px" }} />
                   <a
                     href={`${masterPath.url}/files/${props.local}/${props.codImg}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="pull-right d-flex mx-2" id="btnVerImagem" title="verimagem"
+                    className="pull-right d-flex mx-2" id="btnVerImagem" title="verimagem"
                   >
                     Ver imagem
                   </a>
@@ -171,12 +171,12 @@ function UploadImage(props) {
             )}
 
 
-            {/*             {!mostrarMiniPreview ? <img src={`${masterPath.url}/files/${props.codImg}`} width={50} style={{ fontSize: "15px" }} /> : ""}
-            {!mostrarMiniPreview ? <a href={`${masterPath.url}/files/${props.codImg}`} target="_blank" rel="noopener noreferrer" class="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
+            {/*             {!mostrarMiniPreview ? <img alt="" src={`${masterPath.url}/files/${props.codImg}`} width={50} style={{ fontSize: "15px" }} /> : ""}
+            {!mostrarMiniPreview ? <a href={`${masterPath.url}/files/${props.codImg}`} target="_blank" rel="noopener noreferrer" className="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
 
 
-            {imagem ? <img src={URL.createObjectURL(imagem)} width={50} style={{ fontSize: "15px" }} /> : ""}
-            {imagem ? <a href={`${masterPath.url}/files/${imagem.name}`} target="_blank" rel="noopener noreferrer" class="pull-right d-flex mx-2" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
+            {imagem ? <img alt="" src={URL.createObjectURL(imagem)} width={50} style={{ fontSize: "15px" }} /> : ""}
+            {imagem ? <a href={`${masterPath.url}/files/${imagem.name}`} target="_blank" rel="noopener noreferrer" className="pull-right d-flex mx-2" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
  */}            {mostrarLabel && <span {...getRootProps()}>{textLabel}</span>}
 
           </span>
@@ -194,11 +194,11 @@ function UploadImage(props) {
           )}
 
           {/*        {!mostrarLabel && !mostrarMiniPreview && (
-            <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i class="fa fa-times-circle"></i></a>
+            <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i className="fa fa-times-circle"></i></a>
           )}
 
           {!mostrarLabel && imagem && (
-            <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i class="fa fa-times-circle"></i></a>
+            <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i className="fa fa-times-circle"></i></a>
           )} */}
 
           {mostrarLabel &&

@@ -47,7 +47,7 @@ function UploadImage(props) {
     }
 
     // Verifica as dimensões da imagem (100x100)
-    if (props.origin == 'descImagem') {
+    if (props.origin === 'descImagem') {
 
       const file = acceptedFiles[0];
       if (!file) return;
@@ -160,18 +160,18 @@ function UploadImage(props) {
             onChange={(event) => alert()}
 
           >
-            {imagem ? <img src={URL.createObjectURL(imagem)} width={50} style={{ fontSize: "15px" }} /> : ""}
-            {imagem ? <a href={`${masterPath.url}/files/${imagem.name}`} target="_blank" rel="noopener noreferrer" class="pull-right d-flex mx-2" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
+            {imagem ? <img alt="" src={URL.createObjectURL(imagem)} width={50} style={{ fontSize: "15px" }} /> : ""}
+            {imagem ? <a href={`${masterPath.url}/files/${imagem.name}`} target="_blank" rel="noopener noreferrer" className="pull-right d-flex mx-2" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
             {mostrarLabel && <span {...getRootProps()}>{textLabel}</span>}
 
           </span>
 
           {!mostrarLabel && !mostrarMiniPreview && (
-            <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i class="fa fa-times-circle"></i></a>
+            <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i className="fa fa-times-circle"></i></a>
           )}
 
           {!mostrarLabel && imagem && (
-            <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i class="fa fa-times-circle"></i></a>
+            <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i className="fa fa-times-circle"></i></a>
           )}
 
           {mostrarLabel &&

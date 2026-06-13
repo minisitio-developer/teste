@@ -161,9 +161,9 @@ const Users = () => {
                                                 <td>{item.descEmail}</td>
                                                 <td>{item.descCPFCNPJ}</td>
                                                 <td>{item.senha}</td>
-                                                {item.codTipoUsuario == 1 ? <td>SUPER ADMIN</td> : ''}
-                                                {item.codTipoUsuario == 2 ? <td>MASTER</td> : ''}
-                                                {item.codTipoUsuario == 3 ? <td>ANUNCIANTE</td> : ''}
+                                                {item.codTipoUsuario === 1 ? <td>SUPER ADMIN</td> : ''}
+                                                {item.codTipoUsuario === 2 ? <td>MASTER</td> : ''}
+                                                {item.codTipoUsuario === 3 ? <td>ANUNCIANTE</td> : ''}
                                                 <td>{formatData(item.dtCadastro)}</td>
                                                 <td>{item.ativo ? "Ativado" : "Desativado"}</td>
                                             </tr>

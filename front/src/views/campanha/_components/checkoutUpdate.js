@@ -25,7 +25,7 @@ export function checkoutUpdate(radioCheck, descontoAtivado, minisitio, codDescon
                 let valorBruto = precoFixo;
 
 
-                if (descontoAtivado && radioCheck == 3 && valorBruto <= 0) {
+                if (descontoAtivado && radioCheck === 3 && valorBruto <= 0) {
                     // window.location.href = `/ver-anuncios/${limparCPFouCNPJ(minisitio.descCPFCNPJ)}`;
                     atualizarMinisitio()
                     console.log("1");

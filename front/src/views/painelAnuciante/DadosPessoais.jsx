@@ -83,7 +83,7 @@ const DadosPessoais = (props) => {
     let flag = false;
 
     document.querySelectorAll(".modal-content input").forEach((item, i) => {
-      if (item.value.trim() == '' && item.name != 'codUsuario') {
+      if (item.value.trim() === '' && item.name !== 'codUsuario') {
         item.style.border = "1px solid red";
         flag = false;
       } else {
@@ -91,7 +91,7 @@ const DadosPessoais = (props) => {
         flag = true;
       }
 
-      if (document.querySelectorAll(".modal-content input").length == i + 1 && flag) {
+      if (document.querySelectorAll(".modal-content input").length === i + 1 && flag) {
         console.log("ok");
 
         loadingButton.current.style.display = "block";
@@ -228,8 +228,8 @@ const DadosPessoais = (props) => {
 
       {alert && <AlertMsg message={"Atualização Realizada"}/>}
 
-      <button class="buttonload" style={{ display: "none" }} ref={loadingButton}>
-        <i class="fa fa-spinner fa-spin"></i>Carregando
+      <button className="buttonload" style={{ display: "none" }} ref={loadingButton}>
+        <i className="fa fa-spinner fa-spin"></i>Carregando
       </button>
 
       {/* <!-- CADASTRO --> */}

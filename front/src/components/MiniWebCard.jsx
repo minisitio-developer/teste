@@ -196,24 +196,24 @@ function MiniWebCard(props) {
         Swal.fire({
             title: 'Compartilhe Seu Minisitio',
             html: `
-                          <div style="" class="cart-digital-modal py-3">
-                              <a href="https://api.whatsapp.com/send?text=${link}" target="_blank" class="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
+                          <div style="" className="cart-digital-modal py-3">
+                              <a href="https://api.whatsapp.com/send?text=${link}" target="_blank" className="mb-2 d-flex flex-column align-items-center" style="gap: 10px;" rel="noreferrer">
                                   <img src="../assets/img/icon-share/share_whatsapp.svg" width="80" alt="whatsapp" />    
                                   Compartilhar no WhatsApp
                               </a>
-                              <a href="https://www.facebook.com/sharer/sharer.php?u=${link}" target="_blank" class="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
+                              <a href="https://www.facebook.com/sharer/sharer.php?u=${link}" target="_blank" className="mb-2 d-flex flex-column align-items-center" style="gap: 10px;" rel="noreferrer">
                                   <img src="../assets/img/icon-share/share_facebook.svg" width="80" alt="facebook" />
                                   Compartilhar no Facebook
                               </a>
-                              <a href="https://twitter.com/intent/tweet?url=${link}" target="_blank" class="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
+                              <a href="https://twitter.com/intent/tweet?url=${link}" target="_blank" className="mb-2 d-flex flex-column align-items-center" style="gap: 10px;" rel="noreferrer">
                                   <img src="../assets/img/icon-share/share_x.svg" width="80" alt="x" />    
                                   Compartilhar no Twitter
                               </a>
-                              <a href="https://www.linkedin.com/shareArticle?url=${link}" target="_blank" class="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
+                              <a href="https://www.linkedin.com/shareArticle?url=${link}" target="_blank" className="mb-2 d-flex flex-column align-items-center" style="gap: 10px;" rel="noreferrer">
                                   <img src="../assets/img/icon-share/linkedin.png" width="80" alt="linkedin" style="border-radius: 100%;" />    
                                   Compartilhar no LinkedIn
                               </a>
-                              <div class="mb-2 d-flex flex-column align-items-center" style="gap: 6px;">
+                              <div className="mb-2 d-flex flex-column align-items-center" style="gap: 6px;">
                                  <button
                                     id="copyBtn"
                                     style="border-radius: 100%; padding: 10px"
@@ -254,8 +254,8 @@ function MiniWebCard(props) {
         <div className="MiniWebCard" key={props.key} id={`item_${props.id}`}>
 
             {loading &&
-                <button class="buttonload" style={{ display: "block" }}>
-                    <i class="fa fa-spinner fa-spin"></i>Carregando
+                <button className="buttonload" style={{ display: "block" }}>
+                    <i className="fa fa-spinner fa-spin"></i>Carregando
                 </button>
             }
             <div className='container cartao p-0' key={props.key}>
@@ -290,7 +290,7 @@ function MiniWebCard(props) {
                     {imgDefault != false && <img src={`${masterPath.url}/${imgDefault}`} alt="webcard" width={435} height={205} />}
                     {/*    {console.log(`${masterPath.url}/${imgDefault}`)} */}
 
-                    {imgDefault == false &&
+                    {imgDefault === false &&
                         <div className="conteudo semImagem" style={{ width: "415px" }} onClick={buscarAnuncio}>
                             <h2 className="nome-empresa text-start">{props.empresa}</h2>
                             <h4
@@ -379,17 +379,17 @@ function MiniWebCard(props) {
                                 <img src="../assets/img/link_promocao.png" alt="" height={30} />
                             </DockIcon>
                             <DockIcon>
-                                <a href="https://api.whatsapp.com/send?text=${link}" target="_blank" className="d-flex flex-column align-items-center" >
+                                <a href="https://api.whatsapp.com/send?text=${link}" target="_blank" className="d-flex flex-column align-items-center"  rel="noreferrer">
                                     <img src="../assets/img/icon-share/share_whatsapp.svg" width="30" alt="whatsapp" />
                                 </a>
                             </DockIcon>
                             <DockIcon>
-                                <a href="https://www.facebook.com/sharer/sharer.php?u=${link}" target="_blank" className="d-flex flex-column align-items-center" >
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=${link}" target="_blank" className="d-flex flex-column align-items-center"  rel="noreferrer">
                                     <img src="../assets/img/icon-share/share_facebook.svg" width="30" alt="facebook" />
                                 </a>
                             </DockIcon>
                             <DockIcon>
-                                <a href="https://twitter.com/intent/tweet?url=${link}" target="_blank" className="d-flex flex-column align-items-center" >
+                                <a href="https://twitter.com/intent/tweet?url=${link}" target="_blank" className="d-flex flex-column align-items-center"  rel="noreferrer">
                                     <img src="../assets/img/icon-share/share_x.svg" width="30" alt="x" />
                                 </a>
                             </DockIcon>
@@ -400,7 +400,7 @@ function MiniWebCard(props) {
                                         href={`https://www.linkedin.com/shareArticle?url=${props.anuncio.descInsta}`}
                                         target="_blank"
                                         className="d-flex flex-column align-items-center"
-                                    >
+                                     rel="noreferrer">
                                         <img
                                             src="../assets/img/icon-share/share_instagram.svg"
                                             width="30"
@@ -412,7 +412,7 @@ function MiniWebCard(props) {
                                         href={`https://www.linkedin.com/shareArticle?url=${props.anuncio.descInsta}`}
                                         target="_blank"
                                         className="d-flex flex-column align-items-center"
-                                    >
+                                     rel="noreferrer">
                                         <img
                                             src="../assets/img/icon-share/share_instagram.svg"
                                             style={{ filter: "grayscale(1)", WebkitFilter: "grayscale(1)" }}

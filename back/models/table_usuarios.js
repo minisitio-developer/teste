@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const database = require('../config/db');
-//const DDD = require('./table_ddd');
 
 const Usuario = database.define('usuario', {
     codUsuario: {
@@ -22,9 +21,9 @@ const Usuario = database.define('usuario', {
     },
 
     descCPFCNPJ: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(150),
         allowNull: false,
-        unique: false,
+        unique: true,
         validate: {
             notEmpty: {
                 msg: "Esse campo não pode está vazio.."
@@ -33,7 +32,7 @@ const Usuario = database.define('usuario', {
     },
 
     descNome: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(255),
         allowNull: false,
         unique: false,
         validate: {
@@ -112,7 +111,7 @@ const Usuario = database.define('usuario', {
     },
 
     codUf: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(50),
         allowNull: false,
         unique: false,
         validate: {
@@ -123,7 +122,7 @@ const Usuario = database.define('usuario', {
     },
 
     codCidade: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(50),
         allowNull: false,
         unique: false,
         validate: {
@@ -195,9 +194,6 @@ const Usuario = database.define('usuario', {
     {
         freezeTableName: true,
         timestamps: false,
-    },
-
-    {
         indexes: [
             {
                 name: 'descCPFCNPJ',
@@ -211,9 +207,4 @@ const Usuario = database.define('usuario', {
     }
 );
 
-/* Usuario.belongsTo(DDD, {
-    constraints: true,
-    foreignKey: "id_ddd"
-});
- */
 module.exports = Usuario;

@@ -86,7 +86,7 @@ function Caderno() {
             const codigosTable = await fetch(`${masterPath.url}/atividade/6`).then(response => response.json());
             const atividadesEncontradas = codigosTable.filter((item) => valores.includes(item.id));
 
-            const arrTeste = res.data.filter((category) => category.id == res.teste.rows[0].codAtividade);
+            const arrTeste = res.data.filter((category) => category.id === res.teste.rows[0].codAtividade);
 
             let result = res.teste.rows.filter(category =>
               res.data.some(anuncio => category.id === anuncio.codAtividade)
@@ -117,7 +117,7 @@ function Caderno() {
             setMinisitio({ anuncios: result1 });
             setNomeAtividade(result1);
 
-            const itemIndex = arr.findIndex(item => item.codAnuncio == id) + 1;
+            const itemIndex = arr.findIndex(item => item.codAnuncio === id) + 1;
 
             const pageNumberClass = Math.ceil(itemIndex / 10);
 
@@ -146,7 +146,7 @@ function Caderno() {
             const codigosTable = await fetch(`${masterPath.url}/atividade/6`).then(response => response.json());
             const atividadesEncontradas = codigosTable.filter((item) => valores.includes(item.id));
 
-            const arrTeste = res.data.filter((category) => category.id == res.teste.rows[0].codAtividade);
+            const arrTeste = res.data.filter((category) => category.id === res.teste.rows[0].codAtividade);
 
             let result = res.teste.rows.filter(category =>
               res.data.some(anuncio => category.id === anuncio.codAtividade)
@@ -264,7 +264,7 @@ function Caderno() {
             const codigosTable = await fetch(`${masterPath.url}/atividade/6`).then(response => response.json());
             const atividadesEncontradas = codigosTable.filter((item) => valores.includes(item.id));
 
-            const arrTeste = res.data.filter((category) => category.id == res.teste.rows[0].codAtividade);
+            const arrTeste = res.data.filter((category) => category.id === res.teste.rows[0].codAtividade);
 
             let result = res.teste.rows.filter(category =>
               res.data.some(anuncio => category.id === anuncio.codAtividade)
@@ -458,7 +458,7 @@ function Caderno() {
   }, [id])
 
   function buscarId(id) {
-    const idEncontrado = listaIds.find(item => item.idDesconto == id);
+    const idEncontrado = listaIds.find(item => item.idDesconto === id);
     return idEncontrado;
   };
 
@@ -570,7 +570,7 @@ function Caderno() {
             console.log(`Distância vertical entre ${i} e ${i + 1}: ${distance}px`);  
             console.log(item, ads[i + 1])
     
-            if(i == 4) {
+            if(i === 4) {
               if(distance < 0) {
                 const tempDiv = document.createElement("div");
                 tempDiv.style.backgroundColor = 'red';
@@ -679,7 +679,7 @@ function Caderno() {
                 return; */
           }
 
-          /* if (distance <= -2000 && distance >= -2500 && start == 0) {
+          /* if (distance <= -2000 && distance >= -2500 && start === 0) {
   
             document.querySelectorAll('.msg-programada').forEach(item => item.remove())
   
@@ -724,8 +724,8 @@ function Caderno() {
       <main>
 
         {loading &&
-          <button class="buttonload" style={{ display: "block" }}>
-            <i class="fa fa-spinner fa-spin"></i>Carregando
+          <button className="buttonload" style={{ display: "block" }}>
+            <i className="fa fa-spinner fa-spin"></i>Carregando
           </button>
         }
 
@@ -774,10 +774,10 @@ function Caderno() {
                         //minisitio.anuncios
                         minisitio.anuncios.map((anuncio) => {
 
-                          if (anuncio.codTipoAnuncio == 1) {
+                          if (anuncio.codTipoAnuncio === 1) {
                             return <MiniWebCardSimples key={anuncio.codAnuncio} id={anuncio.codAnuncio} data={anuncio} />
                           } else {
-                            if (anuncio.codAtividade == item.codAtividade) {
+                            if (anuncio.codAtividade === item.codAtividade) {
                               return <MiniWebCard key={anuncio.codAnuncio}
                                 id={anuncio.codAnuncio}
                                 data={minisitio}
@@ -822,10 +822,10 @@ function Caderno() {
                         //minisitio.anuncios
                         item.kledisom.map((anuncio) => {
 
-                          if (anuncio.codTipoAnuncio == 1) {
+                          if (anuncio.codTipoAnuncio === 1) {
                             return <MiniWebCardSimples key={anuncio.codAnuncio} id={anuncio.codAnuncio} data={anuncio} />
                           } else {
-                            if (anuncio.codAtividade == item.id) {
+                            if (anuncio.codAtividade === item.id) {
                               return <MiniWebCard key={anuncio.codAnuncio}
                                 id={anuncio.codAnuncio}
                                 data={minisitio}

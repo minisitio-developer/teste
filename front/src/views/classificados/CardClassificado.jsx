@@ -86,12 +86,12 @@ useEffect(() => {
                         <ul className="list-inline">
                       {/*       <li className="pull-left">
                                 <a href={`${masterPath.domain}/perfil/${props.data.codAnuncio}`} data-toggle="tooltip" title="Detalhes" >
-                                    <img src="/assets/img/miniwebcard/link_detalhe.png" />
+                                    <img alt="" src="/assets/img/miniwebcard/link_detalhe.png" />
                                 </a>
                             </li>
                             <li className="pull-right">
                                 <a href="#" data-toggle="tooltip" title="SAC - Fale Comigo">
-                                    <img src="/assets/img/miniwebcard/link_email.png" />
+                                    <img alt="" src="/assets/img/miniwebcard/link_email.png" />
                                 </a>
                             </li> */}
                         </ul>

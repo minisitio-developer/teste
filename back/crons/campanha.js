@@ -4,17 +4,14 @@ const Anuncio = require('../models/table_anuncio');
 const Sequelize = require('sequelize');
 const { Op } = Sequelize;
 const moment = require('moment');
-const { raw } = require('mysql2');
 
 async function inativarCampanhasExpiradas() {
   console.log('Iniciando inativação de campanhas expiradas...');
 
   try {
-
     const hoje = moment().format('YYYY-MM-DD');
 
-    // Buscar campanhas expiradas
-    const campanhasExpiradas = await Campanha.update({
+    const [updated] = await Campanha.update({
       status: 'expired'
     }, {
       where: {
@@ -25,20 +22,17 @@ async function inativarCampanhasExpiradas() {
       }
     });
 
-
-    console.log(`Inativadas ${campanhasExpiradas.length} campanhas expiradas.`, hoje);
+    console.log(`Inativadas ${updated} campanhas expiradas.`, hoje);
   } catch (error) {
     console.error('Erro ao inativar campanhas expiradas:', error);
     return;
   }
 }
-//mudar cron para 24 horas, pegar todos registros de uma vez só, todo dia 3 horas da manhã
 
 async function downgradePerfil() {
   console.log('Iniciando downgrade de perfil...');
 
   try {
-
     const hoje = moment().format('YYYY-MM-DD');
 
     const tokensExpirados = await TokensPromocao.findAll({

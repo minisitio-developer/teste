@@ -42,7 +42,7 @@ const FormCadastro = () => {
         const tokenAuth = sessionStorage.getItem('userTokenAccess');
 
         document.querySelectorAll('[name="in"]').forEach((item) => {
-            if (item.value == "") {
+            if (item.value === "") {
                 item.style.border = "1px solid red";
                 validation = false;
                 setShowSpinner(false);

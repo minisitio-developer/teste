@@ -70,7 +70,7 @@ const ContentChildForm = (props) => {
     let flag = false;
 
     document.querySelectorAll(".modal-content input").forEach((item, i) => {
-      if (item.value.trim() == '' && item.name != 'codUsuario') {
+      if (item.value.trim() === '' && item.name != 'codUsuario') {
         item.style.border = "1px solid red";
         flag = false;
       } else {
@@ -78,7 +78,7 @@ const ContentChildForm = (props) => {
         flag = true;
       }
 
-      if (document.querySelectorAll(".modal-content input").length == i + 1 && flag) {
+      if (document.querySelectorAll(".modal-content input").length === i + 1 && flag) {
         console.log("ok");
 
         loadingButton.current.style.display = "block";
@@ -226,7 +226,7 @@ const ContentChildForm = (props) => {
 
     }
 
-    if (obj.descCPFCNPJ == "") {
+    if (obj.descCPFCNPJ === "") {
       alert("Preencha todos os campos");
       return;
     }
@@ -243,10 +243,10 @@ const ContentChildForm = (props) => {
         localStorage.removeItem("imgname");
         //console.log(res)
 
-        if (props.descontoAtivado && props.radioCheck == 3) {
+        if (props.descontoAtivado && props.radioCheck === 3) {
           window.location.href = `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
           console.log("1");
-        } else if (props.radioCheck == 1) {
+        } else if (props.radioCheck === 1) {
           window.location.href = `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
           console.log("2");
         } else {
@@ -274,8 +274,8 @@ const ContentChildForm = (props) => {
 
       {alert && <AlertMsg message={"Cadastro Realizado"} />}
 
-      <button class="buttonload" style={{ display: "none" }} ref={loadingButton}>
-        <i class="fa fa-spinner fa-spin"></i>Carregando
+      <button className="buttonload" style={{ display: "none" }} ref={loadingButton}>
+        <i className="fa fa-spinner fa-spin"></i>Carregando
       </button>
 
       {/* <!-- CADASTRO --> */}
@@ -458,7 +458,7 @@ const ContentChildForm = (props) => {
                             <option value="">- Cidades -</option>
                             {caderno.map(
                               (item) =>
-                                item.codUf == ufSelected && (
+                                item.codUf === ufSelected && (
                                   <option
                                     id={item.codCaderno}
                                     key={item.codCaderno}

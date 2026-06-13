@@ -37,9 +37,9 @@ function Socialmidia() {
                     <img alt="whatsapp sharing button" src="https://platform-cdn.sharethis.com/img/whatsapp.svg" />
                     <span className="st-label">Whatsapp</span>
                 </div>
-                <div class="st-btn st-last" data-network="linkedin">
+                <div className="st-btn st-last" data-network="linkedin">
                     <img alt="linkedin sharing button" src="https://platform-cdn.sharethis.com/img/linkedin.svg" />
-                        <span class="st-label">Linkedin</span>
+                        <span className="st-label">Linkedin</span>
                 </div>
                 <div className="st-btn st-last" data-network="sharethis" >
                     <img alt="sharethis sharing button" src="https://platform-cdn.sharethis.com/img/sharethis.svg" />

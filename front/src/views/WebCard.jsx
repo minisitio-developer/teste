@@ -85,7 +85,7 @@ function WebCard() {
     }, [codCaderno, codUf]);
 
     /*     const ufAtual = () => {
-           const ufLocalizada = ufs.find(uf => uf.sigla_uf == codUf);
+           const ufLocalizada = ufs.find(uf => uf.sigla_uf === codUf);
            //console.log("daskjdafhadlfhdsklfghasdi", ufLocalizada)
            if(ufLocalizada) {
             return ufLocalizada.sigla_uf;
@@ -93,7 +93,7 @@ function WebCard() {
            
         }
         const cadAtual = () => {
-           const cadLocalizada = cadernos.find(cad => cad.nomeCaderno == codCaderno);
+           const cadLocalizada = cadernos.find(cad => cad.nomeCaderno === codCaderno);
            //console.log("daskjdafhadlfhdsklfghasdi", cadLocalizada, codCaderno);
            if(cadLocalizada) {
             return cadLocalizada.nomeCaderno;

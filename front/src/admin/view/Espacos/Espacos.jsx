@@ -664,14 +664,14 @@ Para 100000 linhas: 312500ms
                                         <option value="todos">CADERNO</option>
 
                                         {caderno.map(item => (
-                                            item.UF == estadoSelecionado &&
+                                            item.UF === estadoSelecionado &&
                                             <option value={item.nomeCaderno}>{item.nomeCaderno}</option>
                                         ))}
                                     </select>
-                                    <input id="buscar" className="border border-dark rounded bg-light" type="text" placeholder="Código, Nome, Caderno, CPF/CNPJ, ID ou UF" onKeyDown={(e) => e.key == "Enter" ? buscarAnuncioId() : ''} ref={campoBusca} />
+                                    <input id="buscar" className="border border-dark rounded bg-light" type="text" placeholder="Código, Nome, Caderno, CPF/CNPJ, ID ou UF" onKeyDown={(e) => e.key === "Enter" ? buscarAnuncioId() : ''} ref={campoBusca} />
 
                                     {/*   {mostrarInputBusca &&
-                                        <input id="buscar" type="text" placeholder="Código, Nome, Caderno, CPF/CNPJ, ID ou UF" onKeyDown={(e) => e.key == "Enter" ? buscarAnuncioId() : ''} ref={campoBusca} />
+                                        <input id="buscar" type="text" placeholder="Código, Nome, Caderno, CPF/CNPJ, ID ou UF" onKeyDown={(e) => e.key === "Enter" ? buscarAnuncioId() : ''} ref={campoBusca} />
                                     } */}
                                     <button id="btnBuscar" className="border border-dark rounded bg-light" type="button" onClick={buscarAnuncioId} >
                                         <i className="icon-search"></i>
@@ -802,7 +802,7 @@ Para 100000 linhas: 312500ms
                                                             rel="noopener noreferrer"
                                                         >
                                                             {`${masterPath.domain}/perfil/${item.codAnuncio}`}
-                                                            {/*   <i class="fa fa-eye"></i>
+                                                            {/*   <i className="fa fa-eye"></i>
                                                             Ver */}
                                                         </a>
                                                     </td>

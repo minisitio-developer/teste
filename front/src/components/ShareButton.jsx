@@ -32,10 +32,10 @@ function ShareButton(props) {
         </button>
       }
       {!props.showBtn &&
-       <a class="dropdown-item" href="#" onClick={handleShare} style={{ textDecoration: "none" }} >Compartilhar1</a>
+       <a className="dropdown-item" href="#" onClick={handleShare} style={{ textDecoration: "none" }} >Compartilhar1</a>
       }
  {/*      {!props.showBtn &&
-        <a class="dropdown-item" href="#" onClick={handleShare} style={{ textDecoration: "none" }} >Compartilhar1</a>
+        <a className="dropdown-item" href="#" onClick={handleShare} style={{ textDecoration: "none" }} >Compartilhar1</a>
       } */}
 
     </div>

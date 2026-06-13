@@ -5,18 +5,17 @@ const { Op } = Sequelize;
 async function deletarPromocoesExpiradas() {
 
   try {
-    // Buscar promoções expiradas
+    const hoje = new Date().toISOString().split('T')[0];
     const promocoes = await Promocao.findAll({
       where: {
-        data_validade: { [Op.lt]: new Date() }
+        data_validade: { [Op.lt]: hoje }
       }
     });
 
     if (promocoes.length < 1) return;
 
-    // Para cada promoção, deletar com destroy()
     for (const promocao of promocoes) {
-      await promocao.destroy();  // dispara os hooks para deletar imagem
+      await promocao.destroy();
     }
 
     console.log(`Deletadas ${promocoes.length} promoções expiradas.`);

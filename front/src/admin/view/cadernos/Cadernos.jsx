@@ -62,7 +62,7 @@ const Cadernos = () => {
      }
 
     useEffect(() => {
-        if(buscaParam == "true") {
+        if(buscaParam === "true") {
             setShowSpinner(true);
             setCidade([]);
             setCountPerfis([]);
@@ -346,8 +346,8 @@ const Cadernos = () => {
                                             <td key={item.id_uf}>{item.basico}</td>
                                             <td key={item.id_uf}>{item.completo}</td>
                                             <td key={item.id_uf}>{item.total}</td>
-                                           {/*  <td key={item.id_uf}>{statusCount ? countPerfis.find(perfil => perfil.codCaderno == item.nomeCaderno).basico : "Calculando..."}</td>
-                                            <td key={item.id_uf}>{statusCount ? countPerfis.find(perfil => perfil.codCaderno == item.nomeCaderno).completo : "Calculando..."}</td>  */}
+                                           {/*  <td key={item.id_uf}>{statusCount ? countPerfis.find(perfil => perfil.codCaderno === item.nomeCaderno).basico : "Calculando..."}</td>
+                                            <td key={item.id_uf}>{statusCount ? countPerfis.find(perfil => perfil.codCaderno === item.nomeCaderno).completo : "Calculando..."}</td>  */}
                                            {/*   <td key={item.id_uf}>{item.basico}</td>
                                             <td key={item.id_uf}>{item.completo}</td>  */}
                                         </tr>

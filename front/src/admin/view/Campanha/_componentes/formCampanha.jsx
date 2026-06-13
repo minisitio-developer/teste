@@ -176,7 +176,7 @@ export default function FormCampanha({ fetchCampanhas, setShowSpinner, setShow }
                         <option value="" selected="selected">- Selecione uma cidade -</option>
                         {
                             cadernos.map((cidades) => (
-                                cidades.UF == ufSelected &&
+                                cidades.UF === ufSelected &&
                                 <option key={cidades.codCaderno} value={cidades.nomeCaderno}>{cidades.nomeCaderno}</option>
                             ))
                         }

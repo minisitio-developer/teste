@@ -173,10 +173,10 @@ function ComprarAnuncio({ isAdmin }) {
       customText.current.style.color = "#000";
     }
 
-    /*     if(codId.length == 2) {
+    /*     if(codId.length === 2) {
           discountHash.current.value = codId + "."
         }
-        if(codId.length == 8) {
+        if(codId.length === 8) {
           //discountHash.current.value = codId + "."
           const formatHash = codId.split(".")
           console.log(formatHash)
@@ -187,7 +187,7 @@ function ComprarAnuncio({ isAdmin }) {
         .then((x) => x.json())
         .then((res) => {
           if (res.success) {
-            if (res.IdsValue[0].is_capa && radioCheck == 4) {
+            if (res.IdsValue[0].is_capa && radioCheck === 4) {
               let valorDesconto = res.IdsValue[0].desconto;
               let precoComDesconto = precoFixo - valorDesconto;
               setPrecoFixo(precoComDesconto);
@@ -200,7 +200,7 @@ function ComprarAnuncio({ isAdmin }) {
 
               document.getElementById('anunciar').disabled = false;
 
-            } else if (!res.IdsValue[0].is_capa && radioCheck == 4) {
+            } else if (!res.IdsValue[0].is_capa && radioCheck === 4) {
               document.getElementById('anunciar').disabled = true;
               setTexto("Este ID não está habilitado para capa!");
               customText.current.style.color = "red";
@@ -243,7 +243,7 @@ function ComprarAnuncio({ isAdmin }) {
     let data = event.target.value.replace(/\D/g, "");
 
     // Verificar o comprimento dos dados para definir se é CPF ou CNPJ
-    if (personType == 'pj') {
+    if (personType === 'pj') {
       // É CNPJ
       if (data.length > 12) {
         data = `${data.substr(0, 2)}.${data.substr(2, 3)}.${data.substr(5, 3)}/${data.substr(8, 4)}-${data.substr(12, 2)}`;
@@ -275,7 +275,7 @@ function ComprarAnuncio({ isAdmin }) {
   function cadastrarAnuncio() {
     var validation = true;
     document.querySelectorAll('[required]').forEach((item) => {
-      if (item.value == "") {
+      if (item.value === "") {
         item.style.border = "1px solid red";
         validation = false;
         setValidation(false);
@@ -307,11 +307,11 @@ function ComprarAnuncio({ isAdmin }) {
     let tipoPerfil = e.target.value;
     setRadioCheck(e.target.value);
 
-    if (tipoPerfil == 1) {
+    if (tipoPerfil === 1) {
       setShowMap("none");
     }
 
-    if (tipoPerfil == 4) {
+    if (tipoPerfil === 4) {
       document.getElementById('anunciar').disabled = true;
     } else {
       document.getElementById('anunciar').disabled = false;
@@ -352,8 +352,8 @@ function ComprarAnuncio({ isAdmin }) {
           tagValue={tagValue}
         /> */}
 
-        {showSpinner && <button class="buttonload">
-          <i class="fa fa-spinner fa-spin"></i>CADASTRANDO PERFIL
+        {showSpinner && <button className="buttonload">
+          <i className="fa fa-spinner fa-spin"></i>CADASTRANDO PERFIL
         </button>}
 
         {alert && <AlertMsg message={"Cadastro Realizado, verifique a sua caixa de email para obter o acesso a plataforma"} />}
@@ -387,7 +387,7 @@ function ComprarAnuncio({ isAdmin }) {
                       id="codTipoAnuncio-1"
                       value="1"
                       onClick={(e) => changeRadioCheck(e)}
-                      checked={radioCheck == 1}
+                      checked={radioCheck === 1}
                       className="mx-1"
                       readOnly
                     />
@@ -400,7 +400,7 @@ function ComprarAnuncio({ isAdmin }) {
                       id="codTipoAnuncio-2"
                       value="2"
                       onClick={(e) => {setRadioCheck(e.target.value); setShowMap("block")}}
-                      checked={radioCheck == 2}
+                      checked={radioCheck === 2}
                     />
                     Simples
                   </label> */}
@@ -411,7 +411,7 @@ function ComprarAnuncio({ isAdmin }) {
                       id="codTipoAnuncio-3"
                       value="3"
                       onClick={(e) => changeRadioCheck(e)}
-                      checked={radioCheck == 3}
+                      checked={radioCheck === 3}
                       className="mx-1"
                       readOnly
                     />
@@ -425,7 +425,7 @@ function ComprarAnuncio({ isAdmin }) {
                       id="codTipoAnuncio-4"
                       value="4"
                       onClick={(e) => changeRadioCheck(e)}
-                      checked={radioCheck == 4}
+                      checked={radioCheck === 4}
                       className="mx-1"
                       readOnly
                     />
@@ -461,7 +461,7 @@ function ComprarAnuncio({ isAdmin }) {
                   id="discountValue"
                 />
               </div>
-              {/*      {texto == null &&
+              {/*      {texto === null &&
                 <h5 className="text-start py-2">
                   Ao inserir o código não esqueça dos pontos. (Ex: 99.1234.9874)
                 </h5>
@@ -519,7 +519,7 @@ function ComprarAnuncio({ isAdmin }) {
                     </select>
                   }
 
-                  {radioCheck == 4 &&
+                  {radioCheck === 4 &&
                     <select
                       name="codAtividade"
                       id="codAtividade"
@@ -548,13 +548,13 @@ function ComprarAnuncio({ isAdmin }) {
                 <input type="hidden" name="tags" className="tags" value={tagValue} />
 
                 <div className="row">
-                  <div class="col-md-4 col-xs-12">
-                    <div class="form-group input-icon margin-top-10">
-                      <i class="fa fa-compass icone-form p-0"></i>
+                  <div className="col-md-4 col-xs-12">
+                    <div className="form-group input-icon margin-top-10">
+                      <i className="fa fa-compass icone-form p-0"></i>
                       <select
                         name="codUf"
                         id="codUf4"
-                        class="form-control"
+                        className="form-control"
                         onChange={executarSelecao}
                         required
                       >
@@ -574,13 +574,13 @@ function ComprarAnuncio({ isAdmin }) {
                     </div>
                   </div>
 
-                  <div class="col-md-8 col-xs-12">
-                    <div class="form-group selectCaderno form-group input-icon margin-top-10">
-                      <i class="fa fa-map-marker icone-form p-0"></i>
+                  <div className="col-md-8 col-xs-12">
+                    <div className="form-group selectCaderno form-group input-icon margin-top-10">
+                      <i className="fa fa-map-marker icone-form p-0"></i>
                       <select
                         name="codCaderno"
                         id="codUf5"
-                        class="form-control"
+                        className="form-control"
                         required
                       >
                         <option value="">- CIDADE -</option>
@@ -761,7 +761,7 @@ function ComprarAnuncio({ isAdmin }) {
                         id="descTipoPessoa-pf"
                         value="pf"
                         onChange={(e) => setPersonType(e.target.value)}
-                        checked={personType == "pf"}
+                        checked={personType === "pf"}
                         className="mx-1"
                       />
                       Pessoa física
@@ -774,7 +774,7 @@ function ComprarAnuncio({ isAdmin }) {
                         id="descTipoPessoa-pj"
                         value="pj"
                         onChange={(e) => setPersonType(e.target.value)}
-                        checked={personType == "pj"}
+                        checked={personType === "pj"}
                         className="mx-1"
                       />
                       Pessoa jurídica
@@ -817,12 +817,12 @@ function ComprarAnuncio({ isAdmin }) {
                   required
                 />{" "}
               </div>
-              {radioCheck != 1 && <div class="input-icon margin-top-10">
+              {radioCheck != 1 && <div className="input-icon margin-top-10">
                 <h4 className="text-start pt-2">Responsável pela Indicação (opcional)</h4>
-                <div class="input-icon margin-top-10" id="codigoPromocional">
-                  <i class="fa fa-credit-card"></i>
+                <div className="input-icon margin-top-10" id="codigoPromocional">
+                  <i className="fa fa-credit-card"></i>
 
-                  <input type="text" name="discountHash" id="discountHash" value="" class="form-control" placeholder="Digite seu código" />
+                  <input type="text" name="discountHash" id="discountHash" value="" className="form-control" placeholder="Digite seu código" />
                   <input type="hidden" name="discountValue" value="" id="discountValue" />
                 </div>
                 {/* <h5 className="text-start">Ao inserir o código não esqueça dos pontos. (Ex: 99.1234.9874)</h5> */}
@@ -832,13 +832,13 @@ function ComprarAnuncio({ isAdmin }) {
 
             {/* Forma de Pagamento */}
 
-            {(radioCheck != 1 && descontoAtivado == false) && <div
+            {(radioCheck != 1 && descontoAtivado === false) && <div
               className="assinatura webcard formaPagamento"
               style={{ display: "block" }}
             >
               <h2>Forma de Pagamento</h2>
             </div>}
-            {(radioCheck != 1 && descontoAtivado == false) && <div
+            {(radioCheck != 1 && descontoAtivado === false) && <div
               className="codigo-promocional webcard formaPagamento"
               style={{ display: "block" }}
             >
@@ -879,7 +879,7 @@ function ComprarAnuncio({ isAdmin }) {
                   <i className="fa fa-download"></i>
                 </div>
                 <div className="col-md-11">
-                  <a href="/resources/pdfs/formulario_pa.pdf" target="_blank">
+                  <a href="/resources/pdfs/formulario_pa.pdf" target="_blank" rel="noreferrer">
                     <h3>Faça o download do formulário</h3>
                   </a>
                 </div>
@@ -931,8 +931,8 @@ function ComprarAnuncio({ isAdmin }) {
                         <span className="cel">{(descCelular) ? descCelular : "(xx) xxxxx-xxxx"}</span>
                       </p>}
                     </div>
-                    <div class="conteudo comImagem" style={{ display: "none" }}>
-                      <img src="/resources/upload/istockphoto_1442417585_612x612_20240428_215703.jpg" height={191} />
+                    <div className="conteudo comImagem" style={{ display: "none" }}>
+                      <img src="/resources/upload/istockphoto_1442417585_612x612_20240428_215703.jpg" height={191} alt="Imagem de exemplo" />
                     </div>
                     {radioCheck != 1 && <div id="area-icons-actions" className="col-md-6">
                       <Tooltip text={"Mídias"}>
@@ -947,25 +947,25 @@ function ComprarAnuncio({ isAdmin }) {
                             </i>
                           </button>
                           <ul id="dropdown-redes" className="dropdown-menu">
-                            <a href="#" className="dropdown-item">
+                            <a href={`https://api.whatsapp.com/send?text=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="dropdown-item">
                               <BsFacebook /> Facebook
                             </a>
-                            <a href="#" className="dropdown-item">
+                            <a href={`https://api.whatsapp.com/send?text=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="dropdown-item">
                               <BsInstagram /> Instagram
                             </a>
-                            <a href="#" className="dropdown-item">
+                            <a href={`https://api.whatsapp.com/send?text=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="dropdown-item">
                               <BsTwitter /> Tweet
                             </a>
-                            <a href="#" className="dropdown-item">
+                            <a href={`https://api.whatsapp.com/send?text=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="dropdown-item">
                               <BsYoutube className="redes" /> Youtube
                             </a>
-                            <a href="#" className="dropdown-item">
+                            <a href={`https://api.whatsapp.com/send?text=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="dropdown-item">
                               <BsWhatsapp /> Whatsapp
                             </a>
-                            <a href="#" className="dropdown-item">
+                            <a href={`https://api.whatsapp.com/send?text=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="dropdown-item">
                               <BsSkype /> Skype
                             </a>
-                            <a href="#" className="dropdown-item">
+                            <a href={`https://api.whatsapp.com/send?text=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="dropdown-item">
                               <BsHeadset /> Sac-Fale Comigo
                             </a>
                           </ul>
@@ -975,7 +975,7 @@ function ComprarAnuncio({ isAdmin }) {
                         <i>
                           <img
                             src="../assets/img/link_mapa.png"
-                            alt=""
+                            alt="Link para o Mapa"
                             height={30}
                           />
                         </i>
@@ -985,7 +985,7 @@ function ComprarAnuncio({ isAdmin }) {
                         <i>
                           <img
                             src="../assets/img/link_site.png"
-                            alt=""
+                            alt="Link para o Site"
                             height={30}
                           />
                         </i>
@@ -994,7 +994,7 @@ function ComprarAnuncio({ isAdmin }) {
                         <i>
                           <img
                             src="../assets/img/link_promocao.png"
-                            alt=""
+                            alt="Link para a Promoção"
                             height={30}
                           />
                         </i>
@@ -1012,19 +1012,19 @@ function ComprarAnuncio({ isAdmin }) {
                             </i>
                           </button>
                           <ul id="dropdown-redes" className="dropdown-menu">
-                            <a href="#" className="dropdown-item">
+                            <a href={`https://api.whatsapp.com/send?text=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="dropdown-item">
                               <BsFacebook /> Facebook
                             </a>
-                            <a href="#" className="dropdown-item">
+                            <a href={`https://api.whatsapp.com/send?text=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="dropdown-item">
                               <BsInstagram /> Instagram
                             </a>
-                            <a href="#" className="dropdown-item">
+                            <a href={`https://api.whatsapp.com/send?text=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="dropdown-item">
                               <BsTwitter /> Tweet
                             </a>
-                            <a href="#" className="dropdown-item">
+                            <a href={`https://api.whatsapp.com/send?text=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="dropdown-item">
                               <BsYoutube /> Youtube
                             </a>
-                            <a href="#" className="dropdown-item">
+                            <a href={`https://api.whatsapp.com/send?text=${window.location.href}`} target="_blank" rel="noopener noreferrer" className="dropdown-item">
                               <BsWhatsapp /> Whatsapp
                             </a>
                           </ul>
@@ -1038,7 +1038,7 @@ function ComprarAnuncio({ isAdmin }) {
                     {radioCheck != 1 && <h2 className="webcard">
                       <span className="preco">R$ {precoFixo},00</span>/mês
                     </h2>}
-                    {radioCheck == 1 && <h2 className="simples uppercase">
+                    {radioCheck === 1 && <h2 className="simples uppercase">
                       Grátis
                     </h2>}
                   </div>

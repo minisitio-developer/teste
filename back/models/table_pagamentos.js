@@ -54,7 +54,7 @@ const Pagamento = database.define('pagamento', {
     },
 
     id_mp: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(255),
         allowNull: false,
         unique: true,
         validate: {

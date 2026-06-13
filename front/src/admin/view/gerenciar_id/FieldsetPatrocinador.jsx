@@ -13,7 +13,7 @@ const FieldsetPatrocinador = (props) => {
         <div className="app-patrocinador w-50">
             <fieldset className="border-bottom">
                 <legend className="">Patrocinador 0{props.numeroPatrocinador}</legend>
-                <div class="control-group" style={{ display: 'block' }}><label for="descImagem" class="control-label optional">IMAGEM DE PATROCINADOR: (150 x 58 pixels)</label>
+                <div className="control-group" style={{ display: 'block' }}><label for="descImagem" className="control-label optional">IMAGEM DE PATROCINADOR: (150 x 58 pixels)</label>
 
                 </div>
                 <ChooseFile
@@ -24,10 +24,10 @@ const FieldsetPatrocinador = (props) => {
                  setImgs={props.setImgs}
                  origin={"logo"}/>
 
-                <div class="control-group" style={{ display: 'block' }}><label for="descLink" class="control-label optional">LINK DE PATROCINADOR: </label>
-                    <div class="controls mb-5">
+                <div className="control-group" style={{ display: 'block' }}><label for="descLink" className="control-label optional">LINK DE PATROCINADOR: </label>
+                    <div className="controls mb-5">
                         <input type="text" name={"link_" + props.numeroPatrocinador} id="descLink" className="w-100" maxlength="255" value={props.valueLink} onChange={props.linkPatrocinio} />
-                        <p class="help-block" style={{ color: '#999' }}>Inserir link com "http://". Exemplo: http://google.com</p></div></div>
+                        <p className="help-block" style={{ color: '#999' }}>Inserir link com "http://". Exemplo: http://google.com</p></div></div>
             </fieldset>
         </div>
     )

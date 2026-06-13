@@ -61,24 +61,24 @@ function SocialShareButtons({ url }) {
     Swal.fire({
       title: 'Compartilhe Seu Minisitio',
       html: `
-                  <div style="" class="cart-digital-modal py-3">
-                      <a href="https://api.whatsapp.com/send?text=${link}" target="_blank" class="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
+                  <div style="" className="cart-digital-modal py-3">
+                      <a href="https://api.whatsapp.com/send?text=${link}" target="_blank" className="mb-2 d-flex flex-column align-items-center" style="gap: 10px;" rel="noreferrer">
                           <img src="../assets/img/icon-share/share_whatsapp.svg" width="80" alt="whatsapp" />    
                           Compartilhar no WhatsApp
                       </a>
-                      <a href="https://www.facebook.com/sharer/sharer.php?u=${link}" target="_blank" class="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
+                      <a href="https://www.facebook.com/sharer/sharer.php?u=${link}" target="_blank" className="mb-2 d-flex flex-column align-items-center" style="gap: 10px;" rel="noreferrer">
                           <img src="../assets/img/icon-share/share_facebook.svg" width="80" alt="facebook" />
                           Compartilhar no Facebook
                       </a>
-                      <a href="https://twitter.com/intent/tweet?url=${link}" target="_blank" class="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
+                      <a href="https://twitter.com/intent/tweet?url=${link}" target="_blank" className="mb-2 d-flex flex-column align-items-center" style="gap: 10px;" rel="noreferrer">
                           <img src="../assets/img/icon-share/share_x.svg" width="80" alt="x" />    
                           Compartilhar no Twitter
                       </a>
-                      <a href="https://www.linkedin.com/shareArticle?url=${link}" target="_blank" class="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
+                      <a href="https://www.linkedin.com/shareArticle?url=${link}" target="_blank" className="mb-2 d-flex flex-column align-items-center" style="gap: 10px;" rel="noreferrer">
                           <img src="../assets/img/icon-share/linkedin.png" width="80" alt="linkedin" style="border-radius: 100%;" />    
                           Compartilhar no LinkedIn
                       </a>
-                      <div class="mb-2 d-flex flex-column align-items-center" style="gap: 6px;">
+                      <div className="mb-2 d-flex flex-column align-items-center" style="gap: 6px;">
                          <button
                             id="copyBtn"
                             style="border-radius: 100%; padding: 10px"

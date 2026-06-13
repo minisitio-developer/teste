@@ -178,7 +178,7 @@ function ComprarAnuncio({ isAdmin }) {
         .then((x) => x.json())
         .then((res) => {
           if (res.success) {
-            if (res.IdsValue[0].is_capa && radioCheck == 4) {
+            if (res.IdsValue[0].is_capa && radioCheck === 4) {
               let valorDesconto = res.IdsValue[0].desconto;
               let precoComDesconto = precoFixo - valorDesconto;
               if (precoComDesconto >= 0) {
@@ -197,7 +197,7 @@ function ComprarAnuncio({ isAdmin }) {
 
               document.getElementById('anunciar').disabled = false;
 
-            } else if (!res.IdsValue[0].is_capa && radioCheck == 4) {
+            } else if (!res.IdsValue[0].is_capa && radioCheck === 4) {
               document.getElementById('anunciar').disabled = true;
               setTexto("Este ID não está habilitado para capa!");
               customText.current.style.color = "red";
@@ -247,7 +247,7 @@ function ComprarAnuncio({ isAdmin }) {
     let data = event.target.value.replace(/\D/g, "");
 
     // Verificar o comprimento dos dados para definir se é CPF ou CNPJ
-    if (personType == 'pj') {
+    if (personType === 'pj') {
       // É CNPJ
       if (data.length > 12) {
         data = `${data.substr(0, 2)}.${data.substr(2, 3)}.${data.substr(5, 3)}/${data.substr(8, 4)}-${data.substr(12, 2)}`;
@@ -311,8 +311,8 @@ function ComprarAnuncio({ isAdmin }) {
           tagValue={tagValue}
         /> */}
 
-        {showSpinner && <button class="buttonload">
-          <i class="fa fa-spinner fa-spin"></i>CADASTRANDO PERFIL
+        {showSpinner && <button className="buttonload">
+          <i className="fa fa-spinner fa-spin"></i>CADASTRANDO PERFIL
         </button>}
 
         {alert && <AlertMsg message={"Cadastro Realizado, verifique a sua caixa de email para obter o acesso a plataforma"} />}
@@ -339,7 +339,7 @@ function ComprarAnuncio({ isAdmin }) {
                 </label>
                 <div className="col-md-12 anuncio-options">
                   <Stack direction="horizontal" gap={2} className="justify-content-center">
-                    <Badge bg="success" style={{ fontSize: "18px" }}>{minisitio.codTipoAnuncio == 3 ? "Completo" : "Básico"}</Badge>
+                    <Badge bg="success" style={{ fontSize: "18px" }}>{minisitio.codTipoAnuncio === 3 ? "Completo" : "Básico"}</Badge>
                   </Stack>
                 </div>
               </div>
@@ -418,13 +418,13 @@ function ComprarAnuncio({ isAdmin }) {
                 </div>
 
                 <div className="row">
-                  <div class="col-md-4 col-xs-12">
-                    <div class="form-group input-icon margin-top-10">
-                      <i class="fa fa-compass icone-form p-0"></i>
+                  <div className="col-md-4 col-xs-12">
+                    <div className="form-group input-icon margin-top-10">
+                      <i className="fa fa-compass icone-form p-0"></i>
                       <select
                         name="codUf"
                         id="codUf4"
-                        class="form-control"
+                        className="form-control"
                         onChange={executarSelecao}
                         required
                       >
@@ -444,19 +444,19 @@ function ComprarAnuncio({ isAdmin }) {
                     </div>
                   </div>
 
-                  <div class="col-md-8 col-xs-12">
-                    <div class="form-group selectCaderno form-group input-icon margin-top-10">
-                      <i class="fa fa-map-marker icone-form p-0"></i>
+                  <div className="col-md-8 col-xs-12">
+                    <div className="form-group selectCaderno form-group input-icon margin-top-10">
+                      <i className="fa fa-map-marker icone-form p-0"></i>
                       <select
                         name="codCaderno"
                         id="codUf5"
-                        class="form-control"
+                        className="form-control"
                         required
                       >
                         <option value={minisitio.codCaderno} selected>{minisitio.codCaderno}</option>
                         {/*  {caderno.map(
                           (item) =>
-                            item.UF == ufSelected && (
+                            item.UF === ufSelected && (
                               <option
                                 id={item.codCaderno}
                                 key={item.codCaderno}
@@ -634,7 +634,7 @@ function ComprarAnuncio({ isAdmin }) {
                         id="descTipoPessoa-pf"
                         value="pf"
                         onChange={(e) => setPersonType(e.target.value)}
-                        checked={personType == "pf"}
+                        checked={personType === "pf"}
                         className="mx-1"
                       />
                       Pessoa física
@@ -647,7 +647,7 @@ function ComprarAnuncio({ isAdmin }) {
                         id="descTipoPessoa-pj"
                         value="pj"
                         onChange={(e) => setPersonType(e.target.value)}
-                        checked={personType == "pj"}
+                        checked={personType === "pj"}
                         className="mx-1"
                       />
                       Pessoa jurídica
@@ -695,12 +695,12 @@ function ComprarAnuncio({ isAdmin }) {
                   required
                 />{" "}
               </div>
-              {/*  {radioCheck != 1 && <div class="input-icon margin-top-10">
+              {/*  {radioCheck != 1 && <div className="input-icon margin-top-10">
                 <h4 className="text-start pt-2">Responsável pela Indicação (opcional)</h4>
-                <div class="input-icon margin-top-10" id="codigoPromocional">
-                  <i class="fa fa-credit-card"></i>
+                <div className="input-icon margin-top-10" id="codigoPromocional">
+                  <i className="fa fa-credit-card"></i>
 
-                  <input type="text" name="discountHash" id="discountHash" value="" class="form-control" placeholder="Digite seu código" />
+                  <input type="text" name="discountHash" id="discountHash" value="" className="form-control" placeholder="Digite seu código" />
                   <input type="hidden" name="discountValue" value="" id="discountValue" />
                 </div>
               </div>} */}
@@ -709,13 +709,13 @@ function ComprarAnuncio({ isAdmin }) {
 
             {/* Forma de Pagamento */}
 
-            {(radioCheck != 1 && descontoAtivado == false) && <div
+            {(radioCheck != 1 && descontoAtivado === false) && <div
               className="assinatura webcard formaPagamento"
               style={{ display: "block" }}
             >
               <h2>Forma de Pagamento</h2>
             </div>}
-            {(radioCheck != 1 && descontoAtivado == false) && <div
+            {(radioCheck != 1 && descontoAtivado === false) && <div
               className="codigo-promocional webcard formaPagamento"
               style={{ display: "block" }}
             >
@@ -756,7 +756,7 @@ function ComprarAnuncio({ isAdmin }) {
                   <i className="fa fa-download"></i>
                 </div>
                 <div className="col-md-11">
-                  <a href="/resources/pdfs/formulario_pa.pdf" target="_blank">
+                  <a href="/resources/pdfs/formulario_pa.pdf" target="_blank" rel="noreferrer">
                     <h3>Faça o download do formulário</h3>
                   </a>
                 </div>
@@ -807,8 +807,8 @@ function ComprarAnuncio({ isAdmin }) {
                         <span className="cel">{(minisitio.descCelular) ? minisitio.descCelular : "(xx) xxxxx-xxxx"}</span>
                       </p>}
                     </div>
-                    <div class="conteudo comImagem" style={{ display: "none" }}>
-                      <img src="/resources/upload/istockphoto_1442417585_612x612_20240428_215703.jpg" height={191} />
+                    <div className="conteudo comImagem" style={{ display: "none" }}>
+                      <img src="/resources/upload/istockphoto_1442417585_612x612_20240428_215703.jpg" height={191} alt="Imagem de exemplo" />
                     </div>
                     {radioCheck != 1 && <div id="area-icons-actions" className="col-md-6">
                       <Tooltip text={"Mídias"}>
@@ -851,7 +851,7 @@ function ComprarAnuncio({ isAdmin }) {
                         <i>
                           <img
                             src="../assets/img/link_mapa.png"
-                            alt=""
+                            alt="Link para o Mapa"
                             height={30}
                           />
                         </i>
@@ -861,7 +861,7 @@ function ComprarAnuncio({ isAdmin }) {
                         <i>
                           <img
                             src="../assets/img/link_site.png"
-                            alt=""
+                            alt="Link para o Site"
                             height={30}
                           />
                         </i>
@@ -870,7 +870,7 @@ function ComprarAnuncio({ isAdmin }) {
                         <i>
                           <img
                             src="../assets/img/link_promocao.png"
-                            alt=""
+                            alt="Link para a Promoção"
                             height={30}
                           />
                         </i>
@@ -914,7 +914,7 @@ function ComprarAnuncio({ isAdmin }) {
                     {radioCheck != 1 && <h2 className="webcard">
                       <span className="preco">R$ {precoFixo},00</span>/mês
                     </h2>}
-                    {radioCheck == 1 && <h2 className="simples uppercase">
+                    {radioCheck === 1 && <h2 className="simples uppercase">
                       Grátis
                     </h2>}
                   </div>

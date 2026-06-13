@@ -50,7 +50,7 @@ const FormCadastro = () => {
         setShowSpinner(true);
 
         document.querySelectorAll('[name="pwd"]').forEach((item) => {
-            if (item.value == "") {
+            if (item.value === "") {
                 item.style.border = "1px solid red";
                 validation = false;
                 return;
@@ -61,7 +61,7 @@ const FormCadastro = () => {
         });
 
         document.querySelectorAll('select').forEach((item) => {
-            if (item.value == "") {
+            if (item.value === "") {
                 item.style.border = "1px solid red";
                 validation = false;
                 return;

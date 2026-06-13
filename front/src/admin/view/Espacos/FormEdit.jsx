@@ -177,7 +177,7 @@ const FormEdit = () => {
         setShowSpinner(true);
 
         document.querySelectorAll('[name="pwd"]').forEach((item) => {
-            if (item.value == "") {
+            if (item.value === "") {
                 item.style.border = "1px solid red";
                 validation = false;
                 return;
@@ -188,7 +188,7 @@ const FormEdit = () => {
         });
 
         document.querySelectorAll('select').forEach((item) => {
-            if (item.value == "") {
+            if (item.value === "") {
                 item.style.border = "1px solid red";
                 validation = false;
                 return;
@@ -242,7 +242,7 @@ const FormEdit = () => {
 
 
     function teste(meuParam) {
-        let user = usuarios.find(user => user.codUsuario == meuParam);
+        let user = usuarios.find(user => user.codUsuario === meuParam);
 
         if (user != undefined) {
             return user.descNome
@@ -279,7 +279,7 @@ const FormEdit = () => {
     // Determina a máscara com base no tamanho do valor inserido
     //const mask = ids.descCPFCNPJ.length <= 14 ? '999.999.999-99' : '99.999.999/9999-99';
     const unmaskedValue = ids.descCPFCNPJ.replace(/\D/g, ''); // Remove tudo que não é número
-    const mask = unmaskedValue.length == 14
+    const mask = unmaskedValue.length === 14
         ? '99.999.999/9999-99' // CNPJ
         : '999.999.999-99';    // CPF
 
@@ -372,7 +372,7 @@ const FormEdit = () => {
                                 {/*  <option value="" selected="selected">- Selecione uma cidade -</option> */}
                                 {
                                     caderno.map((cidades) => (
-                                        cidades.UF == ufSelected &&
+                                        cidades.UF === ufSelected &&
                                         <option value={cidades.nomeCaderno}>{cidades.nomeCaderno}</option>
                                     ))
                                     /*   caderno.map((cidades) => (

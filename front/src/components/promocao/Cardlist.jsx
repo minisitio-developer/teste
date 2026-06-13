@@ -69,7 +69,7 @@ function Cardlist(props) {
               />
 
             }
-            {/* props.codImg == "teste" &&
+            {/* props.codImg === "teste" &&
               <img
                 src="../assets/img/logo.png"
                 alt="Foto"
@@ -92,7 +92,7 @@ function Cardlist(props) {
                 <div className="col-md-12 col-xs-12 pesquisa-nome">
                   <h4 className="d-flex font-20 border-bottom border-secondary p-2">
                     {/* <i className="fa fa-tags"></i> */}
-                    <div class="descTitle">Válida até {moment(props.promo.data_validade).format("DD/MM/YYYY")} ou término do estoque</div>
+                    <div className="descTitle">Válida até {moment(props.promo.data_validade).format("DD/MM/YYYY")} ou término do estoque</div>
 
                   </h4>
                 </div>
@@ -102,12 +102,12 @@ function Cardlist(props) {
                 <div className="col-md-12 col-xs-12 pesquisa-nome">
                   <h4 className="d-flex">{/* font-14 */}
                     <i className="fa fa-briefcase"></i>
-                    <div class="atividade label-ativity">{props.promo.anuncio.codAtividade}</div>
+                    <div className="atividade label-ativity">{props.promo.anuncio.codAtividade}</div>
 
                     {/*    {caderno.map((item) => {
-                      if (item.codCaderno == props.codCity) {
+                      if (item.codCaderno === props.codCity) {
                         //console.log(uf)
-                        //const estado = uf.find(estado => estado.id_uf == props.anuncio.codUf)
+                        //const estado = uf.find(estado => estado.id_uf === props.anuncio.codUf)
 
                         return <span>{item.descEndereco}</span>
                         
@@ -122,9 +122,9 @@ function Cardlist(props) {
                     <div className="endereco label-address">{!props.promo.anuncio.descEndereco ? "Endereço não informado" : props.promo.anuncio.descEndereco}</div>
                     {/*  <span>{props.anuncio.descEndereco}</span> */}
                     {/*  {caderno.map((item) => {
-                      if (item.codCaderno == props.codCity) {
+                      if (item.codCaderno === props.codCity) {
                         //console.log(uf)
-                        //  const estado = uf.find(estado => estado.id_uf == props.anuncio.codUf)
+                        //  const estado = uf.find(estado => estado.id_uf === props.anuncio.codUf)
 
                         return <span>{item.descEndereco}</span>
                         //return <span>{item.nomeCaderno} - {item.UF} </span>  

@@ -48,7 +48,7 @@ const PdfGenerator = forwardRef((props, ref) => {
                         <h2>Nome da empresa</h2>
                     </div>
                     <div className="row pdf-content">
-                        <div class="conteudo text-start webcardsimples">
+                        <div className="conteudo text-start webcardsimples">
                             <a href="/local/porto-velho/hotel avenida ii_327591">
                                 <h2>{"props.data.descAnuncio"}</h2>
                                 <p><i className="fa fa-map-marker"></i>{"props.data.descEndereco"}</p>

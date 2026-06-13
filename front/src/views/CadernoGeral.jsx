@@ -172,7 +172,7 @@ function Caderno(props) {
 
 
   const selectCapa = (capa) => {
-    let result = pathImg.find((item) => item.codAtividade == capa);
+    let result = pathImg.find((item) => item.codAtividade === capa);
 
     if (!result) return null;
 
@@ -191,8 +191,8 @@ function Caderno(props) {
     <div className="App caderno-geral">
 
       {loading &&
-        <button class="buttonload" style={{ display: "block" }}>
-          <i class="fa fa-spinner fa-spin"></i>Carregando
+        <button className="buttonload" style={{ display: "block" }}>
+          <i className="fa fa-spinner fa-spin"></i>Carregando
         </button>
       }
 
@@ -229,10 +229,10 @@ function Caderno(props) {
         </div>
         <div className='container caderno'>
 
-          <div class="borda-verde">
-            <div class="borda-amarela">
-              <div class="borda-azul">
-                <div class="conteudo">
+          <div className="borda-verde">
+            <div className="borda-amarela">
+              <div className="borda-azul">
+                <div className="conteudo">
                   <h1 id="title-caderno" className='py-2 title-caderno'>Capa do Caderno {caderno} - {estado}</h1>
                   {/*  <div className="area-qrcode-caderno">
                         <QrcodeMosaico nmAnuncio={`${masterPath.domain}/caderno-geral/${props.caderno}/${props.estado}`} size={114}/>

@@ -126,7 +126,7 @@ const Users = () => {
             }
         })
             .then((x) => {
-                if (x.status == 401) {
+                if (x.status === 401) {
                     alert("Sessão expirada, faça login para continuar.");
                     navigate('/login');
                     window.location.reload();
@@ -188,7 +188,7 @@ const Users = () => {
 
         fetch(`${masterPath.url}/admin/usuario/buscar/${campoPesquisa}?require=${searchOptioncheck}&uf=${estadoSelecionado}&caderno=${cadernoSelecionado}`)
             .then((x) => {
-                if (x.status == 401) {
+                if (x.status === 401) {
                     alert("Sessão expirada, faça login para continuar.");
                     navigate('/login');
                     window.location.reload();
@@ -198,7 +198,7 @@ const Users = () => {
             })
             .then((res) => {
                 if (res.success) {
-                    if (res.usuarios.length == 0) {
+                    if (res.usuarios.length === 0) {
                         alert('Caderno não possui master');
                     }
                     setUsuarios(res);
@@ -270,7 +270,7 @@ const Users = () => {
             body: JSON.stringify(usuarios)
         })
             .then((x) => {
-                if (x.status == 401) {
+                if (x.status === 401) {
                     alert("Sessão expirada, faça login para continuar.");
                     navigate('/login');
                     window.location.reload();
@@ -321,7 +321,7 @@ const Users = () => {
             setOptionSearch(estados)
             console.log(uf)
         } else if (param === "caderno") {
-            const cadernos = caderno.map(item => item.UF == estadoSelecionado)
+            const cadernos = caderno.map(item => item.UF === estadoSelecionado)
 
             setSearchOptioncheck('codCidade')
             setOptionSearch(cadernos)
@@ -373,7 +373,7 @@ const Users = () => {
                                     <select name="" id="caderno" className="w-28 h-8 border rounded" onChange={(e) => setCadernoSelecionado(e.target.value)}>
                                         <option>CADERNO</option>
                                         {caderno.map(item => (
-                                            item.UF == estadoSelecionado &&
+                                            item.UF === estadoSelecionado &&
                                             <option value={item.nomeCaderno}>{item.nomeCaderno}</option>
                                         ))}
                                     </select>
@@ -439,25 +439,25 @@ const Users = () => {
                                                 <td>{item.descEmail}</td>
                                                 <td>{item.descCPFCNPJ}</td>
                                                 <td>{item.senha}</td>
-                                                {item.codTipoUsuario == 1 ? <td>SUPER ADMIN</td> : ''}
-                                                {item.codTipoUsuario == 2 ? <td>MASTER</td> : ''}
-                                                {item.codTipoUsuario == 3 ? <td>ANUNCIANTE</td> : ''}
-                                                {item.codTipoUsuario == 4 ? <td>MASTER / ANUNC</td> : ''}
-                                                {item.codTipoUsuario == 5 ? <td>PREFEITURA</td> : ''}
+                                                {item.codTipoUsuario === 1 ? <td>SUPER ADMIN</td> : ''}
+                                                {item.codTipoUsuario === 2 ? <td>MASTER</td> : ''}
+                                                {item.codTipoUsuario === 3 ? <td>ANUNCIANTE</td> : ''}
+                                                {item.codTipoUsuario === 4 ? <td>MASTER / ANUNC</td> : ''}
+                                                {item.codTipoUsuario === 5 ? <td>PREFEITURA</td> : ''}
                                                 {/*  {uf.map((estado) => (
-                                                    estado.id_uf == item.codUf &&
+                                                    estado.id_uf === item.codUf &&
                                                     <td>{estado.sigla_uf}</td>
                                                 ))}
                                                 {caderno.map((cidade) => (
                                                    
-                                                    cidade.codCaderno == item.codCidade &&
+                                                    cidade.codCaderno === item.codCidade &&
                                                     <td>{cidade.nomeCaderno}</td>
 
                                                 ))} */}
                                                 <td>{item.codUf}</td>
                                                 <td>{item.codCidade}</td>
-                                                {item.codUf == 0 && <td>atualizar</td>}
-                                                {item.codCidade == 0 && <td>atualizar</td>}
+                                                {item.codUf === 0 && <td>atualizar</td>}
+                                                {item.codCidade === 0 && <td>atualizar</td>}
                                                 <td>{formatData(item.dtCadastro)}</td>
                                                 <td><BtnActivate data={item.ativo} idd={item.codUsuario} modulo={"usuario"} /></td>
                                                 {/* <td>{item.ativo ? "Ativado" : "Desativado"}</td> */}

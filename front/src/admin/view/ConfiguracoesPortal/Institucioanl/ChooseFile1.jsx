@@ -26,7 +26,7 @@ function UploadImage(props) {
       setMostrarLabel(false);
     }
 
-    if (props.codImg == 0 || props.codImg == "" || props.codImg == undefined) {
+    if (props.codImg === 0 || props.codImg === "" || props.codImg === undefined) {
       setMostrarMiniPreview(true);
       setMostrarLabel(true);
     }
@@ -53,7 +53,7 @@ function UploadImage(props) {
 
 
     // Verifica as dimensões da imagem (100x100)
-    if (props.origin == 'descParceiro') {
+    if (props.origin === 'descParceiro') {
       
       const file = acceptedFiles[0];
       if (!file) return;
@@ -83,7 +83,7 @@ function UploadImage(props) {
         alert("Erro ao carregar imagem.");
       };
       img.src = URL.createObjectURL(file); */
-    } else if (props.origin == 'cashback_logo') {
+    } else if (props.origin === 'cashback_logo') {
       const file = acceptedFiles[0];
       if (!file) return;
 
@@ -115,7 +115,7 @@ function UploadImage(props) {
       setMostrarLabel(false);
 
 
-      if (props.preview == true) {
+      if (props.preview === true) {
         document.querySelector('.comImagem img').src = URL.createObjectURL(acceptedFiles[0]);
         document.querySelector('.semImagem').style.display = 'none';
         document.querySelector('.comImagem').style.display = 'block';
@@ -179,7 +179,7 @@ function UploadImage(props) {
 
     }); */
 
-    if (props.preview == true) {
+    if (props.preview === true) {
 
     } else {
       setImagem(false);
@@ -209,14 +209,14 @@ function UploadImage(props) {
             }}
           >
 
-            {!mostrarMiniPreview ? <img src={`${masterPath.url}/files/institucional/${props.codImg}`} width={50} style={{ fontSize: "15px" }} /> : ""}
-            {!mostrarMiniPreview ? <a href={`${masterPath.url}/files/institucional/${props.codImg}`} target="_blank" rel="noopener noreferrer" class="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
-            {!mostrarMiniPreview && <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i class="fa fa-times-circle"></i></a>}
+            {!mostrarMiniPreview ? <img alt="" src={`${masterPath.url}/files/institucional/${props.codImg}`} width={50} style={{ fontSize: "15px" }} /> : ""}
+            {!mostrarMiniPreview ? <a href={`${masterPath.url}/files/institucional/${props.codImg}`} target="_blank" rel="noopener noreferrer" className="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
+            {!mostrarMiniPreview && <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i className="fa fa-times-circle"></i></a>}
 
-            {/* imagem ? <img src={URL.createObjectURL(imagem)} width={50} style={{ fontSize: "15px" }} /> : "" */}
-            {imagem ? <a href={`${masterPath.url}/files/institucional/${imagem.name}`} target="_blank" rel="noopener noreferrer" class="pull-right d-flex" id="btnVerImagem" title="verimagem">Visualizar</a> : ""}
+            {/* imagem ? <img alt="" src={URL.createObjectURL(imagem)} width={50} style={{ fontSize: "15px" }} /> : "" */}
+            {imagem ? <a href={`${masterPath.url}/files/institucional/${imagem.name}`} target="_blank" rel="noopener noreferrer" className="pull-right d-flex" id="btnVerImagem" title="verimagem">Visualizar</a> : ""}
             {mostrarLabel && textLabel}
-            {imagem && <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i class="fa fa-times-circle"></i></a>}
+            {imagem && <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i className="fa fa-times-circle"></i></a>}
 
           </span>
           <input {...getInputProps({ name: "imagem", title: "descImagem" })} />

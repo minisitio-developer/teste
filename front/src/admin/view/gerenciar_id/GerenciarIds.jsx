@@ -120,7 +120,7 @@ const GerenciarIds = () => {
     };
 
 /*     function teste(meuParam) {
-        let user = usuarios.find(user => user.codUsuario == meuParam);
+        let user = usuarios.find(user => user.codUsuario === meuParam);
 
         if (user != undefined) {
             return user.descNome
@@ -243,12 +243,12 @@ const GerenciarIds = () => {
                             <button type="button" className="btn btn-info custom-button mx-2 text-light" onClick={() => navigator(`/admin/desconto/editar?id=${selectId}`)}>Editar</button>
                             <button type="button" className="btn custom-button" onClick={exportExcell}>Exportar</button>
                             <button type="button" className="btn btn-danger custom-button text-light mx-2" onClick={apagarUser}>Apagar</button>
-                           {/*  <div class="dropdown">
-                                <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                           {/*  <div className="dropdown">
+                                <button className="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                     Exportar
-                                    <i class="bi bi-chevron-down px-2"></i>
+                                    <i className="bi bi-chevron-down px-2"></i>
                                 </button>
-                                <ul class="dropdown-menu lista-cart" aria-labelledby="dropdownMenuButton1">
+                                <ul className="dropdown-menu lista-cart" aria-labelledby="dropdownMenuButton1">
                                     <li><button onClick={exportExcell}>Todos</button></li>
                                     <li><button onClick={exportExcell}>Filtro</button></li>
                                 </ul>

@@ -21,7 +21,7 @@ const Caderno = database.define('caderno', {
         }
     },
     UF: {
-        type: Sequelize.TEXT(255),
+        type: Sequelize.STRING(255),
         allowNull: false,
         unique: false,
         validate: {

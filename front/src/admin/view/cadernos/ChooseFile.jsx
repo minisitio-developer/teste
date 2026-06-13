@@ -24,7 +24,7 @@ function UploadImage(props) {
       setMostrarLabel(false);
 
     }
-     if(props.codImg == '') {
+     if(props.codImg === '') {
       setMostrarLabel(true);
       setMostrarMiniPreview(true);
     } 
@@ -53,7 +53,7 @@ function UploadImage(props) {
     };
     
 
-    if (props.preview == true) {
+    if (props.preview === true) {
       document.querySelector('.comImagem img').src = URL.createObjectURL(acceptedFiles[0]);
       document.querySelector('.semImagem').style.display = 'none';
       document.querySelector('.comImagem').style.display = 'block';
@@ -88,7 +88,7 @@ function UploadImage(props) {
 
   const limparInputImg = (e) => {
     console.log(e.target)
-    if (props.preview == true) {
+    if (props.preview === true) {
       document.querySelector('.semImagem').style.display = 'block';
       document.querySelector('.comImagem').style.display = 'none';
     } else {
@@ -96,9 +96,9 @@ function UploadImage(props) {
       setMostrarLabel(true);
       setMostrarMiniPreview(true);
       
-      if(props.patrocinador == 2) {
+      if(props.patrocinador === 2) {
         localStorage.setItem("imgname2", "")
-      } else if(props.patrocinador == 3) {
+      } else if(props.patrocinador === 3) {
         localStorage.setItem("imgname3", "")
       } else {
         localStorage.setItem("imgname", "")
@@ -125,20 +125,20 @@ function UploadImage(props) {
             onChange={(event) => alert()}
           >
 
-            {!mostrarMiniPreview ? <img src={`${masterPath.url}/files/mosaico/${props.codImg}`} width={50} style={{ fontSize: "15px" }} /> : ""}
-            {!mostrarMiniPreview ? <a href={`${masterPath.url}/files/mosaico/${props.codImg}`} target="_blank" rel="noopener noreferrer" class="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
-            {!mostrarMiniPreview && <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={(e) => limparInputImg(e)}><i class="fa fa-times-circle"></i></a>}
+            {!mostrarMiniPreview ? <img alt="" src={`${masterPath.url}/files/mosaico/${props.codImg}`} width={50} style={{ fontSize: "15px" }} /> : ""}
+            {!mostrarMiniPreview ? <a href={`${masterPath.url}/files/mosaico/${props.codImg}`} target="_blank" rel="noopener noreferrer" className="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
+            {!mostrarMiniPreview && <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={(e) => limparInputImg(e)}><i className="fa fa-times-circle"></i></a>}
 
 
-            {/*             {!props.preview ? <img src={`${masterPath.url}/files/${props.codImg}`} width={50} style={{ fontSize: "15px" }} /> : ""}
-            {!props.preview ? <a href={`${masterPath.url}/files/${props.codImg}`} target="_blank" rel="noopener noreferrer" class="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
-            {!props.preview && <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i class="fa fa-times-circle"></i></a>}
+            {/*             {!props.preview ? <img alt="" src={`${masterPath.url}/files/${props.codImg}`} width={50} style={{ fontSize: "15px" }} /> : ""}
+            {!props.preview ? <a href={`${masterPath.url}/files/${props.codImg}`} target="_blank" rel="noopener noreferrer" className="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
+            {!props.preview && <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={limparInputImg}><i className="fa fa-times-circle"></i></a>}
  */}
             {/* console.log(mostrarMiniPreview, props.codImg)  */}
-            {imagem ? <img src={URL.createObjectURL(imagem)} width={50} style={{ fontSize: "15px" }} /> : ""}
-            {imagem ? <a href={`${masterPath.url}/files/mosaico/${imagem.name}`} target="_blank" rel="noopener noreferrer" class="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
+            {imagem ? <img alt="" src={URL.createObjectURL(imagem)} width={50} style={{ fontSize: "15px" }} /> : ""}
+            {imagem ? <a href={`${masterPath.url}/files/mosaico/${imagem.name}`} target="_blank" rel="noopener noreferrer" className="pull-right d-flex" id="btnVerImagem" title="verimagem">Ver imagem</a> : ""}
             {mostrarLabel && textLabel}
-            {imagem && <a href="javascript:;" class="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={(e) => limparInputImg(e)}><i class="fa fa-times-circle"></i></a>}
+            {imagem && <a href="javascript:;" className="pull-right" id="btnDeleteImagem" title="Remover arquivo" onClick={(e) => limparInputImg(e)}><i className="fa fa-times-circle"></i></a>}
 
           </span>
           <input {...getInputProps({ name: "imagem", title: "descImagem" })} />

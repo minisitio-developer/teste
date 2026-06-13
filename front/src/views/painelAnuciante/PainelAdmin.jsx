@@ -147,7 +147,7 @@ function PainelAdmin() {
         setShowSpinner(true);
         let nuDocumento = (cpf) => {
             console.log("---------------------------=: ", cpf)
-            if (cpf.length == 11) {
+            if (cpf.length === 11) {
                 return cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4');
             } else {
                 return cpf.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
@@ -199,8 +199,8 @@ function PainelAdmin() {
     return (
         <div className="painel-admin">
 
-            {showSpinner && <button class="buttonload">
-                <i class="fa fa-spinner fa-spin"></i>Carregando
+            {showSpinner && <button className="buttonload">
+                <i className="fa fa-spinner fa-spin"></i>Carregando
             </button>}
 
             <header>
@@ -215,42 +215,42 @@ function PainelAdmin() {
 
                         <div className='row'>
                             <div className="col-md-12 col-xs-12 text-center">
-                                <div class="col-md-12">
+                                <div className="col-md-12">
                                     {isMobile &&
-                                        <ul class="list-inline pull-right">
+                                        <ul className="list-inline pull-right">
 
                                             <li>
-                                                <a href="#" class="btn cinza btnMenu" onClick={(e) => selectPage(e, 3)}>
-                                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                                <a href="#" className="btn cinza btnMenu" onClick={(e) => selectPage(e, 3)}>
+                                                    <i className="fa fa-user" aria-hidden="true"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="/comprar-espaco-minisitio" class="btn cinza btnMenu">
-                                                    <i class="fa fa-address-card" aria-hidden="true"></i>
+                                                <a href="/comprar-espaco-minisitio" className="btn cinza btnMenu">
+                                                    <i className="fa fa-address-card" aria-hidden="true"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="/12178481426/ver-anuncios" class="btn cinza btnMenu" onClick={(e) => selectPage(e, 1)}>
-                                                    <i class="fa fa-th-list" aria-hidden="true"></i>
+                                                <a href="/12178481426/ver-anuncios" className="btn cinza btnMenu" onClick={(e) => selectPage(e, 1)}>
+                                                    <i className="fa fa-th-list" aria-hidden="true"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="/login" class="btn cinza btnMenu" onClick={sair}>
-                                                    <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                                <a href="/login" className="btn cinza btnMenu" onClick={sair}>
+                                                    <i className="fa fa-sign-out" aria-hidden="true"></i>
                                                 </a>
                                             </li>
                                         </ul>
                                     }
                                     {!isMobile &&
-                                        <ul class="list-inline pull-right">
-                                            {role == 5 &&
-                                                <li><a href="#" class="btn cinza btnMenu" onClick={(e) => selectPage(e, 5)}>Legenda</a></li>
+                                        <ul className="list-inline pull-right">
+                                            {role === 5 &&
+                                                <li><a href="#" className="btn cinza btnMenu" onClick={(e) => selectPage(e, 5)}>Legenda</a></li>
                                             }
-                                            <li><a href="#" class="btn cinza btnMenu" onClick={(e) => selectPage(e, 3)}>Dados pessoais</a></li>
-                                            <li><a href="/comprar-espaco-minisitio" class="btn cinza btnMenu">Criar anúncio</a></li>
-                                            <li><a href="/12178481426/ver-anuncios" id="listar" class="btn cinza btnMenu" onClick={(e) => selectPage(e, 1)}>Listar Espaços</a></li>
-                                            {/*   <li><a href="/resources/img/galeria-area-do-assinante.zip" class="btn cinza btnMenu">Galeria de imagens</a></li> */}
-                                            <li><a href="/login" class="btn cinza btnMenu" onClick={sair}>Sair</a></li>
+                                            <li><a href="#" className="btn cinza btnMenu" onClick={(e) => selectPage(e, 3)}>Dados pessoais</a></li>
+                                            <li><a href="/comprar-espaco-minisitio" className="btn cinza btnMenu">Criar anúncio</a></li>
+                                            <li><a href="/12178481426/ver-anuncios" id="listar" className="btn cinza btnMenu" onClick={(e) => selectPage(e, 1)}>Listar Espaços</a></li>
+                                            {/*   <li><a href="/resources/img/galeria-area-do-assinante.zip" className="btn cinza btnMenu">Galeria de imagens</a></li> */}
+                                            <li><a href="/login" className="btn cinza btnMenu" onClick={sair}>Sair</a></li>
                                         </ul>
                                     }
 
@@ -259,17 +259,17 @@ function PainelAdmin() {
                         </div>
                         {/* 
                         <div className="row lista">
-                            <div class="col-md-12">
-                                <div class="bg-cinza" style={{ "padding-top": "10px" }}>
-                                    <div class="row">
-                                        <div class="col-md-6">
+                            <div className="col-md-12">
+                                <div className="bg-cinza" style={{ "padding-top": "10px" }}>
+                                    <div className="row">
+                                        <div className="col-md-6">
 
                                         </div>
-                                        <div class="col-md-6 text-right">
-                                            <input id="buscar" class="pull-right margin-bottom-0" type="text" placeholder="Buscar" />
+                                        <div className="col-md-6 text-right">
+                                            <input id="buscar" className="pull-right margin-bottom-0" type="text" placeholder="Buscar" />
                                         </div>
-                                        <div class="col-md-12" style={{ "padding-top": "10px" }}>
-                                            <div id="paginacao"><table class="table table-bordered table-striped table-hover">
+                                        <div className="col-md-12" style={{ "padding-top": "10px" }}>
+                                            <div id="paginacao"><table className="table table-bordered table-striped table-hover">
                                                 <thead>
                                                     <tr>
                                                         <th style={{ "width": "132px" }}>--</th>
@@ -290,17 +290,17 @@ function PainelAdmin() {
                                                     {anuncios.map((item) => (
                                                         <tr data-id="582210">
                                                             <td>
-                                                                <a class="btn btn-xs btn-success" title="Editar" href="/12178481426/criar-anuncio/582210">
+                                                                <a className="btn btn-xs btn-success" title="Editar" href="/12178481426/criar-anuncio/582210">
                                                                     Editar
                                                                 </a>
-                                                                <a class="btn btn-xs btn-danger" title="Apagar" href="javascript:apagar('/12178481426/apagar-anuncio/582210');">
+                                                                <a className="btn btn-xs btn-danger" title="Apagar" href="javascript:apagar('/12178481426/apagar-anuncio/582210');">
                                                                     Apagar
                                                                 </a>
                                                             </td>
                                                             <td>{item.descAnuncio}</td>
                                                             <td>{item.codAnuncio}</td>
                                                             <td>
-                                                                <a class="btn btn-xs btn-success" href="javascript:;">Isento</a>
+                                                                <a className="btn btn-xs btn-success" href="javascript:;">Isento</a>
                                                             </td>
                                                             <td>{item.createdAt.split("T")[0]}</td>
                                                             <td>{item.updatedAt.split("T")[0]}</td>
@@ -314,8 +314,8 @@ function PainelAdmin() {
                                                     ))}
                                                 </tbody>
                                             </table>
-                                                <div class="row">
-                                                    <div class="col-md-6">
+                                                <div className="row">
+                                                    <div className="col-md-6">
                                                         <p>Página 1/1 (Total: 1)</p>
                                                     </div>
                                         
@@ -336,7 +336,7 @@ function PainelAdmin() {
                             <DadosPessoais espacoId={espacoId} selectPage={selectPage} />
                         }
                         {action === 5 &&
-                        role == 5 &&
+                        role === 5 &&
                             <Legenda espacoId={espacoId} selectPage={selectPage} anuncios={anunciosPainel} />                        
                         }
 

@@ -132,7 +132,7 @@ const FormEdit = () => {
         setShowSpinner(true);
 
         document.querySelectorAll('[name="pwd"]').forEach((item) => {
-            if (item.value == "") {
+            if (item.value === "") {
                 item.style.border = "1px solid red";
                 validation = false;
                 return;
@@ -143,7 +143,7 @@ const FormEdit = () => {
         });
 
         document.querySelectorAll('select').forEach((item) => {
-            if (item.value == "") {
+            if (item.value === "") {
                 item.style.border = "1px solid red";
                 validation = false;
                 return;
@@ -205,7 +205,7 @@ const FormEdit = () => {
 
                         })
                     } else {
-                        if (res.message == "Token inválido") {
+                        if (res.message === "Token inválido") {
                             alert("Sessão expirada, faça login para continuar.");
                             navigate('/login')
                         }
@@ -240,7 +240,7 @@ const FormEdit = () => {
 
 
     function teste(meuParam) {
-        let user = usuarios.find(user => user.codUsuario == meuParam);
+        let user = usuarios.find(user => user.codUsuario === meuParam);
 
         if (user != undefined) {
             return user.descNome
@@ -259,17 +259,17 @@ const FormEdit = () => {
 
         value = parseFloat(value).toFixed(2);
 
-        if (value.length == 2) {
+        if (value.length === 2) {
             //value = `${value},00`; // Mantém apenas 2 dígitos após a vírgula
         }
 
         // Adiciona o "0," inicial se o campo ficar vazio ou começar com uma vírgula
-        if (value == '' || value == ',' || value.length == 3) {
+        if (value === '' || value === ',' || value.length === 3) {
             value = '';
         }
 
         // Garante duas casas decimais ao final
-        /*   if (parts.length == 2) {
+        /*   if (parts.length === 2) {
               const [integer, decimal] = parts;
               value = `${integer},${decimal.slice(0, 2)}`;
           } */
@@ -390,7 +390,7 @@ const FormEdit = () => {
                             </select>
                         </div>
 
-                        {patrocinio == 1 &&
+                        {patrocinio === 1 &&
                             <div className="form-group d-flex flex-column align-items-center py-3">
                                 <FieldsetPatrocinador numeroPatrocinador={1} linkPatrocinio={handleChange} codigoUser={param} links={descImagem.descLink} codImg={descImagem.descImagem} miniPreview={false} valueLink={links.link_1} setImgs={setImgs} />
                                 <FieldsetPatrocinador numeroPatrocinador={2} linkPatrocinio={handleChange} codigoUser={param} links={descImagem.descLink2} codImg={descImagem.descImagem2} miniPreview={false} valueLink={links.link_2} setImgs={setImgs} />
@@ -424,10 +424,10 @@ const FormEdit = () => {
                                 <option value="1">Sim</option>
                             </select>
                         </div>
-                        {saldo == 1 &&
+                        {saldo === 1 &&
                             <div className="form-group d-flex flex-column align-items-center py-3">
-                                <div class="control-group w-50" style={{ display: "block" }}><label for="adicionar_saldo" class="control-label optional">Adicionar Saldo:</label>
-                                    <div class="controls">
+                                <div className="control-group w-50" style={{ display: "block" }}><label for="adicionar_saldo" className="control-label optional">Adicionar Saldo:</label>
+                                    <div className="controls">
                                         <input type="text" name="adicionar_saldo" id="adicionar_saldo" className="w-100" value={saldoValue} onChange={(e) => setSaldoValue(e.target.value)} />
                                     </div>
                                 </div>

@@ -73,7 +73,7 @@ function Editar(props) {
       return;
     }
 
-    if (codId.length == 12) {
+    if (codId.length === 12) {
       fetch(`${masterPath.url}/admin/desconto/buscar/${codId}`)
         .then((x) => x.json())
         .then((res) => {
@@ -93,8 +93,7 @@ function Editar(props) {
     }
 
 
-  }, []);
-
+  }, [minisitio.hash, precoFixo]);
   useEffect(() => {
     fetch(`${masterPath.url}/admin/anuncio/edit/${props.espacoId}`)
       .then((x) => x.json())
@@ -166,7 +165,7 @@ function Editar(props) {
         //console.log(res)
         //decodificar()
       });
-  }, []);
+  }, [props.espacoId]);
 
 
 
@@ -217,7 +216,7 @@ function Editar(props) {
       return;
     }
 
-    if (codId.length == 12) {
+    if (codId.length === 12) {
       fetch(`${masterPath.url}/admin/desconto/buscar/${codId}`)
         .then((x) => x.json())
         .then((res) => {
@@ -249,7 +248,7 @@ function Editar(props) {
     let data = event.target.value.replace(/\D/g, "");
 
     // Verificar o comprimento dos dados para definir se é CPF ou CNPJ
-    if (personType == 'pj') {
+    if (personType === 'pj') {
       // É CNPJ
       if (data.length > 12) {
         data = `${data.substr(0, 2)}.${data.substr(2, 3)}.${data.substr(5, 3)}/${data.substr(8, 4)}-${data.substr(12, 2)}`;
@@ -315,7 +314,7 @@ function Editar(props) {
   function editIDP(e) {
     /*     if (campoPromocao.current.value.length !== 0) {
           console.log("entrou", campoPromocao.current.value, minisitio.promoc)
-          if (minisitio.promoc.banner == null || minisitio.promoc.banner == "" || minisitio.promoc.banner == undefined || minisitio.promoc.banner == "null") {
+          if (minisitio.promoc.banner === null || minisitio.promoc.banner === "" || minisitio.promoc.banner === undefined || minisitio.promoc.banner === "null") {
             Swal.fire({
               icon: 'warning',
               title: 'Atenção',
@@ -335,7 +334,7 @@ function Editar(props) {
       return;
     }
 
-    if (minisitio.codTipoAnuncio == 3 && descontoAtivado == false && e.target.value.length) {
+    if (minisitio.codTipoAnuncio === 3 && descontoAtivado === false && e.target.value.length) {
       console.log(descontoAtivado, minisitio.codTipoAnuncio);
       alert("Código promocional inválido.");
       return;
@@ -352,7 +351,7 @@ function Editar(props) {
     //setShowSpinner(true);
 
     document.querySelectorAll('[name="pwd"]').forEach((item) => {
-      if (item.value == "") {
+      if (item.value === "") {
         item.style.border = "1px solid red";
         validation = false;
         return;
@@ -363,7 +362,7 @@ function Editar(props) {
     });
 
     document.querySelectorAll('select').forEach((item) => {
-      if (item.value == "") {
+      if (item.value === "") {
         item.style.border = "1px solid red";
         validation = false;
         return;
@@ -413,7 +412,7 @@ function Editar(props) {
 
             //setShowSpinner(false);
             alert("anuncio Atualizado!");
-            if (descontoAtivado == false && minisitio.codTipoAnuncio == 3) {
+            if (descontoAtivado === false && minisitio.codTipoAnuncio === 3) {
               //window.open(`https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=712696516-cad9b026-5622-4fe2-921c-3d2d336a6d82`, '_blank', 'noopener');
             }
             props.selectPage(e, 1);
@@ -483,7 +482,7 @@ function Editar(props) {
                 </label>
                 <div className="col-md-12 anuncio-options">
                   <Stack direction="horizontal" gap={2} className="justify-content-center">
-                    <Badge bg="success" style={{ fontSize: "18px" }}>{minisitio.codTipoAnuncio == 3 ? "Completo" : "Básico"}</Badge>
+                    <Badge bg="success" style={{ fontSize: "18px" }}>{minisitio.codTipoAnuncio === 3 ? "Completo" : "Básico"}</Badge>
                   </Stack>
                 </div>
               </div>
@@ -499,7 +498,7 @@ function Editar(props) {
                       id="codTipoAnuncio-1"
                       value="1"
                       onClick={(e) => { setRadioCheck(e.target.value); setShowMap("none"); handleSelectChange(e) }}
-                      checked={radioCheck == 1}
+                      checked={radioCheck === 1}
                       className="mx-1"
                     />
                     Básico
@@ -511,7 +510,7 @@ function Editar(props) {
                       id="codTipoAnuncio-2"
                       value="2"
                       onClick={(e) => {setRadioCheck(e.target.value); setShowMap("block")}}
-                      checked={radioCheck == 2}
+                      checked={radioCheck === 2}
                     />
                     Simples
                   </label> 
@@ -522,7 +521,7 @@ function Editar(props) {
                       id="codTipoAnuncio-3"
                       value="3"
                       onClick={(e) => { setRadioCheck(e.target.value); handleSelectChange(e) }}
-                      checked={radioCheck == 3}
+                      checked={radioCheck === 3}
                       className="mx-1"
                     />
                     Completo
@@ -599,13 +598,13 @@ function Editar(props) {
                 {radioCheck != 1 && <TagsInput tagValue={setTagValue} value={tagValue} />}
 
                 <div className="row">
-                  <div class="col-md-4 col-xs-12">
-                    <div class="form-group input-icon margin-top-10">
-                      <i class="fa fa-compass icone-form p-0"></i>
+                  <div className="col-md-4 col-xs-12">
+                    <div className="form-group input-icon margin-top-10">
+                      <i className="fa fa-compass icone-form p-0"></i>
                       <select
                         name="codUf"
                         id="codUf4"
-                        class="form-control"
+                        className="form-control"
                         /* onChange={executarSelecao} */
                         value={minisitio.codUf}
                         onChange={handleSelectChange}
@@ -626,13 +625,13 @@ function Editar(props) {
                     </div>
                   </div>
 
-                  <div class="col-md-8 col-xs-12">
-                    <div class="form-group selectCaderno form-group input-icon margin-top-10">
-                      <i class="fa fa-map-marker icone-form p-0"></i>
+                  <div className="col-md-8 col-xs-12">
+                    <div className="form-group selectCaderno form-group input-icon margin-top-10">
+                      <i className="fa fa-map-marker icone-form p-0"></i>
                       <select
                         name="codCaderno"
                         id="codUf5"
-                        class="form-control"
+                        className="form-control"
                         value={minisitio.codCaderno}
                         onChange={handleSelectChange}
                       >
@@ -784,7 +783,7 @@ function Editar(props) {
                   id="linkPromo"
                   className="form-control"
                   placeholder="Adicione um link promocional"
-                  value={minisitio.linkPromo == 'null' ? "" : minisitio.linkPromo}
+                  value={minisitio.linkPromo === 'null' ? "" : minisitio.linkPromo}
                   onChange={handleSelectChange}
                 />
               </div>
@@ -946,7 +945,7 @@ function Editar(props) {
                   id="cashback_link"
                   className="form-control"
                   placeholder="Digite o link da parceria"
-                  value={minisitio.cashback_link == 0 ? "" : minisitio.cashback_link}
+                  value={minisitio.cashback_link === 0 ? "" : minisitio.cashback_link}
                   /* onChange={(e) => handleChange(e)} */
                   onChange={handleSelectChange}
                 />
@@ -985,7 +984,7 @@ function Editar(props) {
                 />
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/redes/youtube.png" height={25} /></i>
+                <i><img src="/assets/img/redes/youtube.png" height={25} alt="YouTube icon" /></i>
                 <input
                   type="text"
                   name="descYouTube"
@@ -1021,7 +1020,7 @@ function Editar(props) {
                 />{" "}
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/whatsapp.png" height={25} /></i>
+                <i><img src="/assets/img/teste/whatsapp.png" height={25} alt="WhatsApp icon" /></i>
                 <input
                   type="text"
                   name="descWhatsApp"
@@ -1033,7 +1032,7 @@ function Editar(props) {
                 />{" "}
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/telegram.png" height={25} /></i>
+                <i><img src="/assets/img/teste/telegram.png" height={25} alt="Telegram icon" /></i>
                 <input
                   type="text"
                   name="descTelegram"
@@ -1045,7 +1044,7 @@ function Editar(props) {
                 />{" "}
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/icons8-meu-negócio-48.png" height={25} /></i>
+                <i><img src="/assets/img/teste/icons8-meu-negócio-48.png" height={25} alt="Google My Business icon" /></i>
                 <input
                   type="text"
                   name="descSkype"
@@ -1057,7 +1056,7 @@ function Editar(props) {
                 />{" "}
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/facebook.png" height={25} /></i>
+                <i><img src="/assets/img/teste/facebook.png" height={25} alt="Facebook icon" /></i>
                 <input
                   type="text"
                   name="descFacebook"
@@ -1069,7 +1068,7 @@ function Editar(props) {
                 />
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/instagram.png" height={25} /></i>
+                <i><img src="/assets/img/teste/instagram.png" height={25} alt="Instagram icon" /></i>
                 <input
                   type="text"
                   name="descInsta"
@@ -1081,7 +1080,7 @@ function Editar(props) {
                 />
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/redes/unnamed.webp" height={25} style={{ borderRadius: "5px" }} /></i>
+                <i><img src="/assets/img/redes/unnamed.webp" height={25} style={{ borderRadius: "5px" }} alt="Social media icon" /></i>
                 <input
                   type="text"
                   name="descTweeter"
@@ -1094,7 +1093,7 @@ function Editar(props) {
                 />
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/linkedin.png" height={25} /></i>
+                <i><img src="/assets/img/teste/linkedin.png" height={25} alt="LinkedIn icon" /></i>
                 <input
                   type="text"
                   name="descLinkedin"
@@ -1142,7 +1141,7 @@ function Editar(props) {
                 />
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/pix-2.png" height={25} style={{ borderRadius: "5px" }} /></i>
+                <i><img src="/assets/img/teste/pix-2.png" height={25} style={{ borderRadius: "5px" }} alt="Pix logo" /></i>
                 <input
                   type="text"
                   name="descDonoPix"
@@ -1154,7 +1153,7 @@ function Editar(props) {
                 />
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/pix-2.png" height={25} style={{ borderRadius: "5px" }} /></i>
+                <i><img src="/assets/img/teste/pix-2.png" height={25} style={{ borderRadius: "5px" }} alt="Pix logo" /></i>
                 <input
                   type="text"
                   name="descChavePix"
@@ -1188,7 +1187,7 @@ function Editar(props) {
                         id="descTipoPessoa-pf"
                         value="pf"
                         onChange={(e) => setPersonType(e.target.value)}
-                        checked={personType == "pf"}
+                        checked={personType === "pf"}
                         className="mx-1"
                       />
                       Pessoa física
@@ -1201,7 +1200,7 @@ function Editar(props) {
                         id="descTipoPessoa-pj"
                         value="pj"
                         onChange={(e) => setPersonType(e.target.value)}
-                        checked={personType == "pj"}
+                        checked={personType === "pj"}
                         className="mx-1"
                       />
                       Pessoa jurídica
@@ -1292,7 +1291,7 @@ function Editar(props) {
                   <i className="fa fa-download"></i>
                 </div>
                 <div className="col-md-11">
-                  <a href="/resources/pdfs/formulario_pa.pdf" target="_blank">
+                  <a href="/resources/pdfs/formulario_pa.pdf" target="_blank" rel="noreferrer">
                     <h3>Faça o download do formulário</h3>
                   </a>
                 </div>
@@ -1345,8 +1344,8 @@ function Editar(props) {
                     </div>
                     {/* preview da imagem do card */}
 
-                    <div class="conteudo comImagem" style={{ display: "none" }}>
-                      <img src={`${masterPath.url}/files/descImagem/${minisitio.descImagem}`} height={191} />
+                    <div className="conteudo comImagem" style={{ display: "none" }}>
+                      <img src={`${masterPath.url}/files/descImagem/${minisitio.descImagem}`} height={191} alt="Imagem do anúncio" />
                     </div>
                     {radioCheck != 1 && <div id="area-icons-actions" className="col-md-6">
                       <Tooltip text={"Mídias"}>
@@ -1389,7 +1388,7 @@ function Editar(props) {
                         <i>
                           <img
                             src="../assets/img/link_mapa.png"
-                            alt=""
+                            alt="Link para o Mapa"
                             height={30}
                           />
                         </i>
@@ -1399,7 +1398,7 @@ function Editar(props) {
                         <i>
                           <img
                             src="../assets/img/link_site.png"
-                            alt=""
+                            alt="Link para o Site"
                             height={30}
                           />
                         </i>
@@ -1408,7 +1407,7 @@ function Editar(props) {
                         <i>
                           <img
                             src="../assets/img/link_promocao.png"
-                            alt=""
+                            alt="Link para a Promoção"
                             height={30}
                           />
                         </i>
@@ -1452,7 +1451,7 @@ function Editar(props) {
                     {radioCheck != 1 && <h2 className="webcard">
                       <span className="preco">R$ {precoFixo},00</span>/mês
                     </h2>}
-                    {radioCheck == 1 && <h2 className="simples uppercase">
+                    {radioCheck === 1 && <h2 className="simples uppercase">
                       Grátis
                     </h2>}
                   </div> */}

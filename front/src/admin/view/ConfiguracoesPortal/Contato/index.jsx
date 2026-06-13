@@ -102,8 +102,8 @@ function Contato() {
     return (
         <div className="painel-admin admin-contato">
 
-            {showSpinner && <button class="buttonload">
-                <i class="fa fa-spinner fa-spin"></i>Carregando
+            {showSpinner && <button className="buttonload">
+                <i className="fa fa-spinner fa-spin"></i>Carregando
             </button>}
             <header style={style} className='w-100'>
                 <Header />
@@ -114,7 +114,7 @@ function Contato() {
                             Voltar
                         </Button> */}
                     Página de Contato</h1>
-                <div class="container my-3">
+                <div className="container my-3">
                     <div className='my-3'>
                         <Button as="button" variant="none" type="button" size='lg' className='border' onClick={() => navigate('/admin/configuracoes')}>
                             <img src="/assets/img/icons/seta-esquerda.png" alt="voltar" width={20} />

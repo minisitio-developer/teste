@@ -17,7 +17,7 @@ const TemplateModalPromo = (props) => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    //if(props.path == null || props.path === undefined || props.path === '') return;
+    //if(props.path === null || props.path === undefined || props.path === '') return;
     setShow(props.showState)
   }, [props.showState])
 
@@ -47,7 +47,7 @@ const TemplateModalPromo = (props) => {
 
           <div className="modal-body" ref={contentPromo}>
             <div className='title-promo-ms'>
-              <img src="../assets/img/logo50.png" className="logo-modal-promo" />
+              <img alt="" src="../assets/img/logo50.png" className="logo-modal-promo" />
               <h4>Promoção com minisitio</h4>
             </div>
             <img src={`${masterPath.url}/files/promocao/${props.path}`} className='w-100' alt="promoção" />

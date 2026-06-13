@@ -27,7 +27,7 @@ const ContentChildLogin = (props) => {
 
   const ocultarForm = (e) => {
 
-    if (tipoPessoa.current.value == "") {
+    if (tipoPessoa.current.value === "") {
       alert("Selecione o tipo de pessoa!");
     } else if (!isCPForCNPJ(nuDocumento.current.value)) {
       alert("Digite um cpf ou um cnpj válido!");
@@ -73,7 +73,7 @@ const ContentChildLogin = (props) => {
           console.log(res.data);
         }
 
-        if(res.type == 3) {
+        if(res.type === 3) {
           cadastrarAnuncio(res.data.codUsuario);
         }
 
@@ -154,7 +154,7 @@ const ContentChildLogin = (props) => {
 
     }
 
-    if (obj.descCPFCNPJ == "") {
+    if (obj.descCPFCNPJ === "") {
       alert("Preencha todos os campos");
       return;
     }
@@ -174,10 +174,10 @@ const ContentChildLogin = (props) => {
         //window.location.href = `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
         //navigate(`/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`);
 
-        if(props.descontoAtivado && props.radioCheck == 3) {
+        if(props.descontoAtivado && props.radioCheck === 3) {
           window.location.href = `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
           console.log("1");
-        } else if(props.radioCheck == 1) {
+        } else if(props.radioCheck === 1) {
           window.location.href = `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
           console.log("2");
         } else {
@@ -260,8 +260,8 @@ const ContentChildLogin = (props) => {
         <h1>Área do assinante</h1>
       </div>
 
-      {showSpinner && <button class="buttonload">
-        <i class="fa fa-spinner fa-spin"></i>Carregando
+      {showSpinner && <button className="buttonload">
+        <i className="fa fa-spinner fa-spin"></i>Carregando
       </button>}
 
       <div className="container container-login d-flex align-items-center">

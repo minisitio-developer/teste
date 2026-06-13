@@ -37,24 +37,24 @@ function Metadados(props) {
         Swal.fire({
             title: 'Compartilhe Seu Minisitio',
             html: `
-                          <div style="" class="cart-digital-modal py-3">
-                              <a href="https://api.whatsapp.com/send?text=${link}" target="_blank" rel="noreferrer" class="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
+                          <div style="" className="cart-digital-modal py-3">
+                              <a href="https://api.whatsapp.com/send?text=${link}" target="_blank" rel="noreferrer" className="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
                                   <img src="../assets/img/icon-share/share_whatsapp.svg" width="80" alt="whatsapp" />    
                                   Compartilhar no WhatsApp
                               </a>
-                              <a href="https://www.facebook.com/sharer/sharer.php?u=${link}" target="_blank" rel="noreferrer" class="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
+                              <a href="https://www.facebook.com/sharer/sharer.php?u=${link}" target="_blank" rel="noreferrer" className="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
                                   <img src="../assets/img/icon-share/share_facebook.svg" width="80" alt="facebook" />
                                   Compartilhar no Facebook
                               </a>
-                              <a href="https://twitter.com/intent/tweet?url=${link}" target="_blank" rel="noreferrer" class="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
+                              <a href="https://twitter.com/intent/tweet?url=${link}" target="_blank" rel="noreferrer" className="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
                                   <img src="../assets/img/icon-share/share_x.svg" width="80" alt="x" />    
                                   Compartilhar no Twitter
                               </a>
-                              <a href="https://www.linkedin.com/shareArticle?url=${link}" target="_blank" class="mb-2 d-flex flex-column align-items-center" style="gap: 10px;">
+                              <a href="https://www.linkedin.com/shareArticle?url=${link}" target="_blank" className="mb-2 d-flex flex-column align-items-center" style="gap: 10px;" rel="noreferrer">
                                   <img src="../assets/img/icon-share/linkedin.png" width="80" alt="linkedin" style="border-radius: 100%;" />    
                                   Compartilhar no LinkedIn
                               </a>
-                              <div class="mb-2 d-flex flex-column align-items-center" style="gap: 6px;">
+                              <div className="mb-2 d-flex flex-column align-items-center" style="gap: 6px;">
                                  <button
                                     id="copyBtn"
                                     style="border-radius: 100%; padding: 10px"
@@ -122,7 +122,7 @@ function Metadados(props) {
                     </div>
                     {(props.data.descFacebook && props.data.descFacebook !== "teste") &&
                         <div className="col-md-12 link-cinza">
-                            <img src="../assets/img/teste/facebook.png" />
+                            <img src="../assets/img/teste/facebook.png" alt="Facebook icon" />
                             <h4>
                                 <a href={props.data.descFacebook !== "teste" ? props.data.descFacebook : ""} data-toggle="tooltip" title="Facebook" target="_blank" rel="noopener  noreferrer">
                                     {props.data.descFacebook !== "teste" ? props.data.descFacebook : ""}
@@ -133,7 +133,7 @@ function Metadados(props) {
 
                     {(props.data.descInsta && props.data.descInsta !== "teste") &&
                         <div className="col-md-12 link-cinza">
-                            <img src="../assets/img/teste/instagram.png" />
+                            <img src="../assets/img/teste/instagram.png" alt="Instagram icon" />
                             <h4>
                                 <a href={props.data.descInsta !== "0" ? props.data.descInsta : ""} data-toggle="tooltip" title="Instagram" target="_blank" rel="noopener  noreferrer">
                                     {props.data.descInsta !== "0" ? props.data.descInsta : ""}
@@ -144,7 +144,7 @@ function Metadados(props) {
 
                     {(props.data.descTweeter && props.data.descTweeter !== "teste") &&
                         <div className="col-md-12 link-cinza">
-                            <img src="../assets/img/redes/unnamed.webp" className="rounded" />
+                            <img src="../assets/img/redes/unnamed.webp" className="rounded" alt="Social media icon" />
                             <h4>
                                 <a href={props.data.descTweeter !== "teste" ? props.data.descTweeter : ""} data-toggle="tooltip" title="Twitter" target="_blank" rel="noopener  noreferrer">
                                     {props.data.descTweeter !== "teste" ? props.data.descTweeter : ""}
@@ -155,7 +155,7 @@ function Metadados(props) {
 
                     {(props.data.descLinkedin && props.data.descLinkedin !== "teste") &&
                         <div className="col-md-12 link-cinza">
-                            <img src="../assets/img/teste/linkedin.png" />
+                            <img src="../assets/img/teste/linkedin.png" alt="LinkedIn icon" />
                             <h4>
                                 <a href={props.data.descLinkedin !== "0" ? props.data.descLinkedin : ""} data-toggle="tooltip" title="Linkedin" target="_blank" rel="noopener  noreferrer">
                                     {props.data.descLinkedin !== "0" ? props.data.descLinkedin : ""}
@@ -166,7 +166,7 @@ function Metadados(props) {
 
                     {(props.data.descWhatsApp && props.data.descWhatsApp !== "teste") &&
                         <div className="col-md-12 ">
-                            <img src="../assets/img/teste/whatsapp.png" />
+                            <img src="../assets/img/teste/whatsapp.png" alt="WhatsApp icon" />
                             <h4>
                                 <a href={`https://api.whatsapp.com/send?phone=55${props.data.descWhatsApp}`} target="_blank" data-toggle="tooltip" title="WhatsApp" rel="noopener  noreferrer">
                                     {props.data.descWhatsApp !== "0" ? props.data.descWhatsApp : "(xx) xxxxx-xxxx"}
@@ -177,7 +177,7 @@ function Metadados(props) {
 
                     {(props.data.descTelegram && props.data.descTelegram !== "teste") &&
                         <div className="col-md-12 link-cinza">
-                            <img src="../assets/img/teste/telegram.png" />
+                            <img src="../assets/img/teste/telegram.png" alt="Telegram icon" />
                             <h4>
                                 <a href="https://telegram.me/55" target="_blank" data-toggle="tooltip" title="Telegram" rel="noopener  noreferrer">
                                     {props.data.descTelegram !== "0" ? props.data.descTelegram : ""}
@@ -188,7 +188,7 @@ function Metadados(props) {
 
                     {(props.data.descSkype && props.data.descSkype !== "teste") &&
                         <div className="col-md-12 link-cinza">
-                            <img src="../assets/img/teste/icons8-meu-negócio-48.png" />
+                            <img src="../assets/img/teste/icons8-meu-negócio-48.png" alt="Google My Business icon" />
                             <h4>
                                 <a href={props.data.descSkype !== "0" ? props.data.descSkype : ""} target="_blank" data-toggle="tooltip" title="google-meu-negocio" rel="noopener  noreferrer">
                                     {props.data.descSkype !== "0" ? props.data.descSkype : ""}
@@ -198,7 +198,7 @@ function Metadados(props) {
                     }
 
                     <div className="col-md-12 link-cinza justify-content-between align-items-center p-0 area-pix-portal">
-                        <img src="../assets/img/teste/pix-bc.png" className='logo-pix' />
+                        <img src="../assets/img/teste/pix-bc.png" className='logo-pix' alt="Pix logo" />
                         {(props.data.descChavePix && props.data.descChavePix !== "teste") &&
                             <ul className='desc-pix'>
                                 <li>
@@ -228,7 +228,7 @@ function Metadados(props) {
 
                             <div className="modal-body text-center">
                                 <div className='title-promo-ms text-center'>
-                                    {/*  <img src="../assets/img/logo50.png" className="logo-modal-promo" />
+                                    {/*  <img alt="" src="../assets/img/logo50.png" className="logo-modal-promo" />
                                     <h4>Promoção com minisitio</h4> */}
                                     <QrCodeGeneratorPix chave={props.data.descChavePix} dono={props.data.descDonoPix} />
                                 </div>
@@ -245,10 +245,10 @@ function Metadados(props) {
                         <div className="col-md-12 link-cinza">
                             {(props.data.descAndroid != "0" && props.data.descAndroid != "") &&
                                 <a href={props.data.descAndroid !== "0" ? props.data.descAndroid : ""} target="_blank" data-toggle="tooltip" title="android" rel="noopener  noreferrer">
-                                    <img src="../assets/img/icons/android.png" width={200} style={{ marginLeft: "-10px" }} />
+                                    <img src="../assets/img/icons/android.png" width={200} style={{ marginLeft: "-10px" }} alt="Android app icon" />
                                 </a>
                             }
-                            {(props.data.descAndroid == "0" || props.data.descAndroid == "") &&
+                            {(props.data.descAndroid === "0" || props.data.descAndroid === "") &&
                                 <a href={props.data.descAndroid !== "0" ? props.data.descAndroid : ""} target="_blank" data-toggle="tooltip" title="android" rel="noopener  noreferrer">
                                     <img src="../assets/img/icons/android.png" width={200} style={{ filter: "grayscale(1)", webkitFilter: "grayscale(1)", marginLeft: "-10px" }} alt='android' />
                                 </a>
@@ -260,12 +260,12 @@ function Metadados(props) {
                             {console.log(props.data.descApple)}
                             {(props.data.descApple != "0" && props.data.descApple != "") &&
                                 <a href={props.data.descApple !== "0" ? props.data.descApple : ""} target="_blank" data-toggle="tooltip" title="android" rel="noopener  noreferrer">
-                                    <img src="../assets/img/icons/ios.png" width={180} height={60} />
+                                    <img src="../assets/img/icons/ios.png" width={180} height={60} alt="iOS app icon" />
                                 </a>
                             }
-                            {(props.data.descApple == "0" || props.data.descApple == "") &&
+                            {(props.data.descApple === "0" || props.data.descApple === "") &&
                                 <a href={props.data.descApple !== "0" ? props.data.descApple : ""} target="_blank" data-toggle="tooltip" title="apple" rel="noreferrer">
-                                    <img src="../assets/img/icons/ios.png" width={180} height={60} style={{ filter: "grayscale(1)", webkitFilter: "grayscale(1)" }} alt='android' />
+                                    <img src="../assets/img/icons/ios.png" width={180} height={60} style={{ filter: "grayscale(1)", webkitFilter: "grayscale(1)" }} alt='iOS app icon' />
                                 </a>
                             }
                         </div>
@@ -273,7 +273,7 @@ function Metadados(props) {
                     }
 
                     {/* <div className="col-md-12 link-cinza">
-                        <img src="../assets/img/teste/aperto-de-mao.png" />
+                        <img alt="" src="../assets/img/teste/aperto-de-mao.png" />
                         <h4>
                         <a href={props.data.descParceiroLink !== "0" ? props.data.descParceiroLink : ""} target="_blank" data-toggle="tooltip" title="google-meu-negocio" rel="noopener  noreferrer">
                             {props.data.descParceiroLink !== "0" ? props.data.descParceiroLink : ""}

@@ -56,15 +56,15 @@ function MiniWebCardSimples(props) {
                     <div className="apoio">
                         <div style={{ float: "right" }}>
                             <a href="/login">
-                                <button type="button" class="btn2 bgbt" data-toggle="modal" data-target="#05562970000102">
+                                <button type="button" className="btn2 bgbt" data-toggle="modal" data-target="#05562970000102">
                                     INCLUIR <br />IMAGEM CARTÃO
                                 </button>
                             </a>
                         </div>
                     </div>
                     <div className="row">
-                        <div id="05562970000102" class="modal fade" role="dialog">
-                            <div class="modal-dialog">
+                        <div id="05562970000102" className="modal fade" role="dialog">
+                            <div className="modal-dialog">
                                 Modal content
                                 <div className="modal-content">
                                     <div className="modal-header">
@@ -110,7 +110,7 @@ function MiniWebCardSimples(props) {
 
 
             {/* 
-            <li class="cartao cartao-simples ">
+            <li className="cartao cartao-simples ">
               
             </li> */}
         </div>

@@ -297,7 +297,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
         .then((x) => x.json())
         .then((res) => {
           if (res.success) {
-            if (res.IdsValue[0].is_capa && radioCheck == 4) {
+            if (res.IdsValue[0].is_capa && radioCheck === 4) {
               let valorDesconto = res.IdsValue[0].desconto;
               let precoComDesconto = precoFixo - valorDesconto;
               if (precoComDesconto >= 0) {
@@ -313,7 +313,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
               }
 
 
-            } else if (!res.IdsValue[0].is_capa && radioCheck == 4) {
+            } else if (!res.IdsValue[0].is_capa && radioCheck === 4) {
               document.getElementById('anunciar').disabled = true;
               setTexto("Este ID não está habilitado para capa!");
               customText.current.style.color = "red";
@@ -359,7 +359,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
     let data = event.target.value.replace(/\D/g, "");
 
     // Verificar o comprimento dos dados para definir se é CPF ou CNPJ
-    if (personType == 'pj') {
+    if (personType === 'pj') {
       // É CNPJ
       if (data.length > 12) {
         data = `${data.substr(0, 2)}.${data.substr(2, 3)}.${data.substr(5, 3)}/${data.substr(8, 4)}-${data.substr(12, 2)}`;
@@ -547,8 +547,8 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
     <div className="atualizar-perfil">
       <main>
 
-        {showSpinner && <button class="buttonload">
-          <i class="fa fa-spinner fa-spin"></i>CADASTRANDO PERFIL
+        {showSpinner && <button className="buttonload">
+          <i className="fa fa-spinner fa-spin"></i>CADASTRANDO PERFIL
         </button>}
 
         {alert && <AlertMsg message={"Cadastro Realizado, verifique a sua caixa de email para obter o acesso a plataforma"} />}
@@ -574,7 +574,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                 </label>
                 <div className="col-md-12 anuncio-options">
                   <Stack direction="horizontal" gap={2} className="justify-content-center">
-                    <Badge bg="white" style={{ fontSize: "18px", color: "blue" }}>{minisitio.codTipoAnuncio == 3 ? `ADESÃO AO PERFIL COMPLETO, promoção termina em... ${diasCampanha} Dias` : "Básico"}</Badge>
+                    <Badge bg="white" style={{ fontSize: "18px", color: "blue" }}>{minisitio.codTipoAnuncio === 3 ? `ADESÃO AO PERFIL COMPLETO, promoção termina em... ${diasCampanha} Dias` : "Básico"}</Badge>
                   </Stack>
                 </div>
               </div>
@@ -618,7 +618,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                 {radioCheck != 1 && <h2 className="webcard">
                   <span className="preco">R$ {precoFixo},00</span>/mês
                 </h2>}
-                {radioCheck == 1 && <h2 className="simples uppercase">
+                {radioCheck === 1 && <h2 className="simples uppercase">
                   Grátis
                 </h2>}
               </div>
@@ -690,9 +690,9 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                 {radioCheck != 1 && <TagsInput tagValue={setTagValue} value={tagValue} minisitio={minisitio} setMinisitio={setMinisitio} hasUserInteracted={hasUserInteracted} />}
 
                 <div className="row">
-                  <div class="col-md-4 col-xs-12">
-                    <div class="form-group input-icon margin-top-10">
-                      <i class="fa fa-compass icone-form p-0"></i>
+                  <div className="col-md-4 col-xs-12">
+                    <div className="form-group input-icon margin-top-10">
+                      <i className="fa fa-compass icone-form p-0"></i>
                       <select
                         name="codUf"
                         id="codUf4"
@@ -717,13 +717,13 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                     </div>
                   </div>
 
-                  <div class="col-md-8 col-xs-12">
-                    <div class="form-group selectCaderno form-group input-icon margin-top-10">
-                      <i class="fa fa-map-marker icone-form p-0"></i>
+                  <div className="col-md-8 col-xs-12">
+                    <div className="form-group selectCaderno form-group input-icon margin-top-10">
+                      <i className="fa fa-map-marker icone-form p-0"></i>
                       <select
                         name="codCaderno"
                         id="codUf5"
-                        class="form-control"
+                        className="form-control"
                         onChange={handleChange}
                         value={minisitio.codCaderno}
                         required
@@ -982,7 +982,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                   id="cashback_link"
                   className="form-control"
                   placeholder="Digite o link da parceria"
-                  value={minisitio.cashback_link == 0 ? "" : minisitio.cashback_link}
+                  value={minisitio.cashback_link === 0 ? "" : minisitio.cashback_link}
                   /* onChange={(e) => handleChange(e)} */
                   onChange={handleSelectChange}
                 />
@@ -1021,7 +1021,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                 />
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/redes/youtube.png" height={25} /></i>
+                <i><img alt="" src="/assets/img/redes/youtube.png" height={25} /></i>
                 <input
                   type="text"
                   name="descYouTube"
@@ -1057,7 +1057,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                 />{" "}
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/whatsapp.png" height={25} /></i>
+                <i><img alt="" src="/assets/img/teste/whatsapp.png" height={25} /></i>
                 <input
                   type="text"
                   name="descWhatsApp"
@@ -1069,7 +1069,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                 />{" "}
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/telegram.png" height={25} /></i>
+                <i><img alt="" src="/assets/img/teste/telegram.png" height={25} /></i>
                 <input
                   type="text"
                   name="descTelegram"
@@ -1081,7 +1081,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                 />{" "}
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/icons8-meu-negócio-48.png" height={25} /></i>
+                <i><img alt="" src="/assets/img/teste/icons8-meu-negócio-48.png" height={25} /></i>
                 <input
                   type="text"
                   name="descSkype"
@@ -1093,7 +1093,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                 />{" "}
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/facebook.png" height={25} /></i>
+                <i><img alt="" src="/assets/img/teste/facebook.png" height={25} /></i>
                 <input
                   type="text"
                   name="descFacebook"
@@ -1105,7 +1105,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                 />
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/instagram.png" height={25} /></i>
+                <i><img alt="" src="/assets/img/teste/instagram.png" height={25} /></i>
                 <input
                   type="text"
                   name="descInsta"
@@ -1117,7 +1117,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                 />
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/redes/unnamed.webp" height={25} style={{ borderRadius: "5px" }} /></i>
+                <i><img alt="" src="/assets/img/redes/unnamed.webp" height={25} style={{ borderRadius: "5px" }} /></i>
                 <input
                   type="text"
                   name="descTweeter"
@@ -1130,7 +1130,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                 />
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/linkedin.png" height={25} /></i>
+                <i><img alt="" src="/assets/img/teste/linkedin.png" height={25} /></i>
                 <input
                   type="text"
                   name="descLinkedin"
@@ -1178,7 +1178,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                 />
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/pix-2.png" height={25} style={{ borderRadius: "5px" }} /></i>
+                <i><img alt="" src="/assets/img/teste/pix-2.png" height={25} style={{ borderRadius: "5px" }} /></i>
                 <input
                   type="text"
                   name="descDonoPix"
@@ -1190,7 +1190,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                 />
               </div>
               <div className="input-icon margin-top-10">
-                <i><img src="/assets/img/teste/pix-2.png" height={25} style={{ borderRadius: "5px" }} /></i>
+                <i><img alt="" src="/assets/img/teste/pix-2.png" height={25} style={{ borderRadius: "5px" }} /></i>
                 <input
                   type="text"
                   name="descChavePix"
@@ -1284,7 +1284,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                         id="descTipoPessoa-pf"
                         value="pf"
                         onChange={(e) => setPersonType(e.target.value)}
-                        checked={personType == "pf"}
+                        checked={personType === "pf"}
                         className="mx-1"
                       />
                       Pessoa física
@@ -1297,7 +1297,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                         id="descTipoPessoa-pj"
                         value="pj"
                         onChange={(e) => setPersonType(e.target.value)}
-                        checked={personType == "pj"}
+                        checked={personType === "pj"}
                         className="mx-1"
                       />
                       Pessoa jurídica
@@ -1344,12 +1344,12 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                   required
                 />{" "}
               </div>
-              {/*  {radioCheck != 1 && <div class="input-icon margin-top-10">
+              {/*  {radioCheck != 1 && <div className="input-icon margin-top-10">
                 <h4 className="text-start pt-2">Responsável pela Indicação (opcional)</h4>
-                <div class="input-icon margin-top-10" id="codigoPromocional">
-                  <i class="fa fa-credit-card"></i>
+                <div className="input-icon margin-top-10" id="codigoPromocional">
+                  <i className="fa fa-credit-card"></i>
 
-                  <input type="text" name="discountHash" id="discountHash" value="" class="form-control" placeholder="Digite seu código" />
+                  <input type="text" name="discountHash" id="discountHash" value="" className="form-control" placeholder="Digite seu código" />
                   <input type="hidden" name="discountValue" value="" id="discountValue" />
                 </div>
               </div>} */}
@@ -1358,13 +1358,13 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
 
             {/* Forma de Pagamento */}
 
-            {(radioCheck != 1 && descontoAtivado == false) && <div
+            {(radioCheck != 1 && descontoAtivado === false) && <div
               className="assinatura webcard formaPagamento"
               style={{ display: "block" }}
             >
               <h2>Forma de Pagamento</h2>
             </div>}
-            {(radioCheck != 1 && descontoAtivado == false) && <div
+            {(radioCheck != 1 && descontoAtivado === false) && <div
               className="codigo-promocional webcard formaPagamento"
               style={{ display: "block" }}
             >
@@ -1405,7 +1405,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                   <i className="fa fa-download"></i>
                 </div>
                 <div className="col-md-11">
-                  <a href="/resources/pdfs/formulario_pa.pdf" target="_blank">
+                  <a href="/resources/pdfs/formulario_pa.pdf" target="_blank" rel="noreferrer">
                     <h3>Faça o download do formulário</h3>
                   </a>
                 </div>
@@ -1457,8 +1457,8 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                       </p>}
                     </div>
 
-                    <div class="conteudo comImagem" style={{ display: "none" }}>
-                      <img src={`${masterPath.url}/files/${minisitio.descImagem}`} height={191} />
+                    <div className="conteudo comImagem" style={{ display: "none" }}>
+                      <img alt="" src={`${masterPath.url}/files/${minisitio.descImagem}`} height={191} />
                     </div>
 
 
@@ -1566,7 +1566,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                     {radioCheck != 1 && <h2 className="webcard">
                       <span className="preco">R$ {precoFixo},00</span>/mês
                     </h2>}
-                    {radioCheck == 1 && <h2 className="simples uppercase">
+                    {radioCheck === 1 && <h2 className="simples uppercase">
                       Grátis
                     </h2>}
                   </div>

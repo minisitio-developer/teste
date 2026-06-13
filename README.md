@@ -2,156 +2,171 @@
 
 Sistema de guia comercial digital com backend Node.js/Express e frontend React.
 
+**Versao:** v2.1.29
+
 ---
 
-## 🚀 Iniciar Localmente
+## Iniciar Localmente
 
-### Pré-requisitos
+### Pre-requisitos
+
 - [Node.js v20+](https://nodejs.org)
 - MySQL v8 rodando na porta **3307** (ou altere `DB_PORT` no `.env`)
 
-### 1. Clonar e instalar dependências
+### Opcao A — Script automatico (Windows)
+
+```
+Clique duplo em iniciar_robusto.bat
+```
+
+O script verifica pre-requisitos, mata processos nas portas, verifica MySQL e inicia tudo.
+
+### Opcao B — Manual
 
 ```bash
+# Clonar
 git clone https://github.com/eduardotrindade/minisitio.git
 cd minisitio
 
-cd back
-npm install
-
-cd ../front
-npm install
-```
-
-### 2. Configurar variáveis de ambiente
-
-```bash
 # Backend
-cp back/.env.example back/.env
-# Edite back/.env com as credenciais do seu banco e chaves de API
-```
-
-### 3. Iniciar os serviços
-
-**Opção A — Script automático (Windows):**
-```
-Clique duplo em iniciar.bat
-```
-
-**Opção B — Manual:**
-```bash
-# Terminal 1 — Backend
 cd back
+npm install
+cp .env.example .env   # Configure as variaveis
 node index.js
 
-# Terminal 2 — Frontend (modo dev)
+# Frontend (outra janela)
 cd front
+npm install
 npm start
 ```
 
-### 4. Acessar
+### URLs
 
-| Serviço | URL |
-|---------|-----|
-| Frontend | http://localhost:3000 |
-| Backend API | http://localhost:3032/api |
+| Servico    | URL                          |
+|------------|------------------------------|
+| Frontend   | http://localhost:3000         |
+| Backend    | http://localhost:3032/api     |
+| MySQL      | localhost:3307                |
 
 ---
 
-## 🏗️ Build de Produção
+## Build de Producao
 
 ```bash
 cd front
 npm run build
 ```
 
-O build será gerado em `front/build/`. O backend já serve esta pasta automaticamente.
+O build e gerado em `front/build/`. O backend ja serve esta pasta automaticamente.
 
 ---
 
-## ⚙️ Variáveis de Ambiente
+## Variaveis de Ambiente
 
 ### `back/.env`
 
-| Variável | Descrição | Padrão |
+| Variavel | Descricao | Padrao |
 |----------|-----------|--------|
 | `PORT` | Porta do servidor backend | `3032` |
 | `NODE_ENV` | Ambiente (`development`/`production`) | `development` |
 | `DB_HOST` | Host do MySQL | `127.0.0.1` |
 | `DB_PORT` | Porta do MySQL | `3307` |
-| `DB_USER` | Usuário MySQL | `root` |
-| `DB_PASSWORD` | Senha MySQL | *(obrigatório)* |
+| `DB_USER` | Usuario MySQL | `root` |
+| `DB_PASSWORD` | Senha MySQL | *(obrigatorio)* |
 | `DB_NAME` | Nome do banco | `minisitio_local` |
-| `ALLOWED_ORIGINS` | Origens CORS permitidas (vírgula) | localhost |
-| `JWT_SECRET` | Chave secreta JWT (64+ chars) | *(obrigatório)* |
-| `MP_ACCESS_TOKEN_SANDBOX` | Token Mercado Pago (teste) | *(obrigatório)* |
-| `MP_ACCESS_TOKEN_PROD` | Token Mercado Pago (produção) | *(obrigatório)* |
+| `ALLOWED_ORIGINS` | Origens CORS permitidas | localhost |
+| `JWT_SECRET` | Chave JWT (64+ chars) | *(obrigatorio)* |
+| `MP_ACCESS_TOKEN_SANDBOX` | Token Mercado Pago (teste) | *(obrigatorio)* |
+| `MP_ACCESS_TOKEN_PROD` | Token Mercado Pago (producao) | *(obrigatorio)* |
+| `API_SECRET` | Chave secreta da API | *(obrigatorio)* |
+| `SECRET_KEY_WEBHOOK` | Chave do webhook | *(obrigatorio)* |
 
 ---
 
-## 🐳 Docker
+## Docker
 
 ```bash
-# Subir todos os serviços com Docker
+# Subir todos os servicos
 docker-compose up --build
 
 # Parar
 docker-compose down
 ```
 
+**Servicos Docker:**
+- Backend: porta 3032
+- Frontend: porta 3000
+- MySQL: porta 3307
+
 ---
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```
 minisitio/
-├── back/           # Backend Node.js/Express
-│   ├── config/     # Configurações (DB, JWT, SMTP)
-│   ├── controllers/# Lógica de negócios
-│   ├── models/     # Modelos Sequelize
-│   ├── routes/     # Rotas da API
-│   ├── middlewares/# Autenticação, validação
-│   └── index.js    # Ponto de entrada
+├── back/               # Backend Node.js/Express
+│   ├── config/         # Configuracoes (DB, JWT, SMTP)
+│   ├── controllers/    # Logica de negocios
+│   ├── models/         # Modelos Sequelize
+│   ├── routes/         # Rotas da API
+│   ├── middlewares/    # Autenticacao, validacao
+│   ├── crons/          # Tarefas agendadas
+│   └── index.js        # Ponto de entrada
 │
-├── front/          # Frontend React
+├── front/              # Frontend React
 │   ├── src/
-│   │   ├── components/ # Componentes reutilizáveis
-│   │   ├── views/      # Páginas principais
+│   │   ├── components/ # Componentes reutilizaveis
+│   │   ├── views/      # Paginas principais
 │   │   ├── admin/      # Painel administrativo
 │   │   ├── routes/     # Roteamento React Router
-│   │   └── config/     # Configuração de URLs
-│   └── build/          # Build de produção (gerado)
+│   │   └── config/     # Configuracao de URLs
+│   └── build/          # Build de producao (gerado)
 │
 ├── .github/workflows/  # CI/CD GitHub Actions
-├── docker-compose.yml  # Orquestração Docker
-└── iniciar.bat         # Script de inicialização Windows
+├── docker-compose.yml  # Orquestracao Docker
+├── iniciar.bat         # Script inicializacao Windows
+└── iniciar_robusto.bat # Script robusto com verificacoes
 ```
 
 ---
 
-## 🔐 Segurança
+## Seguranca
 
-Consulte o arquivo [SEGURANCA.md](SEGURANCA.md) para guia completo de segurança antes de publicar em produção.
+Consulte [SEGURANCA.md](SEGURANCA.md) para guia completo.
 
-**Antes de fazer deploy:**
-- [ ] Configurar `.env` com valores reais
-- [ ] Definir `ALLOWED_ORIGINS` com os domínios de produção
-- [ ] Usar um `JWT_SECRET` forte (64+ caracteres aleatórios)
-- [ ] Configurar SSL/HTTPS
+**Checklist pre-publicacao:**
+- [ ] `.env` configurado com valores reais
+- [ ] `ALLOWED_ORIGINS` com dominios de producao
+- [ ] `JWT_SECRET` com 64+ caracteres aleatorios
+- [ ] SSL/HTTPS configurado
+- [ ] Rate limiting ativo
+- [ ] Helmet.js ativo
 
 ---
 
-## 🔄 CI/CD
+## CI/CD
 
 O projeto usa GitHub Actions (`.github/workflows/ci.yml`):
-- **Push para `master`**: executa build do frontend e verifica o backend
+- **Push para `master`**: verifica sintaxe backend + build frontend
 
-Para deploy automático, configure os seguintes Secrets no repositório GitHub:
-- `REACT_APP_API_URL` — URL da API em produção
-- `REACT_APP_DOMAIN` — Domínio do frontend em produção
+### Secrets para configurar no GitHub:
+
+| Secret | Descricao |
+|--------|-----------|
+| `REACT_APP_API_URL` | URL da API em producao |
+| `REACT_APP_DOMAIN` | Dominio do frontend |
 
 ---
 
-## 📞 Suporte
+## Comandos Uteis
 
-Versão: `v2.1.29`
+```bash
+# Verificar sintaxe do backend
+node --check back/index.js
+
+# Build do frontend
+cd front && npm run build
+
+# Iniciar MySQL (Docker)
+docker run -d --name minisitio-mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=minisitio_local -p 3307:3306 mysql:8.0
+```

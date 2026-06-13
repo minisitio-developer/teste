@@ -735,7 +735,7 @@ Para 100000 linhas: 312500ms
                                     <option value="todos">CADERNO</option>
 
                                     {caderno.map(item => (
-                                        item.UF == estadoSelecionado &&
+                                        item.UF === estadoSelecionado &&
                                         <option key={item.codCaderno} value={item.nomeCaderno}>{item.nomeCaderno}</option>
                                     ))}
                                 </select>
@@ -747,7 +747,7 @@ Para 100000 linhas: 312500ms
                                         ref={campoBusca}
                                         placeholder="Código, Nome, Caderno, CPF/CNPJ, ID ou UF"
                                         className="pl-10 border-input rounded-md bg-transparent px-3 py-2 w-full text-sm"
-                                        onKeyDown={(e) => e.key == "Enter" ? buscarAnuncioId() : ''}
+                                        onKeyDown={(e) => e.key === "Enter" ? buscarAnuncioId() : ''}
                                     />
                                 </div>
 

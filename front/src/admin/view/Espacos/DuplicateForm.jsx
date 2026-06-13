@@ -107,7 +107,7 @@ const DuplicateForm = ({ option, setOption, onClose, selectId, setAnuncios }) =>
             icon: 'error',
             confirmButtonText: 'Entendi'
           });
-          if (res.message == "Token inválido") {
+          if (res.message === "Token inválido") {
             sessionStorage.removeItem('userTokenAccess');
             window.location.href = masterPath.domain + '/login?sessionExpired=true';
           }
@@ -156,7 +156,7 @@ const DuplicateForm = ({ option, setOption, onClose, selectId, setAnuncios }) =>
             icon: 'error',
             confirmButtonText: 'Entendi'
           });
-          if (res.message == "Token inválido") {
+          if (res.message === "Token inválido") {
             sessionStorage.removeItem('userTokenAccess');
             window.location.href = masterPath.domain + '/login?sessionExpired=true';
           }
@@ -200,7 +200,7 @@ const DuplicateForm = ({ option, setOption, onClose, selectId, setAnuncios }) =>
             icon: 'error',
             confirmButtonText: 'Entendi'
           });
-          if (res.message == "Token inválido") {
+          if (res.message === "Token inválido") {
             sessionStorage.removeItem('userTokenAccess');
             window.location.href = masterPath.domain + '/login?sessionExpired=true';
           }
@@ -233,7 +233,7 @@ const DuplicateForm = ({ option, setOption, onClose, selectId, setAnuncios }) =>
       </label>
       <div>
         <h6 style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>Estados:</h6>
-        {option == 2 && <select id="md-duplicate-select-1" className="md-duplicate-select" size="5" onChange={executarSelecao} multiple>
+        {option === 2 && <select id="md-duplicate-select-1" className="md-duplicate-select" size="5" onChange={executarSelecao} multiple>
           {
             uf.map((uf, i) => (
               <option key={i} value={uf.id_uf}>{uf.sigla_uf}</option>
@@ -243,7 +243,7 @@ const DuplicateForm = ({ option, setOption, onClose, selectId, setAnuncios }) =>
       </div>
       <div>
         <h6 style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>UF:</h6>
-        {option == 3 && <select id="md-duplicate-select-2" className="md-duplicate-select" size="5" onChange={executarSelecao}>
+        {option === 3 && <select id="md-duplicate-select-2" className="md-duplicate-select" size="5" onChange={executarSelecao}>
           {
             uf.map((uf, i) => (
               <option key={i} value={uf.sigla_uf}>{uf.sigla_uf}</option>
@@ -253,10 +253,10 @@ const DuplicateForm = ({ option, setOption, onClose, selectId, setAnuncios }) =>
       </div>
       <div>
         <h6 style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>Caderno:</h6>
-        {option == 3 && <select id="md-duplicate-select-3" className="md-duplicate-select" size="5" onChange={executarSelecaoCity} multiple>
+        {option === 3 && <select id="md-duplicate-select-3" className="md-duplicate-select" size="5" onChange={executarSelecaoCity} multiple>
           {
             caderno.map((cidades) => (
-              cidades.UF == ufSelected && (
+              cidades.UF === ufSelected && (
                 <option key={cidades.codCaderno} value={cidades.codCaderno}>{cidades.nomeCaderno}</option>
               )
             ))

@@ -115,17 +115,17 @@ function WebcardThumb(props) {
                             <div>
                                 {partner(listaIds.descImagem) &&
                                     <a href={listaIds.descLink} target="_blank" rel="noopener noreferrer">
-                                        <img src={`${masterPath.url}/files/logoParceiro/${listaIds.descImagem}`} alt="" />
+                                         <img src={`${masterPath.url}/files/logoParceiro/${listaIds.descImagem}`} alt="Logo do parceiro" />
                                     </a>
                                 }
                                 {partner(listaIds.descImagem2) != "" &&
                                     <a href={listaIds.descLink2} target="_blank" rel="noopener noreferrer">
-                                        <img src={`${masterPath.url}/files/logoParceiro/${listaIds.descImagem2}`} alt="" />
+                                         <img src={`${masterPath.url}/files/logoParceiro/${listaIds.descImagem2}`} alt="Logo do parceiro 2" />
                                     </a>
                                 }
                                 {partner(listaIds.descImagem3) != "" &&
                                     <a href={listaIds.descLink3} target="_blank" rel="noopener noreferrer">
-                                        <img src={`${masterPath.url}/files/logoParceiro/${listaIds.descImagem3}`} alt="" />
+                                         <img src={`${masterPath.url}/files/logoParceiro/${listaIds.descImagem3}`} alt="Logo do parceiro 3" />
                                     </a>
                                 }
                             </div>
@@ -156,7 +156,7 @@ function WebcardThumb(props) {
                     <div className='row p-2'>
 
                         {/*  <img src={`${masterPath.url}/files/${props.codImg}`} alt="" width={150} height={200} /> */}
-                        {thumb(imgDefault) && <img src={`${masterPath.url}/${imgDefault}`} alt="" width={150} style={{ height: "300px" }} />}
+                        {thumb(imgDefault) && <img src={`${masterPath.url}/${imgDefault}`} alt="Imagem do anúncio" width={150} style={{ height: "300px" }} />}
                     </div>
 
                     {!thumb(imgDefault) &&

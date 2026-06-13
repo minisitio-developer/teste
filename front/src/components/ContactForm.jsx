@@ -93,7 +93,7 @@ function ContactForm() {
         <div className="ContactForm bg-cinza">
             {loading &&
                 <button className="buttonload" style={{ display: "block" }}>
-                    <i class="fa fa-spinner fa-spin"></i>Carregando
+                    <i className="fa fa-spinner fa-spin"></i>Carregando
                 </button>
             }
             {alert && <AlertMsg message={"AGRADECEMOS PELO CONTATO! SUA  MENSAGEM FOI ENVIADA, AGUARDE CONTATO PELO DONO DO PERFIL"} setAlert={setAlert}/>}
@@ -174,7 +174,7 @@ function ContactForm() {
                 </div>
                 <input type="hidden" {...register('id')} value={idPerfil} />
                 {/*  <div className="form-group d-flex">
-                    <i class="fa fa-user"></i>
+                    <i className="fa fa-user"></i>
                     <input type="email" className="form-control" id="email" />
                 </div>
                 <div className="form-group">

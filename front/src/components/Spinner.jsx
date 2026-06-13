@@ -5,7 +5,7 @@ const Spinner = (props) => {
     return (
         <div className="spinner-main">
 
-            {props.progress == 0 &&
+            {props.progress === 0 &&
                 <button className="" style={style} >{/* ref={loadingButton} */}
                     <i className="fa fa-spinner fa-spin"></i>Carregando
                 </button>
@@ -17,7 +17,7 @@ const Spinner = (props) => {
                 </button>
             }
 
-            {props.progress == undefined &&
+            {props.progress === undefined &&
                 <button className="" style={style} >{/* ref={loadingButton} */}
                     <i className="fa fa-spinner fa-spin"></i>Carregando
                 </button>

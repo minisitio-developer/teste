@@ -124,7 +124,7 @@ function Busca(props) {
             .then((res) => {
                 setUfs(res);
                 //setUf(ufSalva);
-                if (location.pathname == '/') {
+                if (location.pathname === '/') {
                     getUserLocation();
                     sessionStorage.removeItem("querySearch");
                     document.querySelector('#inputBusca').value = "";
@@ -145,7 +145,7 @@ function Busca(props) {
             .then((x) => x.json())
             .then((res) => {
                 setCaderno(res);
-                if (location.pathname == '/') {
+                if (location.pathname === '/') {
                     ///getUserLocation();
                 }
             })
@@ -384,7 +384,7 @@ function Busca(props) {
         if (uf.length > 0) {
             //console.log(codCaderno)
             if (codCaderno != null) {
-                const ufLoc = caderno.find((item) => item.nomeCaderno == codCaderno.toString().toUpperCase())
+                const ufLoc = caderno.find((item) => item.nomeCaderno === codCaderno.toString().toUpperCase())
                 //console.log(ufLoc)
                 if (ufLoc) {
                     setCodUf(ufLoc.UF);
@@ -416,7 +416,7 @@ function Busca(props) {
             return;
         }
         
-        if (qtdePromocao == 1) {
+        if (qtdePromocao === 1) {
             navigate(`/perfil/${promocao[0].codAnuncio}?promocao=ativa`);
         } else {
             const uf = document.querySelector('#codUf2').value;
@@ -428,8 +428,8 @@ function Busca(props) {
     return (
         <div className='border-busca container-fluid formulario formulario-home busca-caderno'>
             {loading &&
-                <button class="buttonload" style={{ display: "block" }}>
-                    <i class="fa fa-spinner fa-spin"></i>Carregando
+                <button className="buttonload" style={{ display: "block" }}>
+                    <i className="fa fa-spinner fa-spin"></i>Carregando
                 </button>
             }
 
@@ -459,7 +459,7 @@ function Busca(props) {
                                             {/*  <option value="TODO">TODO</option> */}
                                             <option value="CIDADE">CIDADE</option>
                                             {caderno.map((item) => (
-                                                item.UF == ufSelected &&
+                                                item.UF === ufSelected &&
                                                 <option id={item.codCaderno} key={item.codCaderno} name={item.nomeCaderno} value={item.nomeCaderno}>{item.nomeCaderno}</option>
                                             ))}
                                         </select>
@@ -491,7 +491,7 @@ function Busca(props) {
                             </div>
                             <div className="row d-flex">
 
-                                <div className='class="col-lg-9 col-md-10 col-sm-8 col-xs-12"'>
+                                <div className='className="col-lg-9 col-md-10 col-sm-8 col-xs-12"'>
                                     <div className="form-group input-icon">
                                         <i className="fa fa-tags"></i>
                                         <input id="inputBusca" name="inputBusca" type="text" className="form-control" placeholder="Digite nome ou atividade" onKeyDown={teclaLogin} />

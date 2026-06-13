@@ -21,7 +21,7 @@ const Campanha = database.define("Campanha", {
     field: "id_promocional", // mapeia para a coluna no banco
   },
   idRetorno: {
-    type: Sequelize.TEXT,
+    type: Sequelize.INTEGER,
     allowNull: false,
     field: "id_retorno", // mapeia para a coluna no banco
   },

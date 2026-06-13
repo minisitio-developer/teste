@@ -71,8 +71,8 @@ function Institucional() {
     return (
         <div className="painel-admin institucional">
 
-            {showSpinner && <button class="buttonload">
-                <i class="fa fa-spinner fa-spin"></i>Carregando
+            {showSpinner && <button className="buttonload">
+                <i className="fa fa-spinner fa-spin"></i>Carregando
             </button>}
 
             <header>
@@ -82,62 +82,62 @@ function Institucional() {
                 <Busca paginaAtual={"caderno"} />
                 <h1 id="title-caderno" className='py-2 text-center'>Institucional</h1>
 
-                <div class="container my-5">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="bg-cinza margin-bottom-20">
-                                <h2 class="px-2"><i class="fa fa-clock-o"></i> A Empresa</h2>
+                <div className="container my-5">
+                    <div className="row">
+                        <div className="col-md-6">
+                            <div className="bg-cinza margin-bottom-20">
+                                <h2 className="px-2"><i className="fa fa-clock-o"></i> A Empresa</h2>
                                 <p>{data.inst_empresa}</p>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="bg-cinza margin-bottom-20">
-                                <h2 class="px-2"><i class="fa fa-clock-o"></i> Objetivo</h2>
+                        <div className="col-md-6">
+                            <div className="bg-cinza margin-bottom-20">
+                                <h2 className="px-2"><i className="fa fa-clock-o"></i> Objetivo</h2>
                                 <p>{data.inst_objetivo}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="row py-4">
-                        <div class="col-md-6">
-                            <div class="bg-cinza margin-bottom-20">
-                                <h2 class="px-2"><i class="fa fa-wifi"></i> Nossa visão</h2>
+                    <div className="row py-4">
+                        <div className="col-md-6">
+                            <div className="bg-cinza margin-bottom-20">
+                                <h2 className="px-2"><i className="fa fa-wifi"></i> Nossa visão</h2>
                                 <p>{data.inst_visao}</p>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="bg-cinza">
-                                <h2 class="px-2"><i class="fa fa-globe"></i> Nossa missão</h2>
+                        <div className="col-md-6">
+                            <div className="bg-cinza">
+                                <h2 className="px-2"><i className="fa fa-globe"></i> Nossa missão</h2>
                                 <p>{data.inst_missao}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 margin-bottom-20">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3839.160478293487!2d-47.89486528457415!3d-15.79548998905047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a3aef5b363915%3A0x664043907f15a04d!2sVen%C3%A2ncio+Shopping!5e0!3m2!1spt-BR!2sbr!4v1490820737178" width="100%" height="350" frameborder="0" style={{ "border": "0" }} allowfullscreen=""></iframe>
+                    <div className="row">
+                        <div className="col-md-12 margin-bottom-20">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3839.160478293487!2d-47.89486528457415!3d-15.79548998905047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a3aef5b363915%3A0x664043907f15a04d!2sVen%C3%A2ncio+Shopping!5e0!3m2!1spt-BR!2sbr!4v1490820737178" width="100%" height="350" frameBorder="0" style={{ "border": "0" }} allowFullScreen=""></iframe>
                         </div>
                     </div>
-                    <div class="row area-parceiros">
-                        <div class="col-md-12">
-                            <div class="bg-cinza">
-                                <h2><i class="fa fa-users"></i> Parceiros</h2>
-                                <div class="row parceiros">
-                                    <div class="col-md-3 col-sm-3">
-                                        <a href={data.inst_link1} target="_blank" title="5it" class="thumbnail" rel="noreferrer">
+                    <div className="row area-parceiros">
+                        <div className="col-md-12">
+                            <div className="bg-cinza">
+                                <h2><i className="fa fa-users"></i> Parceiros</h2>
+                                <div className="row parceiros">
+                                    <div className="col-md-3 col-sm-3">
+                                        <a href={data.inst_link1} target="_blank" title="5it" className="thumbnail" rel="noreferrer">
                                             <img src={`${masterPath.url}/files/institucional/${data.inst_img1}`} alt={data.inst_img1} />
                                         </a>
                                     </div>
-                                    <div class="col-md-3 col-sm-3">
-                                        <a href={data.inst_link2} target="_blank" title="3LT Marcas e Patentes" class="thumbnail" rel="noreferrer">
+                                    <div className="col-md-3 col-sm-3">
+                                        <a href={data.inst_link2} target="_blank" title="3LT Marcas e Patentes" className="thumbnail" rel="noreferrer">
                                             <img src={`${masterPath.url}/files/institucional/${data.inst_img2}`} alt={data.inst_img2} />
                                         </a>
                                     </div>
-                                    <div class="col-md-3 col-sm-3">
-                                        <a href={data.inst_link3} target="_blank" title="Cert Americas" class="thumbnail" rel="noreferrer">
+                                    <div className="col-md-3 col-sm-3">
+                                        <a href={data.inst_link3} target="_blank" title="Cert Americas" className="thumbnail" rel="noreferrer">
                                             <img src={`${masterPath.url}/files/institucional/${data.inst_img3}`} alt={data.inst_img3} />
                                         </a>
                                     </div>
-                                    <div class="col-md-3 col-sm-3">
-                                        <a href={data.inst_link4} target="_blank" title="OMG Agencia de Deseño" class="thumbnail" rel="noreferrer">
+                                    <div className="col-md-3 col-sm-3">
+                                        <a href={data.inst_link4} target="_blank" title="OMG Agencia de Deseño" className="thumbnail" rel="noreferrer">
                                             <img src={`${masterPath.url}/files/institucional/${data.inst_img4}`} alt={data.inst_img4} />
                                         </a>
                                     </div>

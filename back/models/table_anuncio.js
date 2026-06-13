@@ -3,7 +3,6 @@ const database = require('../config/db');
 const Caderno = require('./table_caderno');
 const Uf = require('./table_uf');
 const Usuario = require('./table_usuarios');
-const Desconto = require('./table_desconto');
 const Atividade = require('./table_atividade');
 const Pagamento = require('./table_pagamentos');
 const Promocao = require('./table_promocao');
@@ -135,7 +134,7 @@ const Anuncio = database.define('anuncio', {
     },
 
     descAnuncio: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(255),
         allowNull: false,
         unique: false,
         validate: {
@@ -169,7 +168,7 @@ const Anuncio = database.define('anuncio', {
     },
 
     descTelefone: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(50),
         allowNull: false,
         unique: false,
         validate: {
@@ -257,7 +256,7 @@ const Anuncio = database.define('anuncio', {
     },
 
     descCPFCNPJ: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(150),
         allowNull: false,
         unique: false,
         validate: {
@@ -539,8 +538,6 @@ const Anuncio = database.define('anuncio', {
     {
         freezeTableName: true,
         timestamps: true,
-    },
-    {
         indexes: [
             {
                 name: 'idx_descCPFCNPJ',
@@ -579,8 +576,8 @@ const Anuncio = database.define('anuncio', {
                 fields: ['createdAt'], // O campo para o qual o índice será criado
             },
             {
-                name: 'idx_codDuplicado ',
-                fields: ['codDuplicado '], // O campo para o qual o índice será criado
+                name: 'idx_codDuplicado',
+                fields: ['codDuplicado'], // O campo para o qual o índice será criado
             },
         ]
     });
@@ -594,7 +591,7 @@ Anuncio.beforeCreate((instance, options) => {
 Anuncio.belongsTo(Caderno, {
     constraints: true,
     foreignKey: 'codCaderno',
-    targetKey: 'nomeCaderno'
+    targetKey: 'codCaderno'
 });
 
 Anuncio.belongsTo(Uf, {
@@ -609,7 +606,7 @@ Anuncio.belongsTo(Uf, {
 }); */
 
 Anuncio.belongsTo(Usuario, {
-    constraints: true,
+    constraints: false,
     foreignKey: 'descCPFCNPJ',
     targetKey: 'descCPFCNPJ',
     attributes: ['descNome', 'descCPFCNPJ', 'senha', 'descEmail', 'descTelefone']

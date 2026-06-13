@@ -71,7 +71,7 @@ const AssinanteCadastro = (props) => {
     let flag = false;
     
     document.querySelectorAll(".form-cadastro input").forEach((item, i) => {
-      if (item.value.trim() == '' && item.name != 'codUsuario') {
+      if (item.value.trim() === '' && item.name != 'codUsuario') {
         item.style.border = "1px solid red";
         flag = false;
         //console.log(item.value)
@@ -81,7 +81,7 @@ const AssinanteCadastro = (props) => {
         flag = true;
       }
       
-      if (document.querySelectorAll(".form-cadastro input").length == i + 1 && flag) {
+      if (document.querySelectorAll(".form-cadastro input").length === i + 1 && flag) {
         console.log("ok");
 
         loadingButton.current.style.display = "block";
@@ -141,7 +141,7 @@ const AssinanteCadastro = (props) => {
         } else {
           loadingButton.current.style.display = "none";
 
-          if(res.message.original.errno == 1062) {
+          if(res.message.original.errno === 1062) {
             setAlert(true);
           }
         }
@@ -235,7 +235,7 @@ const AssinanteCadastro = (props) => {
 
     }
 
-    if (obj.descCPFCNPJ == "") {
+    if (obj.descCPFCNPJ === "") {
       alert("Preencha todos os campos");
       return;
     }
@@ -277,8 +277,8 @@ const AssinanteCadastro = (props) => {
 
       {alert && <AlertMsg message={"O cpf informado já está cadastrado no sistema"}/>}
 
-      <button class="buttonload" style={{ display: "none" }} ref={loadingButton}>
-        <i class="fa fa-spinner fa-spin"></i>Carregando
+      <button className="buttonload" style={{ display: "none" }} ref={loadingButton}>
+        <i className="fa fa-spinner fa-spin"></i>Carregando
       </button>
 
       {/* <!-- CADASTRO --> */}

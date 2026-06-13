@@ -70,8 +70,8 @@ function Listar(props) {
     return (
         <div className="painel-admin">
 
-            {showSpinner && <button class="buttonload">
-                <i class="fa fa-spinner fa-spin"></i>Carregando
+            {showSpinner && <button className="buttonload">
+                <i className="fa fa-spinner fa-spin"></i>Carregando
             </button>}
 
             {/*  <header>
@@ -85,18 +85,18 @@ function Listar(props) {
                     <div className='col-md-12'>
                         {/*  <UserNav /> */}
                         <div className="row lista">
-                            <div class="col-md-12">
-                                <div class="bg-cinza" style={{ "padding-top": "10px" }}>
-                                    <div class="row">
-                                        <div class="col-md-6">
+                            <div className="col-md-12">
+                                <div className="bg-cinza" style={{ "padding-top": "10px" }}>
+                                    <div className="row">
+                                        <div className="col-md-6">
 
                                         </div>
-                                        <div class="col-md-6 text-right">
-                                            <input id="buscar" class="pull-right margin-bottom-0" type="text" placeholder="Buscar" />
+                                        <div className="col-md-6 text-right">
+                                            <input id="buscar" className="pull-right margin-bottom-0" type="text" placeholder="Buscar" />
                                         </div>
-                                        <div class="col-md-12" style={{ "padding-top": "10px" }}>
+                                        <div className="col-md-12" style={{ "padding-top": "10px" }}>
                                             <div id="paginacao">
-                                                <table class="table table-bordered table-striped table-hover">
+                                                <table className="table table-bordered table-striped table-hover">
                                                     <thead>
                                                         <tr>
                                                             <th style={{ "width": "132px" }}>--</th>
@@ -117,17 +117,17 @@ function Listar(props) {
                                                         {anuncios.map((item) => (
                                                             <tr id={item.codAnuncio}>
                                                                 <td>
-                                                                    <a class="btn btn-xs btn-success" title="Editar" href="/12178481426/criar-anuncio/582210" onClick={(e) => props.btnEdit(e, 2)}>
+                                                                    <a className="btn btn-xs btn-success" title="Editar" href="/12178481426/criar-anuncio/582210" onClick={(e) => props.btnEdit(e, 2)}>
                                                                         Editar
                                                                     </a>
-                                                                    <a class="btn btn-xs btn-danger" title={item.codAnuncio} code={item.codAnuncio} href="/#" onClick={(e) => { e.preventDefault(); apagarAnuncio(e); }}>
+                                                                    <a className="btn btn-xs btn-danger" title={item.codAnuncio} code={item.codAnuncio} href="/#" onClick={(e) => { e.preventDefault(); apagarAnuncio(e); }}>
                                                                         Apagar
                                                                     </a>
                                                                 </td>
                                                                 <td>{item.descAnuncio}</td>
                                                                 <td>{item.codAnuncio}</td>
                                                                 <td>
-                                                                    <a class="btn btn-xs btn-success" href="/#">Isento</a>
+                                                                    <a className="btn btn-xs btn-success" href="/#">Isento</a>
                                                                 </td>
                                                                 <td>{item.createdAt.split("T")[0]}</td>
                                                                 <td>{item.updatedAt.split("T")[0]}</td>
@@ -143,7 +143,7 @@ function Listar(props) {
                                                                         target="_blank"
                                                                         rel="noopener noreferrer"
                                                                     >
-                                                                        <i class="fa fa-eye"></i>
+                                                                        <i className="fa fa-eye"></i>
                                                                         Ver
                                                                     </a>
                                                                 </td>
@@ -151,23 +151,23 @@ function Listar(props) {
                                                         ))}
                                                     </tbody>
                                                 </table>
-                                                <div class="row">
-                                                    <div class="col-md-6">
+                                                <div className="row">
+                                                    <div className="col-md-6">
                                                         <p>Página {dadoPaginacao.paginaAtual}/{dadoPaginacao.totalPaginas} (Total: {dadoPaginacao.totalItem})</p>
                                                     </div>
-                                                    {/*  <div class="col-md-6">
-                                                        <nav aria-label="Page navigation" class="pull-right">
-                                                            <ul class="pagination">
-                                                                <li class="disabled">
+                                                    {/*  <div className="col-md-6">
+                                                        <nav aria-label="Page navigation" className="pull-right">
+                                                            <ul className="pagination">
+                                                                <li className="disabled">
                                                                     <a href="javascript:;" onclick="return false;">Primeira</a>
                                                                 </li>
-                                                                <li class="disabled">
+                                                                <li className="disabled">
                                                                     <a href="javascript:;" onclick="return false;">Anterior</a>
                                                                 </li>
-                                                                <li class="disabled">
+                                                                <li className="disabled">
                                                                     <a href="javascript:;" onclick="return false;">Próxima</a>
                                                                 </li>
-                                                                <li class="disabled">
+                                                                <li className="disabled">
                                                                     <a href="javascript:;" onclick="return false;">Última</a>
                                                                 </li>
                                                             </ul>

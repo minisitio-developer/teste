@@ -45,13 +45,13 @@ const Localidade = () => {
   return (
     <div className="localidade">
       <div className="row">
-        <div class="col-md-4 col-xs-12">
-          <div class="form-group input-icon margin-top-10">
-            <i class="fa fa-compass icone-form p-0"></i>
+        <div className="col-md-4 col-xs-12">
+          <div className="form-group input-icon margin-top-10">
+            <i className="fa fa-compass icone-form p-0"></i>
             <select
               name="codUf"
               id="codUf6"
-              class="form-control"
+              className="form-control"
               onChange={executarSelecao}
             >
               <option value="" selected="selected">
@@ -66,14 +66,14 @@ const Localidade = () => {
           </div>
         </div>
 
-        <div class="col-md-8 col-xs-12">
-          <div class="form-group selectCaderno form-group input-icon margin-top-10">
-            <i class="fa fa-map-marker icone-form p-0"></i>
-            <select name="codCaderno" id="codUf7" class="form-control">
+        <div className="col-md-8 col-xs-12">
+          <div className="form-group selectCaderno form-group input-icon margin-top-10">
+            <i className="fa fa-map-marker icone-form p-0"></i>
+            <select name="codCaderno" id="codUf7" className="form-control">
               <option value="">- TODO -</option>
               {caderno.map(
                 (item) =>
-                  item.codUf == ufSelected && (
+                  item.codUf === ufSelected && (
                     <option
                       id={item.codCaderno}
                       key={item.codCaderno}
