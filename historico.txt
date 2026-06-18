@@ -20,13 +20,10 @@
 - Arquivos movidos para legado/: serverold.js, sync_db.js, back.log, server copy.js, Busca copy.jsx, Mosaico copy.jsx, Users.jsx, FormCadastro.jsx, Modal.jsx, duplicate files, etc.
 - Arquivos mantidos em front/src/: BntActivate.jsx, MsgConfirm.jsx, HelpTip.jsx, FieldsetPatrocinador.jsx, formConfig.jsx, ChooseFilePdf.jsx, controllerCardlist.js, moverParaTop.js, GlobalShare.jsx, ShareButton.jsx, tableRequests.js, UserNav.jsx, Cardlist.jsx, Duplicate.jsx, DuplicateForm.jsx, Modal.jsx, checkoutUpdate.js, ChooseFile1.jsx.
 
-## CORREÇÃO DO BANCO DE DADOS - 13 de Junho de 2026
+## ATUALIZAÇÃO DE 17 de Junho de 2026
 
-- Banco de dados estava com apenas 5 UFs (BA, ES, MG, RJ, SP) e 0 cadernos.
-- Causa: seed_uf.sql original só tinha 5 UFs, banco nunca foi populado com dump completo.
-- Solução: extraído INSERT de uf e caderno do dump.sql (15GB) e importado no banco.
-- Resultado: 27 UFs + 5.625 municípios (cadernos) importados com sucesso.
-- UFs por IBGE: AC(12), AL(27), AM(13), AP(16), BA(29), CE(23), DF(53), ES(32), GO(52), MA(21), MG(31), MS(50), MT(51), PA(15), PB(25), PE(26), PI(22), PR(41), RJ(33), RN(24), RO(11), RR(14), RS(43), SC(42), SE(28), SP(35), TO(17).
-- seed_uf.sql atualizado com as 27 UFs corretas.
-- API testada: /api/ufs retorna 27 UFs, /api/cadernos?uf=XX retorna cidades de cada UF.
-- CORS testado: sem erros com Origin header.
+- Corrigido conflito de portas no Docker (frontend: 3000 -> 3001).
+- Corrigida conexão do backend com o banco de dados (host: db).
+- Tentativa de depuração de erro nas comboboxes de UF e Cidade no componente Busca.jsx.
+- **Segurança e Versionamento:** Criada branch `bkp-versao-atual` para salvar o estado atual. O plano para o próximo dia útil é reverter para a versão de 4 dias atrás para garantir estabilidade.
+
