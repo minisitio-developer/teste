@@ -132,10 +132,17 @@ const Users = () => {
                     window.location.reload();
                     return Promise.reject('Sessão expirada');
                 }
+                if (x.status === 409) {
+                    return x.json().then((data) => {
+                        Swal.fire("Bloqueado", data.message, "warning");
+                        setShowMsgBox(false);
+                        return Promise.reject(data.message);
+                    });
+                }
                 return x.json();
             })
             .then((res) => {
-                if (res.success) {
+                if (res && res.success) {
                     fetch(`${masterPath.url}/admin/usuario?page=${param}`)
                         .then((x) => x.json())
                         .then((res) => {
@@ -154,9 +161,7 @@ const Users = () => {
             }).catch((error) => {
                 if (error === 'Sessão expirada') {
                     console.log("Sessão expirada, redirecionamento já realizado.");
-                    // Aqui você pode evitar que o erro seja mostrado globalmente
                 } else {
-                    // Trate outros erros aqui, se necessário
                     console.error('Erro na requisição:', error);
                 }
             });
@@ -348,8 +353,8 @@ const Users = () => {
                 {showSpinner && <Spinner progress={progressExport} />}
                 {showMsgBox && <MsgConfirm
                     title={"Atenção!"}
-                    msg={"Ao apagar esse usuário todos o espaços ligados a ele serão deletados."}
-                    btnTitle={"Apagar"}
+                    msg={"Tem certeza que deseja excluir este usuário?"}
+                    btnTitle={"Excluir"}
                     funAction={apagarUser}
                     setShowMsgBox={setShowMsgBox} />}
                 <h1 className="px-4 text-xl font-bold">Usuários</h1>

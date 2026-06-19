@@ -857,14 +857,24 @@ module.exports = {
         const uuid = req.params.id;
 
         try {
-            //Atividades
+            const anunciosVinculados = await Anuncio.count({
+                where: { codCaderno: uuid }
+            });
+
+            if (anunciosVinculados > 0) {
+                return res.status(409).json({
+                    success: false,
+                    message: `Não é possível excluir este caderno. Existem ${anunciosVinculados} anúncio(s) vinculados. Migre os anúncios para outro caderno antes de excluir.`
+                });
+            }
+
             const resultCaderno = await Cadernos.destroy({
                 where: {
                     codCaderno: uuid
                 }
 
             });
-            res.json({ success: true, message: `Usuário ${uuid} apagado da base!` });
+            res.json({ success: true, message: `Registro ${uuid} apagado da base!` });
         } catch (err) {
             res.json(err);
         }
@@ -1164,7 +1174,17 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
         const uuid = req.params.id;
 
         try {
-            //Atividades
+            const anunciosVinculados = await Anuncio.count({
+                where: { codAtividade: uuid }
+            });
+
+            if (anunciosVinculados > 0) {
+                return res.status(409).json({
+                    success: false,
+                    message: `Não é possível excluir esta atividade. Existem ${anunciosVinculados} anúncio(s) vinculados. Migre os anúncios para outra atividade antes de excluir.`
+                });
+            }
+
             const resultAnuncio = await Atividade.destroy({
                 where: {
                     id: uuid
@@ -1503,11 +1523,27 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
         const uuid = req.params.id;
 
         try {
-            //const resultDesconto = await Descontos.findAll({ where: { idDesconto: uuid } });
+            const anunciosVinculados = await Anuncio.count({
+                where: { codDesconto: uuid }
+            });
 
-            //const apagarUsuario = await Usuarios.destroy({ where: { codUsuario: resultDesconto[0].idUsuario } });
+            if (anunciosVinculados > 0) {
+                return res.status(409).json({
+                    success: false,
+                    message: `Não é possível excluir este desconto. Existem ${anunciosVinculados} anúncio(s) vinculados. Desvincule os anúncios antes de excluir.`
+                });
+            }
 
-            //const apagarEspaco = await Anuncio.destroy({ where: { codUsuario: resultDesconto[0].idUsuario } });
+            const usuariosVinculados = await Usuarios.count({
+                where: { codDesconto: uuid }
+            });
+
+            if (usuariosVinculados > 0) {
+                return res.status(409).json({
+                    success: false,
+                    message: `Não é possível excluir este desconto. Existem ${usuariosVinculados} usuário(s) vinculados. Desvincule os usuários antes de excluir.`
+                });
+            }
 
             const resultAnuncio = await Descontos.destroy({ where: { idDesconto: uuid } });
 
@@ -1516,7 +1552,6 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
         } catch (err) {
             res.json(err);
         }
-        //res.json({ success: true, message: `Usuário ${uuid} apagado da base!`, teste: resultDesconto[0].idUsuario });
 
     },
     buscarId: async (req, res) => {

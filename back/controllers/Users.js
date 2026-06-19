@@ -262,22 +262,23 @@ module.exports = {
         const uuid = req.params.id;
 
         try {
-            //Atividades
+            const anunciosVinculados = await Anuncio.count({
+                where: { codUsuario: uuid }
+            });
+
+            if (anunciosVinculados > 0) {
+                return res.status(409).json({
+                    success: false,
+                    message: `Não é possível excluir este usuário. Existem ${anunciosVinculados} anúncio(s) vinculados. Migre os anúncios para outro usuário antes de excluir.`
+                });
+            }
+
             const resultAnuncio = await Users.destroy({
                 where: {
                     codUsuario: uuid
                 }
 
             });
-
-            if (resultAnuncio) {
-                const apagarEspaco = await Anuncio.destroy({
-                    where: {
-                        codUsuario: uuid
-                    }
-
-                });
-            }
 
             res.json({ success: true, message: resultAnuncio });
         } catch (err) {

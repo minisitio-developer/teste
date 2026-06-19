@@ -4,12 +4,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import '../../assets/css/users.css';
 import 'font-awesome/css/font-awesome.min.css';
 import { masterPath, version } from '../../../config/config';
-
+import Swal from 'sweetalert2';
 
 //componente
 import Header from "../Header";
 import Pagination from '../../components/Pagination';
 import Spinner from '../../../components/Spinner';
+import MsgConfirm from '../../components/MsgConfirm';
 
 const Atividades = () => {
 
@@ -20,6 +21,7 @@ const Atividades = () => {
     const [selectId, setSelectId] = useState();
     const [atividades, setAtividades] = useState([]);
     const [showSpinner, setShowSpinner] = useState(true);
+    const [showMsgBox, setShowMsgBox] = useState(false);
 
     const location = useLocation();
     const navigator = useNavigate();
@@ -72,22 +74,33 @@ const Atividades = () => {
                 "authorization": 'Bearer ' + tokenAuth
             },
         })
-            .then((x) => x.json())
+            .then((x) => {
+                if (x.status === 401) {
+                    navigate('/login');
+                    return Promise.reject('Sessão expirada');
+                }
+                if (x.status === 409) {
+                    return x.json().then((data) => {
+                        Swal.fire("Bloqueado", data.message, "warning");
+                        return Promise.reject(data.message);
+                    });
+                }
+                return x.json();
+            })
             .then((res) => {
-                setShowSpinner(true);
-                if (res.success) {
+                if (res && res.success) {
+                    setShowSpinner(true);
                     fetch(`${masterPath.url}/admin/atividades/read?page=${param}`)
                         .then((x) => x.json())
                         .then((res) => {
-                            //setCidade(res.message.anuncios);
                             setAtividades(res.message.atividades)
                             setPaginas(res.message.totalPaginas)
                             setShowSpinner(false);
-                            //console.log(res.message);
                         })
+                    Swal.fire("Excluído!", "Atividade removida com sucesso.", "success");
                 }
-
             })
+            .catch(() => {})
     };
 
     function buscarUserId() {
@@ -141,6 +154,12 @@ const Atividades = () => {
             </header> */}
             <section>
                 {showSpinner && <Spinner />}
+                {showMsgBox && <MsgConfirm
+                    title={"Atenção!"}
+                    msg={"Tem certeza que deseja excluir esta atividade?"}
+                    btnTitle={"Excluir"}
+                    funAction={apagarUser}
+                    setShowMsgBox={setShowMsgBox} />}
 
                 <h1 className="px-4">Atividades</h1>
                 <div className="container-fluid py-4 px-4">
@@ -149,7 +168,7 @@ const Atividades = () => {
                             <button type="button" className="btn custom-button" onClick={() => navigator('/admin/atividades/cadastro')}>Adicionar</button>
                             <button type="button" className="btn btn-info custom-button mx-2 text-light" onClick={() => navigator(`/admin/atividades/editar?id=${selectId}`)}>Editar</button>
                             <button type="button" className="btn custom-button" onClick={exportExcell}>Exportar</button>
-                            <button type="button" className="btn btn-danger custom-button text-light mx-2" onClick={apagarUser}>Apagar</button>
+                            <button type="button" className="btn btn-danger custom-button text-light mx-2" onClick={() => setShowMsgBox(true)}>Apagar</button>
                         </div>
                         <div className="span6 col-md-6">
                             <div className="pull-right d-flex justify-content-center align-items-center">

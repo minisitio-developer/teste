@@ -139,24 +139,47 @@ const Espacos = () => {
             });
             return;
         }
-        setShowSpinner(true);
-        fetch(`${masterPath.url}/admin/anuncio/delete/${selectId}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess')
-            },
+        Swal.fire({
+            title: "Tem certeza?",
+            text: "Deseja excluir este anúncio?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim, excluir!",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setShowSpinner(true);
+                fetch(`${masterPath.url}/admin/anuncio/delete/${selectId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess')
+                    },
+                })
+                    .then((x) => {
+                        if (x.status === 401) {
+                            navigate('/login');
+                            return Promise.reject('Sessão expirada');
+                        }
+                        if (x.status === 409) {
+                            return x.json().then((data) => {
+                                Swal.fire("Bloqueado", data.message, "warning");
+                                return Promise.reject(data.message);
+                            });
+                        }
+                        return x.json();
+                    })
+                    .then((res) => {
+                        if (res && res.success) {
+                            setShowSpinner(false);
+                            Swal.fire("Excluído!", "Anúncio removido.", "success");
+                            document.querySelector(".selecionada")?.remove();
+                        }
+                    })
+                    .catch(() => { setShowSpinner(false); })
+            }
         })
-            .then((x) => x.json())
-            .then((res) => {
-                console.log(res)
-                if (res.success) {
-                    setShowSpinner(false);
-                    alert("anuncio apagado")
-                    document.querySelector(".selecionada").remove();
-                }
-
-            })
     };
 
     function apagarMultiplosAnucios() {

@@ -12,6 +12,8 @@ import Header from "../Header";
 import Pagination from '../../components/Pagination';
 import Spinner from '../../../components/Spinner';
 import BtnActivate from '../../components/BntActivate';
+import MsgConfirm from '../../components/MsgConfirm';
+import Swal from 'sweetalert2';
 
 const GerenciarIds = () => {
 
@@ -26,6 +28,7 @@ const GerenciarIds = () => {
     const [selectId, setSelectId] = useState();
     const [showSpinner, setShowSpinner] = useState(true);
     const [del, setDel] = useState(false);
+    const [showMsgBox, setShowMsgBox] = useState(false);
 
     const location = useLocation();
 
@@ -87,16 +90,28 @@ const GerenciarIds = () => {
                 "authorization": 'Bearer ' + masterPath.accessToken
             },
         })
-            .then((x) => x.json())
-            .then((res) => {
-
-                if (res.success) {
-                    setShowSpinner(false);
-                    alert(res.message)
-                    document.querySelector(".selecionada").remove();
+            .then((x) => {
+                if (x.status === 401) {
+                    navigate('/login');
+                    return Promise.reject('Sessão expirada');
                 }
-
+                if (x.status === 409) {
+                    setShowSpinner(false);
+                    return x.json().then((data) => {
+                        Swal.fire("Bloqueado", data.message, "warning");
+                        return Promise.reject(data.message);
+                    });
+                }
+                return x.json();
             })
+            .then((res) => {
+                if (res && res.success) {
+                    setShowSpinner(false);
+                    Swal.fire("Excluído!", res.message, "success");
+                    document.querySelector(".selecionada")?.remove();
+                }
+            })
+            .catch(() => { setShowSpinner(false); })
     };
 
     function buscarUserId() {
@@ -234,6 +249,12 @@ const GerenciarIds = () => {
             <section>
 
                 {showSpinner && <Spinner />}
+                {showMsgBox && <MsgConfirm
+                    title={"Atenção!"}
+                    msg={"Tem certeza que deseja excluir este desconto?"}
+                    btnTitle={"Excluir"}
+                    funAction={apagarUser}
+                    setShowMsgBox={setShowMsgBox} />}
 
                 <h1 className="px-4">Gerenciar IDs</h1>
                 <div className="container-fluid py-4 px-4">
@@ -242,7 +263,7 @@ const GerenciarIds = () => {
                             <button type="button" className="btn custom-button" onClick={() => navigator('/admin/desconto/cadastro')}>Adicionar</button>
                             <button type="button" className="btn btn-info custom-button mx-2 text-light" onClick={() => navigator(`/admin/desconto/editar?id=${selectId}`)}>Editar</button>
                             <button type="button" className="btn custom-button" onClick={exportExcell}>Exportar</button>
-                            <button type="button" className="btn btn-danger custom-button text-light mx-2" onClick={apagarUser}>Apagar</button>
+                            <button type="button" className="btn btn-danger custom-button text-light mx-2" onClick={() => setShowMsgBox(true)}>Apagar</button>
                            {/*  <div className="dropdown">
                                 <button className="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                     Exportar

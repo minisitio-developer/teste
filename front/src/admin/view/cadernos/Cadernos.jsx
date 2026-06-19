@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import Header from "../Header";
 import Pagination from '../../components/Pagination';
 import Spinner from '../../../components/Spinner';
+import MsgConfirm from '../../components/MsgConfirm';
 
 const Cadernos = () => {
     const [estados, setEstado] = useState([]);
@@ -27,6 +28,7 @@ const Cadernos = () => {
     const [countPerfis, setCountPerfis] = useState([]);
     const [statusCount, setStatusCount] = useState(false);
     const [buscaAtiva, setBuscaAtiva] = useState(false);
+    const [showMsgBox, setShowMsgBox] = useState(false);
 
     const location = useLocation();
     const navigator = useNavigate();
@@ -229,10 +231,22 @@ const Cadernos = () => {
                 "authorization": 'Bearer ' + tokenAuth
             },
         })
-            .then((x) => x.json())
+            .then((x) => {
+                if (x.status === 401) {
+                    navigate('/login');
+                    return Promise.reject('Sessão expirada');
+                }
+                if (x.status === 409) {
+                    setShowSpinner(false);
+                    return x.json().then((data) => {
+                        Swal.fire("Bloqueado", data.message, "warning");
+                        return Promise.reject(data.message);
+                    });
+                }
+                return x.json();
+            })
             .then((res) => {
-
-                if (res.success) {
+                if (res && res.success) {
                     setShowSpinner(false);
                     Swal.fire({
                         title: 'sucesso!',
@@ -240,10 +254,10 @@ const Cadernos = () => {
                         icon: 'success',
                         confirmButtonText: 'Confirmar'
                     })
-                    document.querySelector(".selecionada").remove();
+                    document.querySelector(".selecionada")?.remove();
                 }
-
             })
+            .catch(() => { setShowSpinner(false); })
     };
 
 
@@ -289,6 +303,12 @@ const Cadernos = () => {
             <section>
 
                 {showSpinner && <Spinner />}
+                {showMsgBox && <MsgConfirm
+                    title={"Atenção!"}
+                    msg={"Tem certeza que deseja excluir este caderno?"}
+                    btnTitle={"Excluir"}
+                    funAction={apagarCaderno}
+                    setShowMsgBox={setShowMsgBox} />}
 
                 <h1 className="px-4">Cadernos</h1>
                 <div className="container-fluid py-4 px-4">
@@ -296,7 +316,7 @@ const Cadernos = () => {
                         <div className="span6 col-md-6">
                             <button type="button" className="btn custom-button" onClick={() => navigator('/admin/cadernos/cadastro')}>Adicionar</button>
                             <button type="button" className="btn btn-info custom-button mx-2 text-light" onClick={() => navigator(`/admin/cadernos/editar?id=${selectId}`)}>Editar</button>
-                            <button type="button" className="btn btn-danger custom-button text-light" onClick={apagarCaderno}>Apagar</button>
+                            <button type="button" className="btn btn-danger custom-button text-light" onClick={() => setShowMsgBox(true)}>Apagar</button>
                             {/* <select title="selecionarLinhas" name="selecionarLinhas" id="selecionarLinhas"
                                 className="btn btn-success custom-button text-light mx-2"
                                 onChange={slecionarQuantidadeLinhas}>
