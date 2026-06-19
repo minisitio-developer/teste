@@ -37,6 +37,20 @@ module.exports = {
             dtAlteracao,
             ativo } = req.body;
 
+        // Validação de entrada
+        if (!CPFCNPJ || typeof CPFCNPJ !== 'string' || CPFCNPJ.length > 20) {
+            return res.status(400).json({ success: false, message: "CPF/CNPJ inválido" });
+        }
+        if (!Nome || typeof Nome !== 'string' || Nome.length > 255 || Nome.length < 2) {
+            return res.status(400).json({ success: false, message: "Nome inválido (2-255 caracteres)" });
+        }
+        if (!Email || typeof Email !== 'string' || !Email.includes('@') || Email.length > 254) {
+            return res.status(400).json({ success: false, message: "E-mail inválido" });
+        }
+        if (!TipoPessoa || !['F', 'J'].includes(TipoPessoa)) {
+            return res.status(400).json({ success: false, message: "Tipo de pessoa inválido (F ou J)" });
+        }
+
         const gerarSenha = () => {
             const origem = CPFCNPJ.replace(/[.\-\/]/g, '');
             return origem.slice(0, 5);

@@ -19,6 +19,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 15s
+    volumes:
+      - backup_data:/app/backups
 
   frontend:
     build:
@@ -55,3 +57,4 @@ services:
 
 volumes:
   mysql_data:
+  backup_data:

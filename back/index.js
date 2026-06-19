@@ -6,6 +6,19 @@ const port = Number(process.env.PORT || 3032);
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 
+// ========== VALIDAÇÃO DE SEGURANÇA NA INICIALIZAÇÃO ==========
+const requiredEnvVars = ['API_KEY', 'API_SECRET', 'DB_PASSWORD'];
+const missing = requiredEnvVars.filter(v => !process.env[v] || process.env[v].length < 10);
+if (missing.length > 0) {
+    console.error(`ERRO FATAL: Variáveis de ambiente ausentes ou fracas: ${missing.join(', ')}`);
+    console.error('Copie .env.example para .env e configure valores seguros.');
+    process.exit(1);
+}
+
+if (process.env.API_SECRET && process.env.API_SECRET.length < 64) {
+    console.warn('AVISO: API_SECRET deve ter pelo menos 64 caracteres para segurança ideal.');
+}
+
 const path = require('path');
 const fs = require('fs');
 //streams
@@ -54,8 +67,8 @@ const socketOptions = {
 
 const io = new Server(server, socketOptions);
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
 // ========== APLICAR CORS SEGURO ==========
 const corsMiddleware = (req, res, next) => {
@@ -531,6 +544,20 @@ cron.schedule('0 5 * * *', () => {
 cron.schedule('0 3 * * *', () => {
     console.log('atualizando perfis expiradas...');
     downgradePerfil();
+});
+
+// Backup diário do banco às 2h da manhã
+cron.schedule('0 2 * * *', () => {
+    console.log('Iniciando backup do banco de dados...');
+    try {
+        const { execSync } = require('child_process');
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        const filepath = `./backups/backup_${timestamp}.sql.gz`;
+        execSync(`mkdir -p ./backups && mysqldump -h ${process.env.DB_HOST || 'db'} -P ${process.env.DB_PORT || 3306} -u ${process.env.DB_USER || 'root'} -p${process.env.DB_PASSWORD || 'root'} ${process.env.DB_NAME || 'minisitio_local'} | gzip > "${filepath}"`, { stdio: 'pipe' });
+        console.log(`✓ Backup concluído: ${filepath}`);
+    } catch (err) {
+        console.error(`✗ Erro no backup: ${err.message}`);
+    }
 });
 
 

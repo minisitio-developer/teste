@@ -60,3 +60,6 @@ back/seed_uf.sql
 
 # Scripts locais temporários
 scripts/
+
+# Backups do banco de dados
+back/backups/

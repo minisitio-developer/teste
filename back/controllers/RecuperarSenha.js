@@ -9,21 +9,18 @@ module.exports = {
     forgotPassword: async (req, res) => {
         const { email } = req.body;
 
+        if (!email || typeof email !== 'string' || !email.includes('@') || email.length > 254) {
+            return res.status(400).json({ message: 'E-mail inválido.' });
+        }
+
         const user = await Usuario.findAll({ where: { descEmail: email } });
-        //        console.log(user)
 
-
-        if (!user)
+        if (!user || user.length === 0)
             return res.status(404).json({ message: 'E-mail não encontrado.' });
 
         // Gera token seguro
         const token = crypto.randomBytes(32).toString('hex');
         const expiration = new Date(Date.now() + 3600000); // 1 hora
-
-        // Atualiza o usuário
-        /*       user.resetToken = token;
-              user.resetTokenExpires = expiration;
-              await user.save(); */
 
         await Usuario.update(
             {
@@ -33,10 +30,7 @@ module.exports = {
             { where: { descEmail: email } }
         );
 
-
-        // Link de redefinição
         const resetLink = `https://minitest.automaplay.com.br/reset-password?token=${token}`;
-
 
         const emailRecuperacao = await forgotPasswordEmail(user[0].descEmail, resetLink);
 
@@ -45,8 +39,13 @@ module.exports = {
     resetPassword: async (req, res) => {
         const { token, password } = req.body;
 
-        if (!token || !password)
-            return res.status(400).json({ message: 'Token e nova senha são obrigatórios.' });
+        if (!token || typeof token !== 'string' || token.length !== 64) {
+            return res.status(400).json({ message: 'Token inválido.' });
+        }
+
+        if (!password || typeof password !== 'string' || password.length < 8 || password.length > 128) {
+            return res.status(400).json({ message: 'A senha deve ter entre 8 e 128 caracteres.' });
+        }
 
         try {
             const user = await Usuario.findOne({

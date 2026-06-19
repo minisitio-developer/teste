@@ -18,6 +18,14 @@ module.exports = {
             return res.status(400).json({ success: false, message: "CPF/CNPJ e senha são obrigatórios" });
         }
 
+        if (typeof descCPFCNPJ !== 'string' || descCPFCNPJ.length > 20) {
+            return res.status(400).json({ success: false, message: "CPF/CNPJ inválido" });
+        }
+
+        if (typeof senha !== 'string' || senha.length > 128) {
+            return res.status(400).json({ success: false, message: "Senha inválida" });
+        }
+
         const user = await Usuarios.findOne({
             where: {
                 descCPFCNPJ: descCPFCNPJ

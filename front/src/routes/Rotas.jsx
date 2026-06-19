@@ -75,6 +75,7 @@ import Adesivo from "../plugins/Adesivo";
 //INFOS PAGES
 import Institucional from "../views/infoPages/Institucional";
 import Contato from "../views/infoPages/Contato";
+import PoliticaPrivacidade from "../views/infoPages/PoliticaPrivacidade";
 
 //PROMOCAO
 import Promocoes from "../views/promocao/Pesquisa";
@@ -186,6 +187,7 @@ function Rotas() {
                 {/* INFO PAGES */}
                 <Route path="institucional" element={<Institucional />} />
                 <Route path="contato" element={<Contato />} />
+                <Route path="politica-privacidade" element={<PoliticaPrivacidade />} />
 
                 {/* Rota para capturar páginas inexistentes */}
                 <Route path="*" element={<NotFound />} />
