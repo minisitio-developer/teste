@@ -524,9 +524,9 @@ module.exports = {
                 //data: result.map(r => r.toJSON()),
                 teste: anuncioTeste,
                 //anuncio2: anuncio2,
-                mosaico: contador.descImagem,
+                mosaico: contador ? contador.descImagem : null,
                 kledisom: 123,
-                totalRegistros: contador.total
+                totalRegistros: contador ? contador.total : 0
             });
 
         } catch (error) {

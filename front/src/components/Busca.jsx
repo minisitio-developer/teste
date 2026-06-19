@@ -136,7 +136,9 @@ function Busca(props) {
                 }
             })
 
-        verificarPromocao()
+        if (!isHome && props.caderno && props.uf) {
+            verificarPromocao()
+        }
     }, []);
 
     function buscarListaEstados(uf) {
@@ -152,6 +154,7 @@ function Busca(props) {
 
 
     function verificarPromocao() {
+        if (!props.caderno || !props.uf) return;
         fetch(`${masterPath.url}/read/promocao/${props.caderno}/${props.uf}`)
             .then(x => x.json())
             .then(res => {
