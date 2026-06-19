@@ -121,15 +121,7 @@ module.exports = {
             raw: true
         });
 
-        const friendlyName = (cadernoInfo && cadernoInfo.nomeCadernoFriendly) ? cadernoInfo.nomeCadernoFriendly : cadernoParam;
-        const likePattern = friendlyName.toUpperCase().replace(/-/g, '%') + '%';
-
-        const matchingCaderno = await database.query(
-            `SELECT DISTINCT codCaderno FROM anuncio WHERE codUf = :uf AND activate = 1 AND codCaderno LIKE :pattern LIMIT 1`,
-            { replacements: { uf: req.params.uf, pattern: likePattern }, type: Sequelize.QueryTypes.SELECT }
-        );
-
-        let nomeCadernoReal = (matchingCaderno.length > 0) ? matchingCaderno[0].codCaderno : cadernoParam;
+        const nomeCadernoReal = (cadernoInfo && cadernoInfo.nomeCaderno) ? cadernoInfo.nomeCaderno : cadernoParam;
 
         const allPerfil = await database.query(
             `
@@ -515,14 +507,7 @@ module.exports = {
                 return res.json({ success: true, teste: { count: 0, rows: [] }, mosaico: null, totalRegistros: 0 });
             }
 
-            const friendlyName = (cadernoData.nomeCadernoFriendly) ? cadernoData.nomeCadernoFriendly : cadernoParam;
-            const likePattern = friendlyName.toUpperCase().replace(/-/g, '%') + '%';
-            const matchingCaderno = await database.query(
-                `SELECT DISTINCT codCaderno FROM anuncio WHERE codUf = :uf AND activate = 1 AND codCaderno LIKE :pattern LIMIT 1`,
-                { replacements: { uf: req.params.uf, pattern: likePattern }, type: Sequelize.QueryTypes.SELECT }
-            );
-
-            const nomeCadernoReal = (matchingCaderno.length > 0) ? matchingCaderno[0].codCaderno : cadernoData.nomeCaderno;
+            const nomeCadernoReal = cadernoData.nomeCaderno;
             const paginaAtual = req.query.page ? parseInt(req.query.page) : 1;
             const porPagina = 10;
             const offset = (paginaAtual - 1) * porPagina;
