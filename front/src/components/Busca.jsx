@@ -37,10 +37,15 @@ function Busca(props) {
     const executarSelecao = (e) => {
         let codigoUf = document.querySelectorAll('#codUf2')[0].value;
         setUf(codigoUf);
+        
+        // Verifica se a lista 'uf' já foi carregada e se o estado foi encontrado
         const teste = uf.find(u => u.sigla_uf === codigoUf);
-        localStorage.setItem("uf: ", teste.sigla_uf);
+        if (teste) {
+            localStorage.setItem("uf: ", teste.sigla_uf);
+            setCadernoUf(teste.id_uf);
+        }
+        
         sessionStorage.setItem("uf: ", codigoUf);
-        setCadernoUf(teste.id_uf);
         setCodUf(codigoUf)
 
         buscarListaEstados(e.target.value);
