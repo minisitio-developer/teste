@@ -16,13 +16,13 @@ import Swal from 'sweetalert2';
 function Busca(props) {
 
     const navigate = useNavigate();
-    const [ufSelected, setUf] = useState(0);
+    const [ufSelected, setUf] = useState(null);
     const [uf, setUfs] = useState([]);
     const [caderno, setCaderno] = useState([]);
     const [cadernoUf, setCadernoUf] = useState(null);
     const [cadernoCidade, setCadernoCidade] = useState(null);
-    const [codUf, setCodUf] = useState(null);
-    const [codCaderno, setCodCaderno] = useState(null);
+    const [codUf, setCodUf] = useState("UF");
+    const [codCaderno, setCodCaderno] = useState("CIDADE");
     const [loading, setLoading] = useState(false);
     const [promocao, setPromocao] = useState([]);
 
@@ -85,19 +85,11 @@ function Busca(props) {
             Cookies.remove("cidadeEscolhida");
             sessionStorage.removeItem("uf: ");
             sessionStorage.removeItem("caderno: ");
+            sessionStorage.removeItem("querySearch");
             setUf(null);
-            setCodUf(null);
-            setCodCaderno(null);
+            setCodUf("UF");
+            setCodCaderno("CIDADE");
             setCaderno([]);
-            if (document.querySelector('#codUf2')) {
-                document.querySelector('#codUf2').value = "UF";
-            }
-            if (document.querySelector('#codUf3')) {
-                document.querySelector('#codUf3').value = "CIDADE";
-            }
-            if (document.querySelector('#inputBusca')) {
-                document.querySelector('#inputBusca').value = "";
-            }
         }
     }, [location.pathname]);
 
@@ -116,11 +108,8 @@ function Busca(props) {
     }, [props.uf])
 
     useEffect(() => {
-        let ufSalva = sessionStorage.getItem("uf: ");
-        let cadSalvo = sessionStorage.getItem("caderno: ");
-        let querySalvo = sessionStorage.getItem("querySearch");
-
         const isHome = location.pathname === '/';
+        let querySalvo = sessionStorage.getItem("querySearch");
 
         if (!isHome && props.uf && props.caderno) {
             setUf(props.uf);
@@ -137,8 +126,13 @@ function Busca(props) {
             .then((res) => {
                 setUfs(res);
                 if (isHome) {
+                    setUf(null);
+                    setCodUf("UF");
+                    setCodCaderno("CIDADE");
+                    setCaderno([]);
                     sessionStorage.removeItem("querySearch");
-                    document.querySelector('#inputBusca').value = "";
+                    sessionStorage.removeItem("uf: ");
+                    sessionStorage.removeItem("caderno: ");
                 }
             })
 
