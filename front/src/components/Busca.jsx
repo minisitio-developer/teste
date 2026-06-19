@@ -80,15 +80,23 @@ function Busca(props) {
     };
 
     useEffect(() => {
-        // Executa apenas se estiver na home (ou outra rota desejada)
         if (location.pathname === "/") {
-            if (Cookies.get("consentimentoUsuario") === "true") {
-                const estadoSalvo = Cookies.get("estadoEscolhido");
-                const cidadeSalva = Cookies.get("cidadeEscolhida");
-
-                if (estadoSalvo && cidadeSalva) {
-                    window.location.href = `/caderno-geral/${cidadeSalva}/${estadoSalvo}`;
-                }
+            Cookies.remove("estadoEscolhido");
+            Cookies.remove("cidadeEscolhida");
+            sessionStorage.removeItem("uf: ");
+            sessionStorage.removeItem("caderno: ");
+            setUf(null);
+            setCodUf(null);
+            setCodCaderno(null);
+            setCaderno([]);
+            if (document.querySelector('#codUf2')) {
+                document.querySelector('#codUf2').value = "UF";
+            }
+            if (document.querySelector('#codUf3')) {
+                document.querySelector('#codUf3').value = "CIDADE";
+            }
+            if (document.querySelector('#inputBusca')) {
+                document.querySelector('#inputBusca').value = "";
             }
         }
     }, [location.pathname]);
@@ -108,19 +116,19 @@ function Busca(props) {
     }, [props.uf])
 
     useEffect(() => {
-
-
         let ufSalva = sessionStorage.getItem("uf: ");
         let cadSalvo = sessionStorage.getItem("caderno: ");
         let querySalvo = sessionStorage.getItem("querySearch");
-        //console.log(ufSalva, cadSalvo)
-        if (props.uf && props.caderno) {
+
+        const isHome = location.pathname === '/';
+
+        if (!isHome && props.uf && props.caderno) {
             setUf(props.uf);
             setCodUf(props.uf);
             setCodCaderno(props.caderno);
         }
 
-        if (querySalvo) {
+        if (!isHome && querySalvo) {
             document.querySelector('#inputBusca').value = querySalvo;
         }
 
@@ -128,19 +136,11 @@ function Busca(props) {
             .then((x) => x.json())
             .then((res) => {
                 setUfs(res);
-                //setUf(ufSalva);
-                if (location.pathname === '/') {
-                    getUserLocation();
+                if (isHome) {
                     sessionStorage.removeItem("querySearch");
                     document.querySelector('#inputBusca').value = "";
                 }
-                if (ufSalva != undefined) {
-                    //document.querySelectorAll('#codUf2')[0].value = ufSalva;
-                }
             })
-
-
-
 
         verificarPromocao()
     }, []);
