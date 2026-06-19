@@ -28,7 +28,15 @@ module.exports = {
 
 
         const { uf, cidade, atividade, name, telefone, nu_documento, codigoCaderno } = req.body;
-        //console.table([name, atividade, telefone, nu_documento, uf, codigoCaderno]);
+
+        const cadernoParam = decodeURIComponent(codigoCaderno || '');
+        const cadernoInfo = await Caderno.findOne({
+            where: { UF: uf, [Op.or]: [{ nomeCadernoFriendly: cadernoParam }, { nomeCaderno: cadernoParam }] },
+            raw: true
+        });
+
+        const nomeCadernoReal = (cadernoInfo && cadernoInfo.nomeCaderno) ? cadernoInfo.nomeCaderno : cadernoParam;
+        const codCadernoId = cadernoInfo ? String(cadernoInfo.codCaderno) : '';
 
         //anuncio
         const anuncios = await database.query(`SELECT a.*
@@ -36,7 +44,7 @@ FROM anuncio a
 WHERE 
     a.activate = 1
     AND a.codUf = :uf
-    AND a.codCaderno = :caderno
+    AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
     AND (
         a.descAnuncio LIKE :termo
         OR EXISTS (
@@ -53,17 +61,15 @@ WHERE
 ORDER BY a.codAtividade ASC, a.codTipoAnuncio DESC, a.createdAt ASC, a.descAnuncio ASC
 LIMIT :limit OFFSET :offset;`, {
             replacements: {
-                termo: `${atividade}%`,
+                termo: `%${atividade}%`,
                 uf: uf,
-                caderno: codigoCaderno,
+                caderno: nomeCadernoReal,
+                cadernoId: codCadernoId,
                 limit: porPagina,
                 offset: offset
             },
             type: database.QueryTypes.SELECT,
         });
-
-//activate ASC, createdAt DESC, codDuplicado ASC
-        console.log(req.query, anuncios)
 
 
         if (req.query.totalPages > 0) {
@@ -115,7 +121,7 @@ FROM anuncio a
 WHERE 
   a.activate = 1
   AND a.codUf = :uf
-  AND a.codCaderno = :caderno
+  AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
   AND (
     a.descAnuncio LIKE :termo
     OR EXISTS (
@@ -128,24 +134,12 @@ WHERE
       WHERE t.codAnuncio = a.codAnuncio
         AND t.tagValue LIKE :termo
     )
-  )
-` 
-                /* `
-  SELECT COUNT(DISTINCT a.codAnuncio) AS total
-  FROM anuncio a
-  LEFT JOIN tags t ON t.codAnuncio = a.codAnuncio
-  WHERE (
-    a.descAnuncio LIKE :termo OR
-    a.codAtividade LIKE :termo OR
-    t.tagValue LIKE :termo
-  )
-  AND a.codUf = :uf
-  AND a.codCaderno = :caderno
-` */, {
+  )`, {
                 replacements: {
-                    termo: `${atividade}%`,
+                    termo: `%${atividade}%`,
                     uf: uf,
-                    caderno: codigoCaderno
+                    caderno: nomeCadernoReal,
+                    cadernoId: codCadernoId
                 },
                 type: database.QueryTypes.SELECT
             });

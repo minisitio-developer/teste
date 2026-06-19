@@ -90,20 +90,20 @@ function Caderno(props) {
 
   useEffect(() => {
     setLoading(true);
-    document.querySelector('.caderno').style.filter = "blur(3px)";
+    const cadernoEl = document.querySelector('.caderno');
+    if (cadernoEl) cadernoEl.style.filter = "blur(3px)";
 
     fetch(`${masterPath.url}/admin/anuncio/classificado/${caderno}/${estado}`)
       .then(x => x.json())
       .then(res => {
         if (res.success) {
-          //setClassificados(res.data);
           setPathImg(res.teste.rows);
           setMosaicoImg(res.mosaico);
           setQtdaPerfil(res.totalRegistros);
-          //setLoading(false);
-          //document.querySelector('.caderno').style.filter = "none";
         }
-
+      })
+      .catch(err => {
+        console.error('Erro ao buscar classificado:', err);
       })
 
   }, []);
@@ -154,9 +154,15 @@ function Caderno(props) {
       .then((res) => {
         setClassificados(res.data);
         setLoading(false);
-        document.querySelector('.caderno').style.filter = "none";
+        const cadernoEl = document.querySelector('.caderno');
+        if (cadernoEl) cadernoEl.style.filter = "none";
       })
-    //fetchDataInBatches(`${masterPath.url}/admin/lista/test/${caderno}/${estado}`)
+      .catch((err) => {
+        console.error('Erro ao buscar lista de atividades:', err);
+        setLoading(false);
+        const cadernoEl = document.querySelector('.caderno');
+        if (cadernoEl) cadernoEl.style.filter = "none";
+      })
   }, [])
 
   const capas = [
