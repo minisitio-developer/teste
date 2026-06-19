@@ -131,7 +131,7 @@ module.exports = {
     FROM anuncio AS a
     LEFT JOIN atividade AS b ON a.codAtividade = b.atividade
     WHERE a.codUf = :codUf
-      AND a.codCaderno = :codCaderno
+      AND (a.codCaderno = :codCaderno OR a.codCaderno = :codCadernoId)
       AND a.activate = 1
     GROUP BY b.nomeAmigavel
     ORDER BY b.nomeAmigavel ASC;
@@ -139,7 +139,8 @@ module.exports = {
             {
                 replacements: {
                     codUf: req.params.uf,
-                    codCaderno: nomeCadernoReal
+                    codCaderno: nomeCadernoReal,
+                    codCadernoId: String(cadernoInfo.codCaderno)
                 },
                 type: Sequelize.QueryTypes.SELECT
             }
@@ -516,7 +517,10 @@ module.exports = {
                 where: {
                     [Op.and]: [
                         { codUf: req.params.uf },
-                        { codCaderno: nomeCadernoReal },
+                        { [Op.or]: [
+                            { codCaderno: nomeCadernoReal },
+                            { codCaderno: String(cadernoData.codCaderno) }
+                        ]},
                         { activate: 1 }
                     ]
                 },
