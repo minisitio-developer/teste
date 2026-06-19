@@ -462,7 +462,7 @@ function Busca(props) {
                                             <option value="CIDADE">CIDADE</option>
                                             {caderno.map((item) => (
                                                 item.UF === ufSelected &&
-                                                <option id={item.codCaderno} key={item.codCaderno} name={item.nomeCaderno} value={item.nomeCaderno}>{item.nomeCaderno}</option>
+                                                <option id={item.codCaderno} key={item.codCaderno} name={item.nomeCaderno} value={item.nomeCadernoFriendly}>{item.nomeCaderno}</option>
                                             ))}
                                         </select>
 

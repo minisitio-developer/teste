@@ -114,28 +114,40 @@ module.exports = {
                   },
                   attributes: ['codAtividade', 'codCaderno', 'codAnuncio', 'codUf', 'descAnuncio']
               }); */
+
+        const cadernoParam = decodeURIComponent(req.params.caderno);
+        const cadernoInfo = await Caderno.findOne({
+            where: { UF: req.params.uf, [Op.or]: [{ nomeCadernoFriendly: cadernoParam }, { nomeCaderno: cadernoParam }] },
+            raw: true
+        });
+
+        const friendlyName = (cadernoInfo && cadernoInfo.nomeCadernoFriendly) ? cadernoInfo.nomeCadernoFriendly : cadernoParam;
+        const likePattern = friendlyName.toUpperCase().replace(/-/g, '%') + '%';
+
+        const matchingCaderno = await database.query(
+            `SELECT DISTINCT codCaderno FROM anuncio WHERE codUf = :uf AND activate = 1 AND codCaderno LIKE :pattern LIMIT 1`,
+            { replacements: { uf: req.params.uf, pattern: likePattern }, type: Sequelize.QueryTypes.SELECT }
+        );
+
+        let nomeCadernoReal = (matchingCaderno.length > 0) ? matchingCaderno[0].codCaderno : cadernoParam;
+
         const allPerfil = await database.query(
             `
     SELECT 
-      a.codAtividade,
-      a.codCaderno,
-      a.codAnuncio,
-      a.codUf,
-      a.descAnuncio,
-      a.page,
-      COUNT(a.codAtividade) AS quantidade,
-      b.nomeAmigavel
+      b.nomeAmigavel,
+      COUNT(*) AS quantidade
     FROM anuncio AS a
     LEFT JOIN atividade AS b ON a.codAtividade = b.atividade
     WHERE a.codUf = :codUf
       AND a.codCaderno = :codCaderno
+      AND a.activate = 1
     GROUP BY b.nomeAmigavel
     ORDER BY b.nomeAmigavel ASC;
   `,
             {
                 replacements: {
                     codUf: req.params.uf,
-                    codCaderno: req.params.caderno
+                    codCaderno: nomeCadernoReal
                 },
                 type: Sequelize.QueryTypes.SELECT
             }
@@ -492,41 +504,48 @@ module.exports = {
                    order: [['codAtividade', 'ASC']]
                }); */
 
-            //console.log("resultado", result.map(r => r.toJSON())); // Resultado formatado
+            const cadernoParam = decodeURIComponent(req.params.caderno);
 
+            const cadernoData = await Caderno.findOne({
+                where: { UF: req.params.uf, [Op.or]: [{ nomeCadernoFriendly: cadernoParam }, { nomeCaderno: cadernoParam }] },
+                raw: true
+            });
+
+            if (!cadernoData) {
+                return res.json({ success: true, teste: { count: 0, rows: [] }, mosaico: null, totalRegistros: 0 });
+            }
+
+            const friendlyName = (cadernoData.nomeCadernoFriendly) ? cadernoData.nomeCadernoFriendly : cadernoParam;
+            const likePattern = friendlyName.toUpperCase().replace(/-/g, '%') + '%';
+            const matchingCaderno = await database.query(
+                `SELECT DISTINCT codCaderno FROM anuncio WHERE codUf = :uf AND activate = 1 AND codCaderno LIKE :pattern LIMIT 1`,
+                { replacements: { uf: req.params.uf, pattern: likePattern }, type: Sequelize.QueryTypes.SELECT }
+            );
+
+            const nomeCadernoReal = (matchingCaderno.length > 0) ? matchingCaderno[0].codCaderno : cadernoData.nomeCaderno;
+            const paginaAtual = req.query.page ? parseInt(req.query.page) : 1;
+            const porPagina = 10;
+            const offset = (paginaAtual - 1) * porPagina;
 
             const anuncioTeste = await Anuncio.findAndCountAll({
                 where: {
                     [Op.and]: [
                         { codUf: req.params.uf },
-                        { codCaderno: req.params.caderno }
-                    ],
-                    [Op.or]: [
-                        { codAtividade: "ADMINISTRAÇÃO REGIONAL / PREFEITURA" },
-                        { codAtividade: "EMERGÊNCIA" },
-                        { codAtividade: "UTILIDADE PÚBLICA" },
-                        { codAtividade: "HOSPITAIS PÚBLICOS" },
-                        { codAtividade: "CÂMARA DE VEREADORES - CÂMARA DISTRITAL" },
-                        { codAtividade: "SECRETARIA DE TURISMO" },
-                        { codAtividade: "INFORMAÇÕES" },
-                        { codAtividade: "EVENTOS NA CIDADE" },
+                        { codCaderno: nomeCadernoReal },
+                        { activate: 1 }
                     ]
-                }
+                },
+                attributes: ['codAnuncio', 'codAtividade', 'descAnuncio', 'descEndereco', 'codCaderno', 'codUf'],
+                limit: porPagina,
+                offset: offset,
+                order: [['codAtividade', 'ASC'], ['descAnuncio', 'ASC']]
             });
-
-            const contador = await Caderno.findOne({
-                where: { UF: req.params.uf, nomeCaderno: req.params.caderno },
-                raw: true
-            })
 
             res.json({
                 success: true,
-                //data: result.map(r => r.toJSON()),
                 teste: anuncioTeste,
-                //anuncio2: anuncio2,
-                mosaico: contador ? contador.descImagem : null,
-                kledisom: 123,
-                totalRegistros: contador ? contador.total : 0
+                mosaico: cadernoData.descImagem,
+                totalRegistros: cadernoData.total
             });
 
         } catch (error) {

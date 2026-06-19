@@ -18,6 +18,9 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.p
     port: dbConfig.port,
     timezone: '-03:00',
     logging: isProduction ? false : console.log,
+    dialectOptions: {
+        charset: 'utf8mb4',
+    },
     pool: {
         max: 10,
         min: 2,
