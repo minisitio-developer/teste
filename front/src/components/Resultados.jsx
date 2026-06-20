@@ -40,26 +40,9 @@ function Resultados() {
         "EVENTOS NA CIDADE"
         ]
 
-        if(result.length < 1) return;
-
-        if(result.data.length < 1) return;
+        if(!result || !result.data || result.data.length < 1) return;
 
         setQtdaResult(result.totalItem);
-
-        if(result.data.length === 1) {
-
-            if(capas.includes(result.data[0].codAtividade)) {
-                navigate(`/caderno-geral/${encodeURIComponent(result.data[0].codCaderno)}/${cadernoUf}`);
-            } else {
-                navigate(`/caderno/${result.data[0].descAnuncio}?page=1&book=${result.data[0].codCaderno}&id=${result.data[0].codAnuncio}&index=${result.data[0].page}&caderno=${result.data[0].codCaderno}&estado=${result.data[0].codUf}`);
-            }
-
-
-        }
-
-        if(capas.includes(result.data[0].codAtividade)) {
-            navigate(`/caderno-geral/${encodeURIComponent(result.data[0].codCaderno)}/${cadernoUf}`);
-        } 
 
 
     }, [result])
