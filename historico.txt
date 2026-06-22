@@ -37,3 +37,8 @@
 - **Verificação de busca:** Pesquisa por "pizza" em DF/Aguas Claras retornando corretamente 7 registros.
 - Todos os 3 containers Docker (backend, frontend, db) saudáveis e funcionais.
 
+## CORREÇÃO URGENTE - 22/06/2026 (noite)
+
+- **Backend crashando:** Tabela `pin` renomeada para `pins` no MySQL para compatibilidade com pluralização automática do Sequelize.
+- UFs voltaram a carregar (27 registros). Busca funcional.
+
