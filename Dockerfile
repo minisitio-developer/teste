@@ -19,7 +19,7 @@ COPY back/ .
 
 # Copy React build to the path backend expects (../front/build relative to back/)
 RUN mkdir -p /app/front
-COPY --from=frontend-build /app/build /app/front/build
+COPY --from=frontend-build /app/front/build /app/front/build
 
 EXPOSE 3032
 CMD ["node", "index.js"]
