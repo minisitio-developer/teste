@@ -11,7 +11,8 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Install backend dependencies
-COPY back/package.json back/package-lock.json* ./
+COPY back/package.json back/package-lock.json* ./back/
+WORKDIR /app/back
 RUN npm install --omit=dev
 
 # Copy backend source
