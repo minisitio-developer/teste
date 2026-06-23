@@ -63,3 +63,7 @@ scripts/
 
 # Backups do banco de dados
 back/backups/
+
+# Railway IaC / agentes
+.railway/
+.agents/

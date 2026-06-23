@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const app = express();
+app.set('trust proxy', 1);
 const port = Number(process.env.PORT || 3032);
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
