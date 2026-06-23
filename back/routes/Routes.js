@@ -294,7 +294,7 @@ module.exports = (io, loginLimiter) => {
 
     //SITE INSTITUCIONAL
     router.post('/api/admin/institucional/config', auth, InstConfig.atualizarRegistro);
-    router.get('/api/admin/institucional/read', auth, InstConfig.lerRegistro);
+    router.get('/api/admin/institucional/read', InstConfig.lerRegistro);
 
     //SITE CONTATO
     router.post('/api/admin/contato/config', auth, contatoConfig.atualizarContato);
