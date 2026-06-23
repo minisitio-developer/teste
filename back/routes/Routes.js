@@ -35,6 +35,7 @@ const authVerification = require('../middlewares/authVerification.js');
 const uploadUser = require('../middlewares/uploadImage');
 const uploadPdf = require('../middlewares/uploadPdf');
 const RecuperarSenha = require('../controllers/RecuperarSenha.js');
+const database = require('../config/db.js');
 
 
 
@@ -135,6 +136,71 @@ module.exports = (io, loginLimiter) => {
     router.get('/api/admin/lista/test/:caderno/:uf', EspacosController.listaTeste);
     router.get('/api/admin/import/stage', EspacosController.importStage);
     router.get('/api/admin/import/stage/finalizar', EspacosController.finalizarImportStage);
+
+    //DASHBOARD
+    router.get('/api/admin/dashboard', auth, async (req, res) => {
+        try {
+            const [totalResult] = await database.query(
+                `SELECT COUNT(*) as total FROM anuncio`,
+                { type: database.QueryTypes.SELECT }
+            );
+
+            const [basicoResult] = await database.query(
+                `SELECT COUNT(*) as total FROM anuncio WHERE codTipoAnuncio = '1'`,
+                { type: database.QueryTypes.SELECT }
+            );
+
+            const [completoResult] = await database.query(
+                `SELECT COUNT(*) as total FROM anuncio WHERE codTipoAnuncio = '3'`,
+                { type: database.QueryTypes.SELECT }
+            );
+
+            const [ativosResult] = await database.query(
+                `SELECT COUNT(*) as total FROM anuncio WHERE activate = 1`,
+                { type: database.QueryTypes.SELECT }
+            );
+
+            const [inativosResult] = await database.query(
+                `SELECT COUNT(*) as total FROM anuncio WHERE activate = 0`,
+                { type: database.QueryTypes.SELECT }
+            );
+
+            const porUf = await database.query(
+                `SELECT codUf, COUNT(*) as total,
+                 SUM(CASE WHEN codTipoAnuncio = '1' THEN 1 ELSE 0 END) as basico,
+                 SUM(CASE WHEN codTipoAnuncio = '3' THEN 1 ELSE 0 END) as completo
+                 FROM anuncio WHERE activate = 1
+                 GROUP BY codUf ORDER BY total DESC`,
+                { type: database.QueryTypes.SELECT }
+            );
+
+            const porMes = await database.query(
+                `SELECT DATE_FORMAT(createdAt, '%Y-%m') as mes, COUNT(*) as total,
+                 SUM(CASE WHEN codTipoAnuncio = '1' THEN 1 ELSE 0 END) as basico,
+                 SUM(CASE WHEN codTipoAnuncio = '3' THEN 1 ELSE 0 END) as completo
+                 FROM anuncio
+                 WHERE createdAt >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+                 GROUP BY mes ORDER BY mes ASC`,
+                { type: database.QueryTypes.SELECT }
+            );
+
+            res.json({
+                success: true,
+                data: {
+                    total: totalResult.total,
+                    basico: basicoResult.total,
+                    completo: completoResult.total,
+                    ativos: ativosResult.total,
+                    inativos: inativosResult.total,
+                    porUf,
+                    porMes
+                }
+            });
+        } catch (error) {
+            console.error('Erro no dashboard:', error);
+            res.status(500).json({ success: false, message: 'Erro ao buscar dados do dashboard' });
+        }
+    });
 
     //CAMPANHA PROMOÇÃO
     router.get('/api/admin/campanha/promocao/:codAnuncio/:hash', CampanhaController.verificarPromocao);

@@ -54,6 +54,9 @@ function Header() {
                         fontSize: '15px'
                     }}>
                         <li className="nav-item">
+                            <Link className="nav-link" to="/admin/dashboard" onClick={handleClick}>Dashboard</Link>
+                        </li>
+                        <li className="nav-item">
                             {/* <a className="nav-link" href="#">Usuários</a> */}
                             <Link className="nav-link" to="/admin/users" onClick={handleClick}>Usuários</Link>
                         </li>
