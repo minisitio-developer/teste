@@ -36,7 +36,7 @@ function Nav(props) {
                         <a className="nav-link" href="/contato">CONTATO</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link disabled" href="#">MYCARDCITY PIN: {pin}</a>
+                        <a className="nav-link disabled" href="#">MINISITIO PIN: {pin}</a>
                     </li>
                 </ul>
             </div>
