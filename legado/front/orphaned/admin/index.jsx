@@ -74,7 +74,7 @@ function Institucional() {
     };
 
     const assetDefault = {
-        empresa: `A MINISITIO foi criada por profissionais experientes das áreas de
+        empresa: `O MINISITIO foi criada por profissionais experientes das áreas de
                                     Telecomunicações e Publicidade, com o intuito de proporcionar às pequenas e
                                     médias empresas a oportunidade de divulgarem seus produtos, marcas e serviços de
                                     forma eficiente e com baixo custo, contando, para isso, com a estrutura de um MINISITIO
