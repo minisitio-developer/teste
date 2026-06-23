@@ -6,3 +6,4 @@ back/.env
 .env
 *.log
 back/backups
+.git
