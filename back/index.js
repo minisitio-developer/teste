@@ -570,9 +570,12 @@ cron.schedule('0 2 * * *', () => {
 
 // Global error handler
 app.use((err, req, res, next) => {
-    console.error('Unhandled error:', err.message);
+    console.error('Unhandled error:', err.message, err.type || '', req.method, req.path);
     if (err.type === 'entity.too.large') {
         return res.status(413).json({ success: false, message: 'Payload muito grande' });
+    }
+    if (err.type === 'entity.parse.failed') {
+        return res.status(400).json({ success: false, message: 'JSON inválido' });
     }
     res.status(500).json({ success: false, message: 'Erro interno do servidor' });
 });
@@ -584,6 +587,12 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(frontBuildPath, 'index.html'));
 });
 
-server.listen(port, () => {
+server.listen(port, async () => {
     console.log("rodando na porta: ", port);
+    try {
+        await database.sync({ alter: false });
+        console.log("Tabelas sincronizadas com sucesso");
+    } catch (err) {
+        console.error("Erro ao sincronizar tabelas:", err.message);
+    }
 });
