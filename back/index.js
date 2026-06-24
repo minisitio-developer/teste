@@ -587,12 +587,6 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(frontBuildPath, 'index.html'));
 });
 
-server.listen(port, async () => {
+server.listen(port, () => {
     console.log("rodando na porta: ", port);
-    try {
-        await database.sync({ alter: false });
-        console.log("Tabelas sincronizadas com sucesso");
-    } catch (err) {
-        console.error("Erro ao sincronizar tabelas:", err.message);
-    }
 });
