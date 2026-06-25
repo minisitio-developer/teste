@@ -53,6 +53,9 @@ import Pin from "../admin/view/Pin/Pin";
 import PinCadastro from "../admin/view/Pin/FormCadastro";
 import PinEditar from "../admin/view/Pin/FormEdit";
 
+//IMPORT BUSCAR PROFISSIONAIS
+import BuscarProfissionais from "../admin/view/BuscarProfissionais/BuscarProfissionais";
+
 //IMPORT CALHAU
 import Calhau from "../admin/view/Calhau/Calhau";
 import CalhauCadastro from "../admin/view/Calhau/FormCadastro";
@@ -157,6 +160,7 @@ function Rotas() {
 
                     {/*ROTAS MODULO PIN*/}
                     <Route path="admin/pin" element={<PrivateRoute isAdmin={true}><Pin /></PrivateRoute>} />
+                    <Route path="admin/buscar-profissionais" element={<PrivateRoute isAdmin={true}><BuscarProfissionais /></PrivateRoute>} />
                     <Route path="admin/pin/cadastro" element={<PrivateRoute isAdmin={true}><PinCadastro /></PrivateRoute>} />
                     <Route path="admin/pin/editar" element={<PrivateRoute isAdmin={true}><PinEditar /></PrivateRoute>} />
 

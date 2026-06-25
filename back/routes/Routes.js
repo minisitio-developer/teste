@@ -57,6 +57,7 @@ module.exports = (io, loginLimiter) => {
     router.post('/api/buscar', Buscador.busca);
     router.get('/api/cadernos', Buscador.buscarCaderno);
     router.get('/api/ufs', Buscador.buscarUf);
+    router.get('/api/atividades', Buscador.buscarAtividades);
     router.post('/api/anuncios/:codCaderno', Buscador.buscaGeralCaderno);
     router.get('/api/atividade/:codAtividade', Buscador.buscaAtividade);
     router.get('/api/anuncio/:codAnuncio', Buscador.buscaAnuncio);
@@ -127,6 +128,7 @@ module.exports = (io, loginLimiter) => {
     router.get('/api/admin/anuncio/visualizacoes', EspacosController.visualizacoes);
     router.post('/api/admin/anuncio/duplicate', auth, EspacosController.duplicar);
     router.get('/api/admin/anuncio/classificado/:caderno/:uf', EspacosController.listarClassificado);
+    router.get('/api/buscar-profissionais', Buscador.buscarProfissionais);
     router.get('/api/admin/anuncio/classificado/geral/:caderno/:uf', EspacosController.listarClassificadoGeral);
     router.get('/api/admin/anuncio/classificado/todos/:caderno/:uf', EspacosController.listarTodosClassificados);
     router.get('/api/admin/anuncio/classificado/geral2', EspacosController.listarClassificadoGeral2);

@@ -26,6 +26,11 @@ const items = [
         icon: ChartNoAxesCombined,
     },
     {
+        title: "Buscar Profissionais",
+        url: "/admin/buscar-profissionais",
+        icon: Search,
+    },
+    {
         title: "Usuários",
         url: "/admin/users",
         icon: Users,

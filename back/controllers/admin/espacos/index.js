@@ -115,7 +115,11 @@ module.exports = {
             raw: true
         });
 
-        const nomeCadernoReal = (cadernoInfo && cadernoInfo.nomeCaderno) ? cadernoInfo.nomeCaderno : cadernoParam;
+        if (!cadernoInfo) {
+            return res.json({ success: true, data: [] });
+        }
+
+        const nomeCadernoReal = cadernoInfo.nomeCaderno || cadernoParam;
 
         const allPerfil = await database.query(
             `

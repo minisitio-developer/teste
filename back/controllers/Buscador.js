@@ -305,6 +305,18 @@ module.exports = {
 
         res.json(ufs);
     },
+    buscarAtividades: async (req, res) => {
+        try {
+            const atividades = await Atividade.findAll({
+                attributes: ['atividade', 'nomeAmigavel'],
+                order: [['nomeAmigavel', 'ASC']]
+            });
+            res.json({ success: true, data: atividades });
+        } catch (error) {
+            console.error('Erro ao buscar atividades:', error);
+            res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+        }
+    },
     buscaGeralCadernoold: async (req, res) => {
 
         const paginaAtual = req.query.page ? parseInt(req.query.page) : 1; // Página atual, padrão: 1
@@ -475,5 +487,84 @@ module.exports = {
             res.json({ success: true, promocoes: promocoes }).status(200)
         }
 
+    },
+
+    buscarProfissionais: async (req, res) => {
+        const paginaAtual = req.query.page ? parseInt(req.query.page) : 1;
+        const porPagina = 20;
+        const offset = (paginaAtual - 1) * porPagina;
+
+        const { uf, cidade, bairro, profissao } = req.query;
+
+        try {
+            let whereConditions = ['a.activate = 1'];
+            let replacements = {};
+
+            if (uf) {
+                whereConditions.push('a.codUf = :uf');
+                replacements.uf = uf;
+            }
+            if (cidade) {
+                whereConditions.push('a.codCaderno = :cidade');
+                replacements.cidade = cidade;
+            }
+            if (bairro) {
+                whereConditions.push('a.descEndereco LIKE :bairro');
+                replacements.bairro = `%${bairro}%`;
+            }
+            if (profissao) {
+                whereConditions.push('(atv.atividade LIKE :profissao OR atv.nomeAmigavel LIKE :profissao)');
+                replacements.profissao = `%${profissao}%`;
+            }
+
+            const whereClause = whereConditions.join(' AND ');
+
+            const countQuery = `
+                SELECT COUNT(*) as total
+                FROM anuncio a
+                LEFT JOIN atividade atv ON a.codAtividade = atv.atividade
+                WHERE ${whereClause}
+            `;
+
+            const dataQuery = `
+                SELECT 
+                    a.codAnuncio, a.descAnuncio, a.descEndereco, a.descTelefone,
+                    a.descCelular, a.descImagem, a.codAtividade, a.codCaderno, a.codUf,
+                    a.descCPFCNPJ, a.descEmailComercial, a.createdAt,
+                    atv.nomeAmigavel AS profissao,
+                    c.nomeCaderno AS cidade,
+                    c.UF AS estado
+                FROM anuncio a
+                LEFT JOIN atividade atv ON a.codAtividade = atv.atividade
+                LEFT JOIN caderno c ON a.codCaderno = c.nomeCaderno
+                WHERE ${whereClause}
+                ORDER BY atv.nomeAmigavel ASC, a.descAnuncio ASC
+                LIMIT :limit OFFSET :offset
+            `;
+
+            const [countResult] = await database.query(countQuery, {
+                replacements,
+                type: Sequelize.QueryTypes.SELECT
+            });
+
+            const anuncios = await database.query(dataQuery, {
+                replacements: { ...replacements, limit: porPagina, offset },
+                type: Sequelize.QueryTypes.SELECT
+            });
+
+            const totalPaginas = Math.ceil(countResult.total / porPagina);
+
+            res.json({
+                success: true,
+                data: anuncios,
+                paginaAtual,
+                totalPaginas,
+                totalItem: countResult.total
+            });
+
+        } catch (error) {
+            console.error('Erro ao buscar profissionais:', error);
+            res.status(500).json({ success: false, message: 'Erro interno do servidor' });
+        }
     }
 }
