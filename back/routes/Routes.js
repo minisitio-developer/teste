@@ -538,32 +538,29 @@ module.exports = (io, loginLimiter) => {
         res.send('Download concluído, eventos enviados!');
     });
 
-    // TEMPORARY - fix missing mosaico images in DB
+    // AUTO-FIX: update missing mosaico images in DB on startup
     const Caderno = require('../models/table_caderno');
     const db = require('../config/db');
     const fs2 = require('fs');
-    router.get('/debug/fix-mosaicos', async (req, res) => {
+    (async () => {
         try {
+            await new Promise(r => setTimeout(r, 3000));
             const mosDir = path.join(__dirname, '../public/upload/img/mosaico');
             const mosFiles = fs2.readdirSync(mosDir);
+            if (mosFiles.length === 0) return;
+            const defaultImg = mosFiles[0];
             const [cadenros] = await db.query("SELECT codCaderno, nomeCaderno, UF, descImagem FROM caderno WHERE descImagem IS NOT NULL AND descImagem != ''");
-            const defaultImg = mosFiles.length > 0 ? mosFiles[0] : null;
             let updated = 0;
-            const results = [];
             for (const c of cadenros) {
                 if (!mosFiles.includes(c.descImagem.trim())) {
-                    if (defaultImg) {
-                        await db.query('UPDATE caderno SET descImagem = ? WHERE codCaderno = ?', [defaultImg, c.codCaderno]);
-                        updated++;
-                        results.push(c.nomeCaderno + '/' + c.UF + ': "' + c.descImagem + '" -> "' + defaultImg + '"');
-                    }
+                    await db.query('UPDATE caderno SET descImagem = ? WHERE codCaderno = ?', [defaultImg, c.codCaderno]);
+                    updated++;
                 }
             }
-            res.json({ success: true, updated, defaultImg, results });
-        } catch (err) {
-            res.status(500).json({ error: err.message });
-        }
-    });
+            if (updated > 0) console.log('AUTO-FIX: Updated ' + updated + ' mosaicos to "' + defaultImg + '"');
+            else console.log('AUTO-FIX: All mosaicos OK');
+        } catch (err) { console.error('AUTO-FIX ERROR:', err.message); }
+    })();
 
     return router;
 };
