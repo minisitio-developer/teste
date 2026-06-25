@@ -538,30 +538,6 @@ module.exports = (io, loginLimiter) => {
         res.send('Download concluído, eventos enviados!');
     });
 
-    // AUTO-FIX: update missing mosaico images in DB on startup
-    const Caderno = require('../models/table_caderno');
-    const db = require('../config/db');
-    const fs2 = require('fs');
-    (async () => {
-        try {
-            await new Promise(r => setTimeout(r, 3000));
-            const mosDir = path.join(__dirname, '../public/upload/img/mosaico');
-            const mosFiles = fs2.readdirSync(mosDir);
-            if (mosFiles.length === 0) return;
-            const defaultImg = mosFiles[0];
-            const [cadenros] = await db.query("SELECT codCaderno, nomeCaderno, UF, descImagem FROM caderno WHERE descImagem IS NOT NULL AND descImagem != ''");
-            let updated = 0;
-            for (const c of cadenros) {
-                if (!mosFiles.includes(c.descImagem.trim())) {
-                    await db.query('UPDATE caderno SET descImagem = ? WHERE codCaderno = ?', { replacements: [defaultImg, c.codCaderno] });
-                    updated++;
-                }
-            }
-            if (updated > 0) console.log('AUTO-FIX: Updated ' + updated + ' mosaicos to "' + defaultImg + '"');
-            else console.log('AUTO-FIX: All mosaicos OK');
-        } catch (err) { console.error('AUTO-FIX ERROR:', err.message); }
-    })();
-
     return router;
 };
 
