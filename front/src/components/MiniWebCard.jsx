@@ -43,7 +43,7 @@ function MiniWebCard(props) {
         props.data.anuncios.map(item => setImg(item.descImagem))
         //console.log(props.codImg)
 
-        if (props.codImg === 0 || props.codImg === "teste" || props.codImg === null) {
+        if (props.codImg === 0 || props.codImg === "0" || props.codImg === "teste" || props.codImg === null || props.codImg === undefined) {
             setImgDefault(false);
         } else {
             setImgDefault(`files/descImagem/${props.codImg}`);

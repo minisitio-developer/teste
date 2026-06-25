@@ -538,49 +538,32 @@ module.exports = (io, loginLimiter) => {
         res.send('Download concluído, eventos enviados!');
     });
 
-    // TEMPORARY DEBUG - logs to console on startup
+    // TEMPORARY - fix missing mosaico images in DB
     const Caderno = require('../models/table_caderno');
     const db = require('../config/db');
     const fs2 = require('fs');
-    (async () => {
+    router.get('/debug/fix-mosaicos', async (req, res) => {
         try {
-            await new Promise(r => setTimeout(r, 5000));
-            const descDir = path.join(__dirname, '../public/upload/img/descImagem');
             const mosDir = path.join(__dirname, '../public/upload/img/mosaico');
-            const descFiles = fs2.readdirSync(descDir);
             const mosFiles = fs2.readdirSync(mosDir);
-            const [anuncios] = await db.query(`SELECT a.codAnuncio, a.descImagem, a.codCaderno, c.nomeCaderno, c.UF FROM anuncio a LEFT JOIN caderno c ON a.codCaderno = c.codCaderno WHERE a.descImagem IS NOT NULL AND a.descImagem != '' AND a.descImagem != '0'`);
-            const [allAnuncios] = await db.query('SELECT COUNT(*) as cnt FROM anuncio');
-            const [noImg] = await db.query("SELECT COUNT(*) as cnt FROM anuncio WHERE descImagem IS NULL OR descImagem = '' OR descImagem = '0'");
             const [cadenros] = await db.query("SELECT codCaderno, nomeCaderno, UF, descImagem FROM caderno WHERE descImagem IS NOT NULL AND descImagem != ''");
-            let found = 0, missing = 0;
-            const missingByCaderno = {};
-            for (const a of anuncios) {
-                if (descFiles.includes(a.descImagem.trim())) { found++; }
-                else {
-                    missing++;
-                    const key = (a.nomeCaderno||'?') + '/' + (a.UF||'?');
-                    if (!missingByCaderno[key]) missingByCaderno[key] = [];
-                    missingByCaderno[key].push({ cod: a.codAnuncio, img: a.descImagem });
+            const defaultImg = mosFiles.length > 0 ? mosFiles[0] : null;
+            let updated = 0;
+            const results = [];
+            for (const c of cadenros) {
+                if (!mosFiles.includes(c.descImagem.trim())) {
+                    if (defaultImg) {
+                        await db.query('UPDATE caderno SET descImagem = ? WHERE codCaderno = ?', [defaultImg, c.codCaderno]);
+                        updated++;
+                        results.push(c.nomeCaderno + '/' + c.UF + ': "' + c.descImagem + '" -> "' + defaultImg + '"');
+                    }
                 }
             }
-            let mosFound = 0, mosMissing = 0;
-            const mosMissingList = [];
-            for (const c of cadenros) {
-                if (mosFiles.includes(c.descImagem.trim())) mosFound++;
-                else { mosMissing++; mosMissingList.push(c.nomeCaderno + '/' + c.UF + '->"' + c.descImagem + '"'); }
-            }
-            console.log('=== IMAGE AUDIT ===');
-            console.log('Disk: descImagem=' + descFiles.length + ' mosaico=' + mosFiles.length);
-            console.log('DB: total=' + allAnuncios[0].cnt + ' withImg=' + anuncios.length + ' noImg=' + noImg[0].cnt + ' found=' + found + ' missing=' + missing);
-            console.log('Mosaicos: total=' + cadenros.length + ' found=' + mosFound + ' missing=' + mosMissing);
-            for (const [k, v] of Object.entries(missingByCaderno)) {
-                console.log('MISSING descImagem ' + k + ': ' + v.length + ' items');
-                for (const i of v.slice(0, 3)) console.log('  cod=' + i.cod + ' img="' + i.img + '"');
-            }
-            for (const m of mosMissingList) console.log('MISSING mosaico: ' + m);
-        } catch (err) { console.error('AUDIT ERROR:', err.message); }
-    })();
+            res.json({ success: true, updated, defaultImg, results });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
 
     return router;
 };

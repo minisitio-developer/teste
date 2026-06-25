@@ -78,7 +78,7 @@ useEffect(() => {
                     }
                     <div className="conteudo" onClick={() => contadorVisualizacoes(masterPath.url, props.data.codAnuncio)}>
                         <a href={`${masterPath.domain}/perfil/${props.data.codAnuncio}`}>
-                            <img src={`${masterPath.url}/files/descImagem/${props.data.descImagem}`} alt={props.data.descAnuncio} />
+                            <img src={(props.data.descImagem && props.data.descImagem !== '0' && props.data.descImagem !== 'undefined') ? `${masterPath.url}/files/descImagem/${props.data.descImagem}` : '/assets/img/placeholder.png'} alt={props.data.descAnuncio} />
                         </a>
                     </div>
 
