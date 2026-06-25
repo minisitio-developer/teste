@@ -538,80 +538,49 @@ module.exports = (io, loginLimiter) => {
         res.send('Download concluído, eventos enviados!');
     });
 
-    // TEMPORARY DEBUG ENDPOINT - REMOVE AFTER
+    // TEMPORARY DEBUG - logs to console on startup
     const Caderno = require('../models/table_caderno');
     const db = require('../config/db');
     const fs2 = require('fs');
-    router.get('/debug/image-audit', async (req, res) => {
+    (async () => {
         try {
-            const descDir = path.join(__dirname, '../public/upload/img/descImagem');
-            const mosDir = path.join(__dirname, '../public/upload/img/mosaico');
-            const logoDir = path.join(__dirname, '../public/upload/img/logoParceiro');
-            const promoDir = path.join(__dirname, '../public/upload/img/promocao');
-            
+            await new Promise(r => setTimeout(r, 5000));
+            const descDir = path.join(__dirname, 'public/upload/img/descImagem');
+            const mosDir = path.join(__dirname, 'public/upload/img/mosaico');
             const descFiles = fs2.readdirSync(descDir);
             const mosFiles = fs2.readdirSync(mosDir);
-            const logoFiles = fs2.readdirSync(logoDir);
-            const promoFiles = fs2.readdirSync(promoDir);
-            
-            const [anuncios] = await db.query(`
-                SELECT a.codAnuncio, a.descImagem, a.codCaderno, c.nomeCaderno, c.UF
-                FROM anuncio a
-                LEFT JOIN caderno c ON a.codCaderno = c.codCaderno
-                WHERE a.descImagem IS NOT NULL AND a.descImagem != '' AND a.descImagem != '0'
-            `);
-            
-            const [allAnuncios] = await db.query(`SELECT COUNT(*) as cnt FROM anuncio`);
-            const [noImgAnuncios] = await db.query(`SELECT COUNT(*) as cnt FROM anuncio WHERE descImagem IS NULL OR descImagem = '' OR descImagem = '0'`);
-            
-            const [cadenros] = await db.query(`SELECT codCaderno, nomeCaderno, UF, descImagem FROM caderno WHERE descImagem IS NOT NULL AND descImagem != ''`);
-            
+            const [anuncios] = await db.query(`SELECT a.codAnuncio, a.descImagem, a.codCaderno, c.nomeCaderno, c.UF FROM anuncio a LEFT JOIN caderno c ON a.codCaderno = c.codCaderno WHERE a.descImagem IS NOT NULL AND a.descImagem != '' AND a.descImagem != '0'`);
+            const [allAnuncios] = await db.query('SELECT COUNT(*) as cnt FROM anuncio');
+            const [noImg] = await db.query("SELECT COUNT(*) as cnt FROM anuncio WHERE descImagem IS NULL OR descImagem = '' OR descImagem = '0'");
+            const [cadenros] = await db.query("SELECT codCaderno, nomeCaderno, UF, descImagem FROM caderno WHERE descImagem IS NOT NULL AND descImagem != ''");
             let found = 0, missing = 0;
-            const missingList = [];
+            const missingByCaderno = {};
             for (const a of anuncios) {
-                if (descFiles.includes(a.descImagem.trim())) {
-                    found++;
-                } else {
+                if (descFiles.includes(a.descImagem.trim())) { found++; }
+                else {
                     missing++;
-                    missingList.push({ codAnuncio: a.codAnuncio, descImagem: a.descImagem, caderno: a.nomeCaderno, uf: a.UF });
+                    const key = (a.nomeCaderno||'?') + '/' + (a.UF||'?');
+                    if (!missingByCaderno[key]) missingByCaderno[key] = [];
+                    missingByCaderno[key].push({ cod: a.codAnuncio, img: a.descImagem });
                 }
             }
-            
             let mosFound = 0, mosMissing = 0;
             const mosMissingList = [];
             for (const c of cadenros) {
-                if (mosFiles.includes(c.descImagem.trim())) {
-                    mosFound++;
-                } else {
-                    mosMissing++;
-                    mosMissingList.push({ codCaderno: c.codCaderno, nome: c.nomeCaderno, uf: c.UF, descImagem: c.descImagem });
-                }
+                if (mosFiles.includes(c.descImagem.trim())) mosFound++;
+                else { mosMissing++; mosMissingList.push(c.nomeCaderno + '/' + c.UF + '->"' + c.descImagem + '"'); }
             }
-            
-            res.json({
-                disk: {
-                    descImagem: descFiles.length,
-                    mosaico: mosFiles.length,
-                    logoParceiro: logoFiles.length,
-                    promocao: promoFiles.length
-                },
-                db: {
-                    totalAnuncios: allAnuncios[0].cnt,
-                    anunciosWithImg: anuncios.length,
-                    anunciosNoImg: noImgAnuncios[0].cnt,
-                    anunciosFoundOnDisk: found,
-                    anunciosMissingFromDisk: missing,
-                    totalCadernosWithMosaico: cadenros.length,
-                    mosaicosFoundOnDisk: mosFound,
-                    mosaicosMissingFromDisk: mosMissing
-                },
-                missingAnuncioImages: missingList.slice(0, 50),
-                missingMosaicoImages: mosMissingList
-            });
-        } catch (err) {
-            res.status(500).json({ error: err.message });
-        }
-    });
+            console.log('=== IMAGE AUDIT ===');
+            console.log('Disk: descImagem=' + descFiles.length + ' mosaico=' + mosFiles.length);
+            console.log('DB: total=' + allAnuncios[0].cnt + ' withImg=' + anuncios.length + ' noImg=' + noImg[0].cnt + ' found=' + found + ' missing=' + missing);
+            console.log('Mosaicos: total=' + cadenros.length + ' found=' + mosFound + ' missing=' + mosMissing);
+            for (const [k, v] of Object.entries(missingByCaderno)) {
+                console.log('MISSING descImagem ' + k + ': ' + v.length + ' items');
+                for (const i of v.slice(0, 3)) console.log('  cod=' + i.cod + ' img="' + i.img + '"');
+            }
+            for (const m of mosMissingList) console.log('MISSING mosaico: ' + m);
+        } catch (err) { console.error('AUDIT ERROR:', err.message); }
+    })();
 
     return router;
 };
