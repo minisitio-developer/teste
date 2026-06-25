@@ -553,7 +553,7 @@ module.exports = (io, loginLimiter) => {
             let updated = 0;
             for (const c of cadenros) {
                 if (!mosFiles.includes(c.descImagem.trim())) {
-                    await db.query('UPDATE caderno SET descImagem = ? WHERE codCaderno = ?', [defaultImg, c.codCaderno]);
+                    await db.query('UPDATE caderno SET descImagem = ? WHERE codCaderno = ?', { replacements: [defaultImg, c.codCaderno] });
                     updated++;
                 }
             }
