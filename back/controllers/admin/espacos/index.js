@@ -518,7 +518,7 @@ module.exports = {
                         { activate: 1 }
                     ]
                 },
-                attributes: ['codAnuncio', 'codAtividade', 'descAnuncio', 'descEndereco', 'codCaderno', 'codUf'],
+                attributes: ['codAnuncio', 'codAtividade', 'descAnuncio', 'descEndereco', 'descImagem', 'codCaderno', 'codUf'],
                 limit: porPagina,
                 offset: offset,
                 order: [['codAtividade', 'ASC'], ['descAnuncio', 'ASC']]
@@ -862,7 +862,7 @@ module.exports = {
                 [Op.and]: [
                     { codUf: req.params.uf },
                     { codCaderno: req.params.caderno },
-                    { page: req.query.page },
+                    { page: parseInt(req.query.page) || 1 },
                     { activate: 1 }
                 ],
                 codAtividade: {
@@ -885,12 +885,20 @@ module.exports = {
         const contador = await Anuncio.count({
             where: { codUf: req.params.uf, codCaderno: req.params.caderno },
         })
-        //console.log("daskdaklsdjalkj", contador)
+
+        let mosaicoImg = 0;
+        try {
+            const cadernoData = await Caderno.findOne({
+                where: { UF: req.params.uf, nomeCaderno: req.params.caderno },
+                raw: true
+            });
+            if (cadernoData) mosaicoImg = cadernoData.descImagem;
+        } catch (e) { /* ignore */ }
 
         res.json({
             success: true,
             teste: anuncioTeste,
-            mosaico: 0,
+            mosaico: mosaicoImg,
             qtdaConsulta: contador,
             paginaLocalizada: req.query.page,
         });
