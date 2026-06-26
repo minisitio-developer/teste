@@ -613,13 +613,12 @@ async function seedAdmin() {
     try {
         const bcrypt = require('bcryptjs');
         const Usuario = require('./models/table_usuarios');
-        const existente = await Usuario.findOne({ where: { descCPFCNPJ: '23707648000199' } });
-        if (!existente) {
-            const salt = await bcrypt.genSalt(10);
-            const hash = await bcrypt.hash('Admin123', salt);
-            await Usuario.create({
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash('Admin123', salt);
+        const [user, created] = await Usuario.findOrCreate({
+            where: { descCPFCNPJ: '23707648000199' },
+            defaults: {
                 codTipoPessoa: 'J',
-                descCPFCNPJ: '23707648000199',
                 descNome: 'Administrador Teste',
                 descEmail: 'admin@teste.com',
                 senha: hash,
@@ -630,11 +629,14 @@ async function seedAdmin() {
                 RepresentanteConvenio: '',
                 Endereco: '',
                 ativo: 1
-            });
-            console.log('SEED: Usuário admin criado com sucesso');
+            }
+        });
+        if (!created) {
+            await user.update({ senha: hash, ativo: 1 });
         }
+        console.log('SEED: Admin pronto - CNPJ: 23707648000199 / Senha: Admin123');
     } catch (err) {
-        console.error('SEED: Erro ao criar admin:', err.message);
+        console.error('SEED: Erro:', err.message);
     }
 }
 
