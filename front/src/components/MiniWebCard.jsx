@@ -287,11 +287,11 @@ function MiniWebCard(props) {
                 <div className='row display-flex justify-content-center' key={props.key}  onClick={buscarAnuncio} >
 
 
-                    {imgDefault != false && <img src={`${masterPath.url}/${encodeURI(imgDefault)}`} alt="webcard" width={435} height={205} />}
+                    {imgDefault != false && <img src={`${masterPath.url}/${encodeURI(imgDefault)}`} alt="webcard" style={{width: "100%", height: "auto", maxHeight: "205px", objectFit: "cover"}} />}
                     {/*    {console.log(`${masterPath.url}/${imgDefault}`)} */}
 
                     {imgDefault === false &&
-                        <div className="conteudo semImagem" style={{ width: "415px" }} onClick={buscarAnuncio}>
+                        <div className="conteudo semImagem" style={{ width: "100%", maxWidth: "415px" }} onClick={buscarAnuncio}>
                             <h2 className="nome-empresa text-start">{props.empresa}</h2>
                             <h4
                                 className="slogan webcard text-start"
