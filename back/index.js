@@ -609,6 +609,36 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(frontBuildPath, 'index.html'));
 });
 
-server.listen(port, () => {
+async function seedAdmin() {
+    try {
+        const bcrypt = require('bcryptjs');
+        const Usuario = require('./models/table_usuarios');
+        const existente = await Usuario.findOne({ where: { descCPFCNPJ: '23707648000199' } });
+        if (!existente) {
+            const salt = await bcrypt.genSalt(10);
+            const hash = await bcrypt.hash('Admin123', salt);
+            await Usuario.create({
+                codTipoPessoa: 'J',
+                descCPFCNPJ: '23707648000199',
+                descNome: 'Administrador Teste',
+                descEmail: 'admin@teste.com',
+                senha: hash,
+                codTipoUsuario: 1,
+                codUf: 27,
+                codCidade: 0,
+                Telefone: '',
+                RepresentanteConvenio: '',
+                Endereco: '',
+                ativo: 1
+            });
+            console.log('SEED: Usuário admin criado com sucesso');
+        }
+    } catch (err) {
+        console.error('SEED: Erro ao criar admin:', err.message);
+    }
+}
+
+server.listen(port, async () => {
     console.log("rodando na porta: ", port);
+    await seedAdmin();
 });
