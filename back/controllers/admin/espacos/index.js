@@ -19,6 +19,7 @@ const Globals = require('../../../models/table_globals');
 const Pagamento = require('../../../models/table_pagamentos');
 const Uf = require('../../../models/table_uf');
 const Usuarios = require('../../../models/table_usuarios');
+const Usuario = Usuarios;
 const Tags = require('../../../models/table_tags');
 
 
