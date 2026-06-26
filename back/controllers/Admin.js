@@ -1217,7 +1217,10 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
         const Ids = await Descontos.findAndCountAll({
             order: [['dtCadastro', 'DESC']],
             limit: porPagina,
-            offset: offset
+            offset: offset,
+            include: [
+                { model: Usuarios, as: 'usuario', attributes: ['descNome'], required: false }
+            ]
         });
 
         /*         console.log(Ids.rows)
@@ -1261,8 +1264,7 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
                 // Corrigir caracteres na descrição
                 item.dataValues.atividade = corrigirCaracteres(item.dataValues.descricao);
 
-                const user = await item.getUsuario();
-                //item.dataValues.nmUsuario = user.descNome;
+                const user = item.usuario;
 
                 if (user) {
                     item.dataValues = {
@@ -1577,7 +1579,10 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
                         { idUsuario: resultUser[0].codUsuario }
                     ]
 
-                }
+                },
+                include: [
+                    { model: Usuarios, as: 'usuario', attributes: ['descNome'], required: false }
+                ]
             });
 
             if (resultAnuncio < 1) {
@@ -1587,10 +1592,10 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
 
             await Promise.all(
                 resultAnuncio.map(async (item) => {
-                    const user = await item.getUsuario();
+                    const user = item.usuario;
 
                     item.dataValues = {
-                        nmUsuario: user.descNome, // Adiciona a nova propriedade no início
+                        nmUsuario: user ? user.descNome : '', // Adiciona a nova propriedade no início
                         ...item.dataValues, // Mantém as demais propriedades
                     };
                 })
@@ -1607,7 +1612,10 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
                         { idDesconto: nu_hash }
                     ]
 
-                }
+                },
+                include: [
+                    { model: Usuarios, as: 'usuario', attributes: ['descNome'], required: false }
+                ]
             });
             if (resultAnuncio < 1 || resultAnuncio[0].hash == "00.000.0000") {
                 res.json({ success: false, message: "ID não encontrado 0" });
@@ -1616,7 +1624,7 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
 
             await Promise.all(
                 resultAnuncio.map(async (item) => {
-                    const user = await item.getUsuario();
+                    const user = item.usuario;
                     if (user) {
                         item.dataValues = {
                             nmUsuario: user.descNome, // Adiciona a nova propriedade no início
@@ -1645,7 +1653,10 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
                      ] */
 
             },
-            attributes: ['desconto', 'descricao', 'is_capa']
+            attributes: ['desconto', 'descricao', 'is_capa'],
+            include: [
+                { model: Usuarios, as: 'usuario', attributes: ['descNome'], required: false }
+            ]
         });
         if (resultAnuncio < 1 || resultAnuncio[0].hash == "00.000.0000") {
             res.json({ success: false, message: "ID não encontrado 0" });
@@ -1654,7 +1665,7 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
 
         await Promise.all(
             resultAnuncio.map(async (item) => {
-                const user = await item.getUsuario();
+                const user = item.usuario;
                 if (user) {
                     item.dataValues = {
                         nmUsuario: user.descNome, // Adiciona a nova propriedade no início
@@ -1811,18 +1822,21 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
             try {
                 const Ids = await Descontos.findAll({
                     order: [['dtCadastro', 'DESC']],
-                    raw: false
+                    raw: false,
+                    include: [
+                        { model: Usuarios, as: 'usuario', attributes: ['descNome'], required: false }
+                    ]
                 });
 
                 const arr = [];
 
                 await Promise.all(
                     Ids.map(async (item) => {
-                        const user = await item.getUsuario();
+                        const user = item.usuario;
 
                         try {
                             item.dataValues = {
-                                nmUsuario: user.descNome, // Adiciona a nova propriedade no início
+                                nmUsuario: user ? user.descNome : "alterar", // Adiciona a nova propriedade no início
                                 ...item.dataValues, // Mantém as demais propriedades
                             };
                         } catch (err) {
@@ -1863,6 +1877,9 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
                 ]
             },
             order: [['hash', 'ASC']],
+            include: [
+                { model: Usuarios, as: 'usuario', attributes: ['descNome'], required: false }
+            ]
             //order: [['dtCadastro', 'DESC']],
             /*   limit: porPagina,
               offset: offset */
@@ -1897,8 +1914,7 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
                 // Corrigir caracteres na descrição
                 item.dataValues.atividade = corrigirCaracteres(item.dataValues.descricao);
 
-                const user = await item.getUsuario();
-                //item.dataValues.nmUsuario = user.descNome;
+                const user = item.usuario;
 
                 if (user) {
                     item.dataValues = {

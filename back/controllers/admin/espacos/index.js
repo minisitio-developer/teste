@@ -292,11 +292,19 @@ module.exports = {
                     'codAtividade',
                     'periodo'
                 ],
-                include: {
-                    model: Pagamento,
-                    as: "pagamentos",  // Nome definido no `hasMany`
-                    attributes: ["id", "valor", "status", "data"]
-                }
+                include: [
+                    {
+                        model: Pagamento,
+                        as: "pagamentos",
+                        attributes: ["id", "valor", "status", "data"]
+                    },
+                    {
+                        model: Usuario,
+                        as: 'usuario',
+                        attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'],
+                        required: false
+                    }
+                ]
             });
 
             console.timeEnd("espaco")
@@ -313,19 +321,15 @@ module.exports = {
             // Número total de páginas
             const totalPaginas = Math.ceil(totalItens / porPagina);
 
-
-            await Promise.all(anuncio.map(async (anun, i) => {
-                const user = await anun.getUsuario();
-                //console.log("adjasldj",user)
+            anuncio.forEach((anun) => {
+                const user = anun.usuario;
                 if (user) {
                     anun.codUsuario = user.descNome;
                     anun.dataValues.loginUser = user.descCPFCNPJ;
-                    anun.dataValues.loginPass = user.senha;
                     anun.dataValues.loginEmail = user.descEmail;
                     anun.dataValues.loginContato = user.descTelefone;
                 }
-
-            }));
+            });
 
             res.json({
                 success: true,
@@ -379,6 +383,11 @@ module.exports = {
                 'codDesconto',
                 'codAtividade',
                 'periodo'
+            ],
+            include: [
+                { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
             ]
         });
 
@@ -387,31 +396,17 @@ module.exports = {
         // Número total de páginas
         const totalPaginas = Math.ceil(totalItens / porPagina);
 
-        // Importe a biblioteca 'iconv-lite'
-        /*       const iconv = require('iconv-lite');
-      
-              // Função para corrigir caracteres codificados incorretamente
-              function corrigirCaracteres(cadeiaCodificada) {
-                  // Decodifica a cadeia usando UTF-8
-                  const buffer = Buffer.from(cadeiaCodificada, 'binary');
-                  const cadeiaCorrigida = iconv.decode(buffer, 'utf-8');
-      
-                  return cadeiaCorrigida;
-              }
-       */
         try {
-            await Promise.all(anuncio.rows.map(async (anun, i) => {
-                const user = await anun.getUsuario();
-                //console.log("adjasldj",user)
-                if (user) {
-                    anun.codUsuario = user.descNome;
-                    anun.dataValues.loginUser = user.descCPFCNPJ;
-                    anun.dataValues.loginPass = user.senha;
-                    anun.dataValues.loginEmail = user.descEmail;
-                    anun.dataValues.loginContato = user.descTelefone;
+            anuncio.rows.forEach((anun, i) => {
+                anun.codCaderno = anun.caderno ? anun.caderno.nomeCaderno : "não registrado";
+                anun.codPA = anun.desconto ? anun.desconto.hash : "99.999.9999";
+                if (anun.usuario) {
+                    anun.codUsuario = anun.usuario.descNome;
+                    anun.dataValues.loginUser = anun.usuario.descCPFCNPJ;
+                    anun.dataValues.loginEmail = anun.usuario.descEmail;
+                    anun.dataValues.loginContato = anun.usuario.descTelefone;
                 }
-
-            }));
+            });
 
             res.json({
                 success: true,
@@ -440,7 +435,7 @@ module.exports = {
                         anun.codPA = desconto != undefined ? desconto.hash : "99.999.9999";
                         //console.log("-----------------------------------> ", anun.codPA);
         
-                        const user = await anun.getUsuario();
+                        const user = anun.usuario;
                         anun.codUsuario = user.descNome;
         
                         anuncio.rows[i].kledisom = 123;
@@ -2064,13 +2059,11 @@ module.exports = {
             /*  await Promise.all(resultAnuncio.map(async (anun, i) => {
              
  
-                 const user = await anun.getUsuario();
+                 const user = anun.usuario;
  
                  if (user) {
                      anun.codUsuario = user.descNome;
-                     anun.dataValues.loginUser = user.descCPFCNPJ;
-                     anun.dataValues.loginPass = user.senha;
-                     anun.dataValues.loginEmail = user.descEmail;
+                     anun.dataValues.loginUser = user.descCPFCNPJ;                     anun.dataValues.loginEmail = user.descEmail;
                      anun.dataValues.loginContato = user.descTelefone;
                  }
  
@@ -2177,11 +2170,12 @@ module.exports = {
                     'codAtividade',
                     'periodo'
                 ],
-                include: {
-                    model: Pagamento,
-                    as: "pagamentos",  // Nome definido no `hasMany`
-                    attributes: ["id", "valor", "status", "data"]
-                }
+                include: [
+                    { model: Pagamento, as: "pagamentos", attributes: ["id", "valor", "status", "data"] },
+                    { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                    { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                    { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                ]
             });
             console.timeEnd("espaco")
             console.table([1, "id", nu_hash])
@@ -2189,29 +2183,16 @@ module.exports = {
             if (resultAnuncio.length < 1) return res.json({ success: false, message: 'Não encontrado' });
 
             if (resultAnuncio.length > 0) {
-                await Promise.all(resultAnuncio.map(async (anun, i) => {
-
-                    const cader = await anun.getCaderno();
-                    anun.codCaderno = cader ? cader.nomeCaderno : "não registrado";
-
-                    //const estado = await anun.getUf();
-                    //anun.codUf = estado.sigla_uf;
-
-                    const desconto = await anun.getDesconto();
-                    anun.codPA = desconto != undefined ? desconto.hash : "99.999.9999";
-
-                    const user = await anun.getUsuario();
-
-                    if (user) {
-                        anun.codUsuario = user.descNome;
-                        anun.dataValues.loginUser = user.descCPFCNPJ;
-                        anun.dataValues.loginPass = user.senha;
-                        anun.dataValues.loginEmail = user.descEmail;
-                        anun.dataValues.loginContato = user.descTelefone;
+                resultAnuncio.forEach((anun, i) => {
+                    anun.codCaderno = anun.caderno ? anun.caderno.nomeCaderno : "não registrado";
+                    anun.codPA = anun.desconto ? anun.desconto.hash : "99.999.9999";
+                    if (anun.usuario) {
+                        anun.codUsuario = anun.usuario.descNome;
+                        anun.dataValues.loginUser = anun.usuario.descCPFCNPJ;
+                        anun.dataValues.loginEmail = anun.usuario.descEmail;
+                        anun.dataValues.loginContato = anun.usuario.descTelefone;
                     }
-
-                }));
-
+                });
 
                 const consultarRegistros = await Cadernos.findAll({
                     where: {
@@ -2284,40 +2265,29 @@ module.exports = {
                     'codAtividade',
                     'periodo'
                 ],
-                include: {
-                    model: Pagamento,
-                    as: "pagamentos",  // Nome definido no `hasMany`
-                    attributes: ["id", "valor", "status", "data"]
-                }
+                include: [
+                    { model: Pagamento, as: "pagamentos", attributes: ["id", "valor", "status", "data"] },
+                    { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                    { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                    { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                ]
             });
-
-            console.table([1, "idnome", nu_hash, requisito])
+            console.timeEnd("espaco")
+            console.table([1, "id", nu_hash])
 
             if (resultAnuncio.length < 1) return res.json({ success: false, message: 'Não encontrado' });
 
             if (resultAnuncio.length > 0) {
-                await Promise.all(resultAnuncio.map(async (anun, i) => {
-
-                    const cader = await anun.getCaderno();
-                    anun.codCaderno = cader ? cader.nomeCaderno : "não registrado";
-
-                    //const estado = await anun.getUf();
-                    //anun.codUf = estado.sigla_uf;
-
-                    const desconto = await anun.getDesconto();
-                    anun.codPA = desconto != undefined ? desconto.hash : "99.999.9999";
-
-                    const user = await anun.getUsuario();
-
-                    if (user) {
-                        anun.codUsuario = user.descNome;
-                        anun.dataValues.loginUser = user.descCPFCNPJ;
-                        anun.dataValues.loginPass = user.senha;
-                        anun.dataValues.loginEmail = user.descEmail;
-                        anun.dataValues.loginContato = user.descTelefone;
+                resultAnuncio.forEach((anun, i) => {
+                    anun.codCaderno = anun.caderno ? anun.caderno.nomeCaderno : "não registrado";
+                    anun.codPA = anun.desconto ? anun.desconto.hash : "99.999.9999";
+                    if (anun.usuario) {
+                        anun.codUsuario = anun.usuario.descNome;
+                        anun.dataValues.loginUser = anun.usuario.descCPFCNPJ;
+                        anun.dataValues.loginEmail = anun.usuario.descEmail;
+                        anun.dataValues.loginContato = anun.usuario.descTelefone;
                     }
-
-                }));
+                });
 
                 const resultAnuncioCount = await Anuncio.count({
                     where: { [requisito]: { [Op.like]: `${nu_hash}%` } }
@@ -2376,39 +2346,28 @@ module.exports = {
                     'codAtividade',
                     'periodo'
                 ],
-                include: {
-                    model: Pagamento,
-                    as: "pagamentos",  // Nome definido no `hasMany`
-                    attributes: ["id", "valor", "status", "data"]
-                }
+                include: [
+                    { model: Pagamento, as: "pagamentos", attributes: ["id", "valor", "status", "data"] },
+                    { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                    { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                    { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                ]
             });
 
             console.table([1, "id", nu_hash])
             if (resultAnuncio.length < 1) return res.json({ success: false, message: 'Não encontrado' });
 
             if (resultAnuncio.length > 0) {
-                await Promise.all(resultAnuncio.map(async (anun, i) => {
-
-                    const cader = await anun.getCaderno();
-                    anun.codCaderno = cader ? cader.nomeCaderno : "não registrado";
-
-                    //const estado = await anun.getUf();
-                    //anun.codUf = estado.sigla_uf;
-
-                    const desconto = await anun.getDesconto();
-                    anun.codPA = desconto != undefined ? desconto.hash : "99.999.9999";
-
-                    const user = await anun.getUsuario();
-
-                    if (user) {
-                        anun.codUsuario = user.descNome;
-                        anun.dataValues.loginUser = user.descCPFCNPJ;
-                        anun.dataValues.loginPass = user.senha;
-                        anun.dataValues.loginEmail = user.descEmail;
-                        anun.dataValues.loginContato = user.descTelefone;
+                resultAnuncio.forEach((anun, i) => {
+                    anun.codCaderno = anun.caderno ? anun.caderno.nomeCaderno : "não registrado";
+                    anun.codPA = anun.desconto ? anun.desconto.hash : "99.999.9999";
+                    if (anun.usuario) {
+                        anun.codUsuario = anun.usuario.descNome;
+                        anun.dataValues.loginUser = anun.usuario.descCPFCNPJ;
+                        anun.dataValues.loginEmail = anun.usuario.descEmail;
+                        anun.dataValues.loginContato = anun.usuario.descTelefone;
                     }
-
-                }));
+                });
 
                 const resultAnuncioCount = await Anuncio.count({
                     where: whereClause/* {
@@ -2434,7 +2393,6 @@ module.exports = {
             }
         }
         async function buscaUf() {
-
             const resultAnuncio = await Anuncio.findAll({
                 where: {
                     [requisito]: nu_hash,
@@ -2460,39 +2418,28 @@ module.exports = {
                     'codAtividade',
                     'periodo'
                 ],
-                include: {
-                    model: Pagamento,
-                    as: "pagamentos",  // Nome definido no `hasMany`
-                    attributes: ["id", "valor", "status", "data"]
-                }
+                include: [
+                    { model: Pagamento, as: "pagamentos", attributes: ["id", "valor", "status", "data"] },
+                    { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                    { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                    { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                ]
             });
 
             console.table([1, "id", nu_hash])
             if (resultAnuncio.length < 1) return res.json({ success: false, message: 'Não encontrado' });
 
             if (resultAnuncio.length > 0) {
-                await Promise.all(resultAnuncio.map(async (anun, i) => {
-
-                    const cader = await anun.getCaderno();
-                    anun.codCaderno = cader ? cader.nomeCaderno : "não registrado";
-
-                    //const estado = await anun.getUf();
-                    //anun.codUf = estado.sigla_uf;
-
-                    const desconto = await anun.getDesconto();
-                    anun.codPA = desconto != undefined ? desconto.hash : "99.999.9999";
-
-                    const user = await anun.getUsuario();
-
-                    if (user) {
-                        anun.codUsuario = user.descNome;
-                        anun.dataValues.loginUser = user.descCPFCNPJ;
-                        anun.dataValues.loginPass = user.senha;
-                        anun.dataValues.loginEmail = user.descEmail;
-                        anun.dataValues.loginContato = user.descTelefone;
+                resultAnuncio.forEach((anun, i) => {
+                    anun.codCaderno = anun.caderno ? anun.caderno.nomeCaderno : "não registrado";
+                    anun.codPA = anun.desconto ? anun.desconto.hash : "99.999.9999";
+                    if (anun.usuario) {
+                        anun.codUsuario = anun.usuario.descNome;
+                        anun.dataValues.loginUser = anun.usuario.descCPFCNPJ;
+                        anun.dataValues.loginEmail = anun.usuario.descEmail;
+                        anun.dataValues.loginContato = anun.usuario.descTelefone;
                     }
-
-                }));
+                });
 
                 const resultAnuncioCount = await Anuncio.count({
                     where: {
@@ -2570,11 +2517,12 @@ module.exports = {
                     'codAtividade',
                     'periodo'
                 ],
-                include: {
-                    model: Pagamento,
-                    as: "pagamentos",  // Nome definido no `hasMany`
-                    attributes: ["id", "valor", "status", "data"]
-                }
+                include: [
+                    { model: Pagamento, as: "pagamentos", attributes: ["id", "valor", "status", "data"] },
+                    { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                    { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                    { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                ]
             });
             console.timeEnd("espaco")
             console.table([1, "id", nu_hash])
@@ -2582,28 +2530,16 @@ module.exports = {
             if (resultAnuncio.length < 1) return res.json({ success: false, message: 'Não encontrado' });
 
             if (resultAnuncio.length > 0) {
-                await Promise.all(resultAnuncio.map(async (anun, i) => {
-
-                    const cader = await anun.getCaderno();
-                    anun.codCaderno = cader ? cader.nomeCaderno : "não registrado";
-
-                    //const estado = await anun.getUf();
-                    //anun.codUf = estado.sigla_uf;
-
-                    const desconto = await anun.getDesconto();
-                    anun.codPA = desconto != undefined ? desconto.hash : "99.999.9999";
-
-                    const user = await anun.getUsuario();
-
-                    if (user) {
-                        anun.codUsuario = user.descNome;
-                        anun.dataValues.loginUser = user.descCPFCNPJ;
-                        anun.dataValues.loginPass = user.senha;
-                        anun.dataValues.loginEmail = user.descEmail;
-                        anun.dataValues.loginContato = user.descTelefone;
+                resultAnuncio.forEach((anun, i) => {
+                    anun.codCaderno = anun.caderno ? anun.caderno.nomeCaderno : "não registrado";
+                    anun.codPA = anun.desconto ? anun.desconto.hash : "99.999.9999";
+                    if (anun.usuario) {
+                        anun.codUsuario = anun.usuario.descNome;
+                        anun.dataValues.loginUser = anun.usuario.descCPFCNPJ;
+                        anun.dataValues.loginEmail = anun.usuario.descEmail;
+                        anun.dataValues.loginContato = anun.usuario.descTelefone;
                     }
-
-                }));
+                });
 
 
                 const consultarRegistros = await Cadernos.findAll({
@@ -2657,11 +2593,12 @@ module.exports = {
                     'codAtividade',
                     'periodo'
                 ],
-                include: {
-                    model: Pagamento,
-                    as: "pagamentos",  // Nome definido no `hasMany`
-                    attributes: ["id", "valor", "status", "data"]
-                }
+                include: [
+                    { model: Pagamento, as: "pagamentos", attributes: ["id", "valor", "status", "data"] },
+                    { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                    { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                    { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                ]
             });
 
             console.table([1, "idnome", nu_hash])
@@ -2669,28 +2606,16 @@ module.exports = {
             if (resultAnuncio.length < 1) return res.json({ success: false, message: 'Não encontrado' });
 
             if (resultAnuncio.length > 0) {
-                await Promise.all(resultAnuncio.map(async (anun, i) => {
-
-                    const cader = await anun.getCaderno();
-                    anun.codCaderno = cader ? cader.nomeCaderno : "não registrado";
-
-                    //const estado = await anun.getUf();
-                    //anun.codUf = estado.sigla_uf;
-
-                    const desconto = await anun.getDesconto();
-                    anun.codPA = desconto != undefined ? desconto.hash : "99.999.9999";
-
-                    const user = await anun.getUsuario();
-
-                    if (user) {
-                        anun.codUsuario = user.descNome;
-                        anun.dataValues.loginUser = user.descCPFCNPJ;
-                        anun.dataValues.loginPass = user.senha;
-                        anun.dataValues.loginEmail = user.descEmail;
-                        anun.dataValues.loginContato = user.descTelefone;
+                resultAnuncio.forEach((anun, i) => {
+                    anun.codCaderno = anun.caderno ? anun.caderno.nomeCaderno : "não registrado";
+                    anun.codPA = anun.desconto ? anun.desconto.hash : "99.999.9999";
+                    if (anun.usuario) {
+                        anun.codUsuario = anun.usuario.descNome;
+                        anun.dataValues.loginUser = anun.usuario.descCPFCNPJ;
+                        anun.dataValues.loginEmail = anun.usuario.descEmail;
+                        anun.dataValues.loginContato = anun.usuario.descTelefone;
                     }
-
-                }));
+                });
 
                 const resultAnuncioCount = await Anuncio.count({
                     where: {
@@ -2741,39 +2666,28 @@ module.exports = {
                     'codAtividade',
                     'periodo'
                 ],
-                include: {
-                    model: Pagamento,
-                    as: "pagamentos",  // Nome definido no `hasMany`
-                    attributes: ["id", "valor", "status", "data"]
-                }
+                include: [
+                    { model: Pagamento, as: "pagamentos", attributes: ["id", "valor", "status", "data"] },
+                    { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                    { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                    { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                ]
             });
 
             console.table([1, "id", nu_hash])
             if (resultAnuncio.length < 1) return res.json({ success: false, message: 'Não encontrado' });
 
             if (resultAnuncio.length > 0) {
-                await Promise.all(resultAnuncio.map(async (anun, i) => {
-
-                    const cader = await anun.getCaderno();
-                    anun.codCaderno = cader ? cader.nomeCaderno : "não registrado";
-
-                    //const estado = await anun.getUf();
-                    //anun.codUf = estado.sigla_uf;
-
-                    const desconto = await anun.getDesconto();
-                    anun.codPA = desconto != undefined ? desconto.hash : "99.999.9999";
-
-                    const user = await anun.getUsuario();
-
-                    if (user) {
-                        anun.codUsuario = user.descNome;
-                        anun.dataValues.loginUser = user.descCPFCNPJ;
-                        anun.dataValues.loginPass = user.senha;
-                        anun.dataValues.loginEmail = user.descEmail;
-                        anun.dataValues.loginContato = user.descTelefone;
+                resultAnuncio.forEach((anun, i) => {
+                    anun.codCaderno = anun.caderno ? anun.caderno.nomeCaderno : "não registrado";
+                    anun.codPA = anun.desconto ? anun.desconto.hash : "99.999.9999";
+                    if (anun.usuario) {
+                        anun.codUsuario = anun.usuario.descNome;
+                        anun.dataValues.loginUser = anun.usuario.descCPFCNPJ;
+                        anun.dataValues.loginEmail = anun.usuario.descEmail;
+                        anun.dataValues.loginContato = anun.usuario.descTelefone;
                     }
-
-                }));
+                });
 
                 const resultAnuncioCount = await Anuncio.count({
                     where: {
@@ -2812,33 +2726,32 @@ module.exports = {
             const resultAnuncioEstado = await Anuncio.findAll({
                 where: {
                     codUf: resultEstado[0].dataValues.id_uf
-                }
+                },
+                include: [
+                    { model: Uf, as: 'uf', required: false },
+                    { model: Atividade, as: 'atividade', required: false },
+                    { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                    { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                    { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                ]
             });
 
 
             if (resultAnuncioEstado.length > 0) {
-                await Promise.all(resultAnuncioEstado.map(async (anun, i) => {
-                    const cader = await anun.getCaderno();
-                    anun.codCaderno = cader ? cader.nomeCaderno : "não registrado";
-
-                    const estado = await anun.getUf();
-                    anun.codUf = estado.sigla_uf;
-
-                    const desconto = await anun.getDesconto();
-                    anun.codPA = desconto != undefined ? desconto.hash : "99.999.9999";
-
-                    const user = await anun.getUsuario();
-                    anun.codUsuario = user.descNome;
-                    anun.dataValues.loginUser = user.descCPFCNPJ;
-                    anun.dataValues.loginPass = user.senha;
-                    anun.dataValues.loginEmail = user.descEmail;
-                    anun.dataValues.loginContato = user.descTelefone;
-
-                    const atividades = await anun.getAtividade();
-                    anun.dataValues.mainAtividade = atividades.atividade
-
-                    //console.log(anuncio.rows[i])
-                }));
+                resultAnuncioEstado.forEach((anun, i) => {
+                    anun.codCaderno = anun.caderno ? anun.caderno.nomeCaderno : "não registrado";
+                    anun.codUf = anun.uf ? anun.uf.sigla_uf : anun.codUf;
+                    anun.codPA = anun.desconto ? anun.desconto.hash : "99.999.9999";
+                    if (anun.usuario) {
+                        anun.codUsuario = anun.usuario.descNome;
+                        anun.dataValues.loginUser = anun.usuario.descCPFCNPJ;
+                        anun.dataValues.loginEmail = anun.usuario.descEmail;
+                        anun.dataValues.loginContato = anun.usuario.descTelefone;
+                    }
+                    if (anun.atividade) {
+                        anun.dataValues.mainAtividade = anun.atividade.atividade;
+                    }
+                });
 
                 const totalItens = resultAnuncioEstado.length;
                 console.log(totalItens)
@@ -2875,54 +2788,40 @@ module.exports = {
                 const resultAnuncio = await Anuncio.findAll({
                     where: {
                         codDesconto: nu_hash
-                    }
+                    },
+                    include: [
+                        { model: Uf, as: 'uf', required: false },
+                        { model: Atividade, as: 'atividade', required: false },
+                        { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                        { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                        { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                    ]
                 });
 
 
-                resultAnuncio.map(async (anun, i) => {
-                    try {
-                        await Promise.all(resultAnuncio.map(async (anun, i) => {
-                            const cader = await anun.getCaderno();
-                            anun.codCaderno = cader ? cader.nomeCaderno : "não registrado";
-
-                            const estado = await anun.getUf();
-                            anun.codUf = estado.sigla_uf;
-
-                            const desconto = await anun.getDesconto();
-                            anun.codPA = desconto != undefined ? desconto.hash : "99.999.9999";
-
-                            const user = await anun.getUsuario();
-                            anun.codUsuario = user.descNome;
-                            anun.dataValues.loginUser = user.descCPFCNPJ;
-                            anun.dataValues.loginPass = user.senha;
-                            anun.dataValues.loginEmail = user.descEmail;
-                            anun.dataValues.loginContato = user.descTelefone;
-
-                            const atividades = await anun.getAtividade();
-                            anun.dataValues.mainAtividade = atividades.atividade
-
-                            //console.log(anuncio.rows[i])
-                        }));
-
-
-                        if (i === resultAnuncio.length - 1) {
-                            res.json({
-                                success: true,
-                                message: {
-                                    anuncios: resultAnuncio, // Itens da página atual
-                                    paginaAtual: 1,
-                                    totalPaginas: 1,
-                                    totalItem: resultAnuncio.length
-                                }
-                            })
-                        }
-
-
-                    } catch (err) {
-                        console.log(err);
-                        res.status(500)
+                resultAnuncio.forEach((anun, i) => {
+                    anun.codCaderno = anun.caderno ? anun.caderno.nomeCaderno : "não registrado";
+                    anun.codUf = anun.uf ? anun.uf.sigla_uf : anun.codUf;
+                    anun.codPA = anun.desconto ? anun.desconto.hash : "99.999.9999";
+                    if (anun.usuario) {
+                        anun.codUsuario = anun.usuario.descNome;
+                        anun.dataValues.loginUser = anun.usuario.descCPFCNPJ;
+                        anun.dataValues.loginEmail = anun.usuario.descEmail;
+                        anun.dataValues.loginContato = anun.usuario.descTelefone;
                     }
+                    if (anun.atividade) {
+                        anun.dataValues.mainAtividade = anun.atividade.atividade;
+                    }
+                });
 
+                res.json({
+                    success: true,
+                    message: {
+                        anuncios: resultAnuncio,
+                        paginaAtual: 1,
+                        totalPaginas: 1,
+                        totalItem: resultAnuncio.length
+                    }
                 });
 
             }
@@ -2957,7 +2856,14 @@ module.exports = {
                         codUsuario: resultID[0].codUsuario
                     },
                     limit: porPagina,
-                    offset: offset
+                    offset: offset,
+                    include: [
+                        { model: Uf, as: 'uf', required: false },
+                        { model: Atividade, as: 'atividade', required: false },
+                        { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                        { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                        { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                    ]
                 });
 
                 const resultAnuncioCount = await Anuncio.count({
@@ -2977,51 +2883,29 @@ module.exports = {
                 const totalPaginas = Math.ceil(totalItens / porPagina);
 
                 //console.log("dasjfhsjklfsfhlksajhfdsaklfjhsjkfd", resultAnuncio, resultID[0].codUsuario)
-                resultAnuncio.map(async (anun, i) => {
-
-                    try {
-                        await Promise.all(resultAnuncio.map(async (anun, i) => {
-                            const cader = await anun.getCaderno();
-                            anun.codCaderno = cader ? cader.nomeCaderno : "não registrado";
-
-                            const estado = await anun.getUf();
-                            anun.codUf = estado.sigla_uf;
-
-                            const desconto = await anun.getDesconto();
-                            anun.codPA = desconto != undefined ? desconto.hash : "99.999.9999";
-
-                            const user = await anun.getUsuario();
-                            anun.codUsuario = user.descNome;
-                            anun.dataValues.loginUser = user.descCPFCNPJ;
-                            anun.dataValues.loginPass = user.senha;
-                            anun.dataValues.loginEmail = user.descEmail;
-                            anun.dataValues.loginContato = user.descTelefone;
-
-                            const atividades = await anun.getAtividade();
-                            anun.dataValues.mainAtividade = atividades.atividade
-
-                            //console.log(anuncio.rows[i])
-                        }));
-
-
-                        if (i === resultAnuncio.length - 1) {
-                            res.json({
-                                success: true,
-                                message: {
-                                    anuncios: resultAnuncio, // Itens da página atual
-                                    paginaAtual: paginaAtual,
-                                    totalPaginas: totalPaginas,
-                                    totalItem: totalItens
-                                }
-                            })
-                        }
-
-
-                    } catch (err) {
-                        console.log(err);
-                        res.status(500)
+                resultAnuncio.forEach((anun, i) => {
+                    anun.codCaderno = anun.caderno ? anun.caderno.nomeCaderno : "não registrado";
+                    anun.codUf = anun.uf ? anun.uf.sigla_uf : anun.codUf;
+                    anun.codPA = anun.desconto ? anun.desconto.hash : "99.999.9999";
+                    if (anun.usuario) {
+                        anun.codUsuario = anun.usuario.descNome;
+                        anun.dataValues.loginUser = anun.usuario.descCPFCNPJ;
+                        anun.dataValues.loginEmail = anun.usuario.descEmail;
+                        anun.dataValues.loginContato = anun.usuario.descTelefone;
                     }
+                    if (anun.atividade) {
+                        anun.dataValues.mainAtividade = anun.atividade.atividade;
+                    }
+                });
 
+                res.json({
+                    success: true,
+                    message: {
+                        anuncios: resultAnuncio,
+                        paginaAtual: paginaAtual,
+                        totalPaginas: totalPaginas,
+                        totalItem: totalItens
+                    }
                 });
 
 
@@ -3046,7 +2930,10 @@ module.exports = {
                     model: Promocao,
                     as: 'promoc',
                     attributes: ['data_validade', 'banner']
-                }
+                },
+                { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
             ]
         });
 
@@ -3057,7 +2944,7 @@ module.exports = {
 
         let obj = resultAnuncio[0];
 
-        const user = await obj.getUsuario();
+        const user = obj.usuario;
 
         const nmUser = await Usuarios.findOne({
             where: {
@@ -4738,9 +4625,7 @@ module.exports = {
                                         if (key === 'codDesconto') {
                                             // Adiciona as propriedades do usuário após 'codDesconto'
                                             reorderedData.codUsuario = user.descNome;
-                                            reorderedData.loginUser = user.descCPFCNPJ;
-                                            reorderedData.loginPass = user.senha;
-                                            reorderedData.loginEmail = user.descEmail;
+                                            reorderedData.loginUser = user.descCPFCNPJ;                                            reorderedData.loginEmail = user.descEmail;
                                             reorderedData.loginContato = user.descTelefone;
                                             reorderedData.link = `${masterPath.domain}/local/${encodeURIComponent(
                                                 anun.dataValues.descAnuncio
@@ -4844,9 +4729,13 @@ module.exports = {
                         'dueDate',
                         'codDesconto',
                         'codAtividade'
-                    ]
+                    ],
+                    include: [
+                    { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                    { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                    { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                ]
                 });
-
 
                 function dateformat(data) {
                     const date = new Date(data);
@@ -4856,7 +4745,7 @@ module.exports = {
                 await Promise.all(
                     anuncio.rows.map(async (anun) => {
                         try {
-                            const user = await anun.getUsuario();
+                            const user = anun.usuario;
 
                             if (user) {
                                 // Cria um novo objeto com as informações do usuário inseridas após 'codDesconto'
@@ -4866,9 +4755,7 @@ module.exports = {
                                     if (key === 'codDesconto') {
                                         // Adiciona as propriedades do usuário após 'codDesconto'
                                         reorderedData.codUsuario = user.descNome;
-                                        reorderedData.loginUser = user.descCPFCNPJ;
-                                        reorderedData.loginPass = user.senha;
-                                        reorderedData.loginEmail = user.descEmail;
+                                        reorderedData.loginUser = user.descCPFCNPJ;                                        reorderedData.loginEmail = user.descEmail;
                                         reorderedData.loginContato = user.descTelefone;
                                         reorderedData.link = `${masterPath.domain}/local/${encodeURIComponent(
                                             anun.dataValues.descAnuncio
@@ -5126,9 +5013,7 @@ module.exports = {
                                         if (key === 'codDesconto') {
                                             // Adiciona as propriedades do usuário após 'codDesconto'
                                             reorderedData.codUsuario = user.descNome;
-                                            reorderedData.loginUser = user.descCPFCNPJ;
-                                            reorderedData.loginPass = user.senha;
-                                            reorderedData.loginEmail = user.descEmail;
+                                            reorderedData.loginUser = user.descCPFCNPJ;                                            reorderedData.loginEmail = user.descEmail;
                                             reorderedData.loginContato = user.descTelefone;
                                             reorderedData.link = `${masterPath.domain}/local/${encodeURIComponent(
                                                 anun.dataValues.descAnuncio
@@ -5233,12 +5118,11 @@ module.exports = {
                         'codDesconto',
                         'codAtividade'
                     ],
-                    /*      include: [
-                            {
-                                model: Usuarios,
-                                as: 'usuario',
-                            },
-                        ], */
+                    include: [
+                    { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                    { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                    { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                ]
                 });
 
 
@@ -5251,7 +5135,7 @@ module.exports = {
                          return formattedDate;
                      };
  
-                     const user = await anun.getUsuario();
+                     const user = anun.usuario;
  
                      for (let key in anun.dataValues) {
                          //console.log("key: ", key)
@@ -5260,9 +5144,7 @@ module.exports = {
                              
                              if (user) {
                                  anun.codUsuario = user.descNome;
-                                 anun.dataValues.loginUser = user.descCPFCNPJ;
-                                 anun.dataValues.loginPass = user.senha;
-                                 anun.dataValues.loginEmail = user.descEmail;
+                                 anun.dataValues.loginUser = user.descCPFCNPJ;                                 anun.dataValues.loginEmail = user.descEmail;
                                  anun.dataValues.loginContato = user.descTelefone;
                                  anun.dataValues.link = `${masterPath.domain}/local/${encodeURIComponent(anun.dataValues.descAnuncio)}?id=${anun.dataValues.codAnuncio}`;
                                  anun.dataValues.createdAt = dateformat(anun.dataValues.createdAt);
@@ -5346,7 +5228,7 @@ module.exports = {
                 await Promise.all(
                     anuncio.rows.map(async (anun) => {
                         try {
-                            const user = await anun.getUsuario();
+                            const user = anun.usuario;
 
                             if (user) {
                                 // Cria um novo objeto com as informações do usuário inseridas após 'codDesconto'
@@ -5356,9 +5238,7 @@ module.exports = {
                                     if (key === 'codDesconto') {
                                         // Adiciona as propriedades do usuário após 'codDesconto'
                                         reorderedData.codUsuario = user.descNome;
-                                        reorderedData.loginUser = user.descCPFCNPJ;
-                                        reorderedData.loginPass = user.senha;
-                                        reorderedData.loginEmail = user.descEmail;
+                                        reorderedData.loginUser = user.descCPFCNPJ;                                        reorderedData.loginEmail = user.descEmail;
                                         reorderedData.loginContato = user.descTelefone;
                                         reorderedData.link = `${masterPath.domain}/local/${encodeURIComponent(
                                             anun.dataValues.descAnuncio
@@ -5558,12 +5438,11 @@ module.exports = {
                         'codDesconto',
                         'codAtividade'
                     ],
-                    /*    include: [
-                         {
-                             model: Usuarios,
-                             as: 'usuario',
-                         },
-                     ],  */
+                    include: [
+                    { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                    { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                    { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                ]
                 });
                 //console.log(anuncio)
                 const usuarios = await Usuarios.findAll({
@@ -5614,9 +5493,7 @@ module.exports = {
                                     if (key === 'codDesconto') {
                                         // Adiciona as propriedades do usuário após 'codDesconto'
                                         reorderedData.codUsuario = user.descNome;
-                                        reorderedData.loginUser = user.descCPFCNPJ;
-                                        reorderedData.loginPass = user.senha;
-                                        reorderedData.loginEmail = user.descEmail;
+                                        reorderedData.loginUser = user.descCPFCNPJ;                                        reorderedData.loginEmail = user.descEmail;
                                         reorderedData.loginContato = user.descTelefone;
                                         reorderedData.link = `${masterPath.domain}/local/${encodeURIComponent(
                                             anun.dataValues.descAnuncio
@@ -5680,12 +5557,11 @@ module.exports = {
                         'codDesconto',
                         'codAtividade'
                     ],
-                    /*      include: [
-                            {
-                                model: Usuarios,
-                                as: 'usuario',
-                            },
-                        ], */
+                    include: [
+                    { model: Caderno, as: 'caderno', attributes: ['nomeCaderno'], required: false },
+                    { model: Desconto, as: 'desconto', attributes: ['hash'], required: false },
+                    { model: Usuario, as: 'usuario', attributes: ['descNome', 'descCPFCNPJ', 'descEmail', 'descTelefone'], required: false }
+                ]
                 });
 
 
@@ -5698,7 +5574,7 @@ module.exports = {
                          return formattedDate;
                      };
  
-                     const user = await anun.getUsuario();
+                     const user = anun.usuario;
  
                      for (let key in anun.dataValues) {
                          //console.log("key: ", key)
@@ -5707,9 +5583,7 @@ module.exports = {
                              
                              if (user) {
                                  anun.codUsuario = user.descNome;
-                                 anun.dataValues.loginUser = user.descCPFCNPJ;
-                                 anun.dataValues.loginPass = user.senha;
-                                 anun.dataValues.loginEmail = user.descEmail;
+                                 anun.dataValues.loginUser = user.descCPFCNPJ;                                 anun.dataValues.loginEmail = user.descEmail;
                                  anun.dataValues.loginContato = user.descTelefone;
                                  anun.dataValues.link = `${masterPath.domain}/local/${encodeURIComponent(anun.dataValues.descAnuncio)}?id=${anun.dataValues.codAnuncio}`;
                                  anun.dataValues.createdAt = dateformat(anun.dataValues.createdAt);
@@ -5793,7 +5667,7 @@ module.exports = {
                 await Promise.all(
                     anuncio.rows.map(async (anun) => {
                         try {
-                            const user = await anun.getUsuario();
+                            const user = anun.usuario;
 
                             if (user) {
                                 // Cria um novo objeto com as informações do usuário inseridas após 'codDesconto'
@@ -5803,9 +5677,7 @@ module.exports = {
                                     if (key === 'codDesconto') {
                                         // Adiciona as propriedades do usuário após 'codDesconto'
                                         reorderedData.codUsuario = user.descNome;
-                                        reorderedData.loginUser = user.descCPFCNPJ;
-                                        reorderedData.loginPass = user.senha;
-                                        reorderedData.loginEmail = user.descEmail;
+                                        reorderedData.loginUser = user.descCPFCNPJ;                                        reorderedData.loginEmail = user.descEmail;
                                         reorderedData.loginContato = user.descTelefone;
                                         reorderedData.link = `${masterPath.domain}/local/${encodeURIComponent(
                                             anun.dataValues.descAnuncio

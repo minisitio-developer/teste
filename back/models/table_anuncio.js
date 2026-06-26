@@ -600,8 +600,7 @@ Anuncio.belongsTo(Uf, {
 Anuncio.belongsTo(Usuario, {
     constraints: false,
     foreignKey: 'descCPFCNPJ',
-    targetKey: 'descCPFCNPJ',
-    attributes: ['descNome', 'descCPFCNPJ', 'senha', 'descEmail', 'descTelefone']
+    targetKey: 'descCPFCNPJ'
 });
 
 Anuncio.belongsTo(Atividade, {

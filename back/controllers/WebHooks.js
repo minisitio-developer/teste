@@ -31,65 +31,17 @@ module.exports = {
             const { data } = req.body;
             const objData = req.body;
 
-            console.log("Dados recebidos no webhook:", objData);
-
-            registrarPagamento(req.body, res);
-
-            /*   if (objData.action === 'payment.created') {
-                  
-              } */
-
-
-            return res.status(200).send("OK");
-
-            if (objData.resource) {
-                const response = await fetch(`${objData.resource}?access_token=${config.MP_ACCESS_TOKEN_SANDBOX}`);
-                const paymentData = await response.json();
-                console.log("Recurso de pagamento aprovado recebido:", paymentData);
-                if (paymentData.status !== 'approved') {
-                    return res.status(200).send("Pagamento não aprovado, webhook ignorado.");
-                }
-
-                console.log("Recurso de pagamento aprovado recebido:", paymentData);
-
-                novoRegistrarPagamento(paymentData);
-
-                return res.status(200).send("OK");
-
+            if (!signatureHeader || !req.body.data?.id) {
+                return res.status(400).send("Missing signature or data.");
             }
 
-
-
-            /*  console.log("Recebido webhook:", req.body, signatureHeader);
- 
-             if (!signatureHeader) {
-                 return res.status(400).send("Header x-signature ausente.");
-             }
- 
-             // Divide `x-signature` para obter `ts` e `v1`
-             const [tsPart, v1Part] = signatureHeader.split(",");
-             const ts = tsPart.split("=")[1];
-             const receivedSignature = v1Part.split("=")[1];
- 
-             if (!ts || !receivedSignature) {
-                 return res.status(400).send("Formato inválido do header x-signature.");
-             }
- 
- 
- 
-             // Monta o template preenchido
-             let template = `id:${data?.id?.toLowerCase() || ""};`;
-             if (requestId) template += `request-id:${requestId};`;
-             template += `ts:${ts};`;
- 
-             // Gera HMAC SHA256 usando o template preenchido
-             const hmac = crypto.createHmac("sha256", config.SECRET_KEY_WEBHOOK);
-             hmac.update(template, "utf8");
-             const calculatedSignature = hmac.digest("hex"); */
-
             const [tsPart, v1Part] = signatureHeader.split(",");
-            const ts = tsPart.split("=")[1];
-            const receivedSignature = v1Part.split("=")[1];
+            const ts = tsPart?.split("=")?.[1];
+            const receivedSignature = v1Part?.split("=")?.[1];
+
+            if (!ts || !receivedSignature) {
+                return res.status(400).send("Invalid signature format.");
+            }
 
             let template = `id:${data?.id || ""};`;
             if (requestId) template += `request-id:${requestId};`;
@@ -100,16 +52,16 @@ module.exports = {
                 .update(template)
                 .digest('hex');
 
-            console.log("❌ Falha na autenticação do webhook.", cypheredSignature, receivedSignature, req.body, template);
-            // Compara a assinatura recebida com a gerada
             if (cypheredSignature !== receivedSignature) {
-
+                console.log("❌ Falha na autenticação do webhook.");
                 return res.status(403).send("Assinatura inválida.");
             }
 
-            registrarPagamento(req.body);
             console.log("✅ Webhook autenticado com sucesso!");
-            res.status(200).send("Webhook processado com sucesso.");
+
+            await registrarPagamento(req.body);
+
+            res.status(200).send("OK");
         } catch (error) {
             console.error("Erro ao processar webhook:", error);
             res.status(500).send("Erro interno no servidor.");

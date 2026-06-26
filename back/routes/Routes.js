@@ -467,46 +467,67 @@ module.exports = (io, loginLimiter) => {
 
     //PORTAL COMPARTILHAMENTO
     router.get('/api/portal/share/:id', async (req, res) => {
-        const url = req.headers.host;
+        try {
+            const id = parseInt(req.params.id);
+            if (isNaN(id) || id <= 0) {
+                return res.status(400).send('ID inválido');
+            }
 
-        const anuncio = await Anuncio.findOne({
-            where: { codAnuncio: req.params.id },
-            raw: true,
-            attributes: ['descImagem']
-        });
-        console.log(anuncio)
+            const anuncio = await Anuncio.findOne({
+                where: { codAnuncio: id },
+                raw: true,
+                attributes: ['descImagem']
+            });
 
-        const html = `
+            const escapeHtml = (str) => {
+                if (!str) return '';
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            };
+
+            const baseUrl = 'https://minisitio.com.br';
+            const shareUrl = `${baseUrl}/api/portal/share/${id}`;
+            const perfilUrl = `${baseUrl}/perfil/${id}`;
+            const imagemUrl = anuncio?.descImagem ? `${baseUrl}/api/files/descImagem/${encodeURIComponent(anuncio.descImagem)}` : '';
+            const vizUrl = `${baseUrl}/api/admin/anuncio/visualizacoes?id=${id}`;
+
+            const html = `
     <!DOCTYPE html>
     <html lang="pt-BR">
     <head>
       <meta charset="UTF-8">
       <title>MINISITIO</title>
       <meta property="og:title" content="MINISITIO" />
-       <meta property="og:description" content="&#128274; Link Seguro" />
-      <meta property="og:image" content="https://minisitio.com.br/api/files/descImagem/${anuncio.descImagem}" />
+      <meta property="og:description" content="&#128274; Link Seguro" />
+      ${imagemUrl ? `<meta property="og:image" content="${escapeHtml(imagemUrl)}" />` : ''}
       <meta property="og:image:width" content="300">
-<meta property="og:image:height" content="300">
-       <meta property="og:url" content="https://minisitio.com.br/api/portal/share/${req.params.id}" />
+      <meta property="og:image:height" content="300">
+      <meta property="og:url" content="${escapeHtml(shareUrl)}" />
       <meta property="og:type" content="website" />
       <meta name="twitter:card" content="summary_large_image" />
-      <meta http-equiv="refresh" content="0; url="https://minisitio.com.br/api/portal/share/${req.params.id}" />
+      <meta http-equiv="refresh" content="0; url=${escapeHtml(perfilUrl)}" />
     </head>
     <body>
       <p>Redirecionando para o conteúdo...</p>
       <script>
-       fetch('https://minisitio.com.br/api/admin/anuncio/visualizacoes?id=${req.params.id}')
-        .then((x) => x.json())
-        .then((res) => {
-            //console.log(res)
-        })
-        window.location.href = "https://minisitio.com.br/perfil/${req.params.id}"
+        fetch('${escapeHtml(vizUrl)}')
+          .then((x) => x.json())
+          .catch(() => {});
+        window.location.href = "${escapeHtml(perfilUrl)}";
       </script>
     </body>
     </html>
   `;
 
-        res.send(html).status(200);
+            res.status(200).send(html);
+        } catch (error) {
+            console.error('Erro no share:', error);
+            res.status(500).send('Erro interno');
+        }
     });
 
     //SITE INSTITUCIONAL
