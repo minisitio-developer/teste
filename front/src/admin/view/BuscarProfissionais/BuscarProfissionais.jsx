@@ -28,9 +28,7 @@ export default function BuscarProfissionais() {
 
     useEffect(() => {
         if (filtroUf) {
-            const ufObj = ufs.find(u => String(u.id_uf) === String(filtroUf));
-            const sigla = ufObj ? ufObj.sigla_uf : filtroUf;
-            fetch(`${masterPath.url}/cadernos?uf=${sigla}`)
+            fetch(`${masterPath.url}/cadernos?uf=${filtroUf}`)
                 .then(x => x.json())
                 .then(res => setCidades(res.data || res))
                 .catch(err => console.error('Erro ao buscar cidades:', err));
@@ -103,7 +101,7 @@ export default function BuscarProfissionais() {
                                         >
                                             <option value="">Todas</option>
                                             {ufs.map(uf => (
-                                                <option key={uf.id_uf} value={uf.id_uf}>
+                                                <option key={uf.id_uf} value={uf.sigla_uf}>
                                                     {uf.sigla_uf} - {uf.nome_uf}
                                                 </option>
                                             ))}
@@ -123,7 +121,7 @@ export default function BuscarProfissionais() {
                                         >
                                             <option value="">Todos</option>
                                             {cidades.map(c => (
-                                                <option key={c.codCaderno} value={c.codCaderno}>
+                                                <option key={c.codCaderno} value={c.nomeCaderno}>
                                                     {c.nomeCadernoFriendly || c.nomeCaderno}
                                                 </option>
                                             ))}
@@ -206,9 +204,6 @@ export default function BuscarProfissionais() {
                                                         <span className="badge bg-secondary">
                                                             {item.profissao || 'Não informado'}
                                                         </span>
-                                                        {item.codCnae && (
-                                                            <><br/><small className="text-muted">CNAE: {item.codCnae}</small></>
-                                                        )}
                                                     </td>
                                                     <td>{item.cidade}/{item.estado}</td>
                                                     <td>{item.descTelefone || item.descCelular}</td>

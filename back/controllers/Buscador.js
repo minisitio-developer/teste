@@ -422,9 +422,8 @@ module.exports = {
                 replacements.bairro = bairro;
             }
             if (profissao) {
-                whereConditions.push('(atv.atividade LIKE :profissao OR atv.nomeAmigavel LIKE :profissao OR atv.nomeAmigavel LIKE :profissaoAlt)');
+                whereConditions.push('(a.codAtividade LIKE :profissao OR atv.nomeAmigavel LIKE :profissao)');
                 replacements.profissao = `%${profissao}%`;
-                replacements.profissaoAlt = `%${profissao.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}%`;
             }
 
             const whereClause = whereConditions.join(' AND ');
@@ -432,7 +431,7 @@ module.exports = {
             const countQuery = `
                 SELECT COUNT(*) as total
                 FROM anuncio a
-                LEFT JOIN atividade atv ON a.codAtividade = atv.id
+                LEFT JOIN atividade atv ON a.codAtividade = atv.nomeAmigavel
                 WHERE ${whereClause}
             `;
 
@@ -441,15 +440,13 @@ module.exports = {
                     a.codAnuncio, a.descAnuncio, a.descTelefone,
                     a.descCelular, a.descImagem, a.codAtividade, a.codCaderno, a.codUf,
                     a.descCPFCNPJ, a.descEmailComercial, a.createdAt,
-                    atv.atividade AS codCnae,
-                    atv.nomeAmigavel AS profissao,
-                    c.nomeCaderno AS cidade,
-                    c.UF AS estado
+                    a.codAtividade AS profissao,
+                    a.codCaderno AS cidade,
+                    a.codUf AS estado
                 FROM anuncio a
-                LEFT JOIN atividade atv ON a.codAtividade = atv.id
-                LEFT JOIN caderno c ON a.codCaderno = c.codCaderno
+                LEFT JOIN atividade atv ON a.codAtividade = atv.nomeAmigavel
                 WHERE ${whereClause}
-                ORDER BY atv.nomeAmigavel ASC, a.descAnuncio ASC
+                ORDER BY a.descAnuncio ASC
                 LIMIT :limit OFFSET :offset
             `;
 
