@@ -108,7 +108,7 @@ const limiter = rateLimit({
     message: 'Muitas requisições, tente novamente mais tarde'
 });
 
-app.use(limiter);
+app.use('/api', limiter);
 app.use(helmet({
     contentSecurityPolicy: false,
 }));
