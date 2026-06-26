@@ -189,6 +189,10 @@ module.exports = {
     buscarCaderno: async (req, res) => {
         const uf = req.query.uf;
 
+        if (!uf || uf === 'undefined' || uf === 'null') {
+            return res.json([]);
+        }
+
         try {
             const cadernos = await Caderno.findAll({
                 where: {

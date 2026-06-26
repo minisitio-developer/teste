@@ -5,7 +5,7 @@
 .formulario {
     position: relative;
     height: auto;
-    padding: 50px 10px;
+    padding: 20px 10px;
     z-index: 1;
     background: #ffcc29 url(../img/bg-home.jpg) no-repeat fixed;
 }
@@ -13,9 +13,8 @@
 .proximo {
     background: #ffcc29;
     color: #000;
-    font-size: 20px !important;
+    font-size: 14px !important;
     font-weight: 500;
-    /* height: 60px; */
 }
 
 .btnPromocao {
@@ -24,7 +23,7 @@
 }
 
 .btnBuscar {
-    font-size: 23px;
+    font-size: 16px;
 }
 
 .btnBuscar i {
@@ -56,7 +55,7 @@
 .form-control {
     display: block;
     width: 100%;
-    height: 60px;
+    height: 42px;
     padding: 0.375rem 0.75rem;
     font-size: 1rem;
     font-weight: 400;
@@ -85,9 +84,7 @@
 
 /*icones componente busca*/
 .formulario-home i {
-    font-size: 30px;
-    /*  margin: 0 6px 0 0; */
-    /* color: #4f4f4f; */
+    font-size: 20px;
 }
 
 .icone-form {
@@ -122,7 +119,9 @@ i.fa.fa-tags {
 /*componente nav*/
 .Nav {
     background-color: #FFCC29;
-    height: 135px
+    height: auto;
+    min-height: 50px;
+    padding: 8px 0;
 }
 
 .menu a {
@@ -163,7 +162,7 @@ i.fa.fa-tags {
     list-style: none;
     padding: 19px 0 0;
     margin: 0;
-    font: 400 18px "PT Sans Narrow", Arial, sans-serif;
+    font: 400 14px "PT Sans Narrow", Arial, sans-serif;
     text-transform: uppercase;
 }
 
@@ -179,9 +178,8 @@ li.assine {
 }
 
 .logo {
-    /*  display: block; */
-    height: 100px;
-    margin-top: -40px;
+    height: 60px;
+    margin-top: -20px;
     margin-bottom: 10px;
 }
 

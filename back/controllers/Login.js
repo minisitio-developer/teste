@@ -58,6 +58,7 @@ module.exports = {
         const token = jwt.sign({ id: user.id, role: user.codTipoUsuario, uuid: user.codUsuario, doc: user.descCPFCNPJ }, secretKey, { expiresIn: "1h" });
 
         const { senha: _, ...safeUser } = user;
+        safeUser.success = true;
 
         if (user.ativo && user.codTipoUsuario == 1) {
             res.json({ success: true, message: "Usuario encontrado", data: safeUser, type: 1, accessToken: token })

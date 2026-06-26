@@ -118,6 +118,7 @@ function Rotas() {
                     <Route path="promocao/:hash" element={<Promocao />} />
                     <Route path="token-invalido" element={<TokenInvalido />} />
                      <Route path="/comprar-espaco-minisitio" element={<ComprarAnuncio />} />
+                     <Route path="/anuncie" element={<ComprarAnuncio />} />
                 </Route>
 
                 <Route element={<Layout />}>
