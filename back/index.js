@@ -671,8 +671,90 @@ async function seedPin() {
     }
 }
 
+async function runCleanup() {
+    try {
+        const database = require('./config/db');
+        await database.authenticate();
+        console.log('CLEANUP: Conectado ao MySQL');
+
+        const [ufs] = await database.query('SELECT id_uf, sigla_uf FROM uf');
+        const dfRecord = ufs.find(u => u.sigla_uf === 'DF');
+        if (!dfRecord) { console.error('CLEANUP: DF nao encontrado'); return; }
+        const dfId = String(dfRecord.id_uf);
+        console.log(`CLEANUP: DF id_uf = ${dfId}`);
+
+        const [sizes] = await database.query(`
+            SELECT table_name, ROUND((data_length + index_length) / 1024 / 1024, 2) AS total_mb
+            FROM information_schema.tables WHERE table_schema = DATABASE()
+            ORDER BY (data_length + index_length) DESC
+        `);
+        sizes.forEach(s => console.log(`  ${s.table_name}: ${s.total_mb} MB`));
+
+        console.log('CLEANUP: Deletando importStage...');
+        await database.query('DELETE FROM importStage');
+
+        console.log('CLEANUP: Deletando anuncios nao-DF...');
+        await database.query(`DELETE FROM anuncio WHERE codUf != '${dfId}'`);
+
+        console.log('CLEANUP: Deletando cadernos nao-DF...');
+        await database.query(`DELETE FROM caderno WHERE codUf != '${dfId}'`);
+
+        console.log('CLEANUP: Deletando usuarios nao-DF...');
+        await database.query(`DELETE FROM usuario WHERE codUf != '${dfId}' AND codTipoUsuario != '1'`);
+
+        console.log('CLEANUP: Deletando campanhas nao-DF...');
+        await database.query('DELETE FROM campanhas WHERE uf != "DF"');
+
+        console.log('CLEANUP: Deletando promocoes nao-DF...');
+        await database.query('DELETE FROM promocao WHERE uf != "DF"');
+
+        console.log('CLEANUP: Deletando tokens_promocao...');
+        await database.query('DELETE FROM tokens_promocao');
+
+        console.log('CLEANUP: Deletando desconto orfaos...');
+        await database.query('DELETE FROM desconto WHERE codDesconto NOT IN (SELECT DISTINCT codDesconto FROM anuncio WHERE codDesconto IS NOT NULL)');
+
+        console.log('CLEANUP: OPTIMIZE tables...');
+        for (const t of ['anuncio', 'caderno', 'usuario', 'campanhas', 'promocao', 'desconto', 'importStage', 'pagamento', 'tokens_promocao']) {
+            try { await database.query(`OPTIMIZE TABLE ${t}`); } catch(e) {}
+        }
+
+        console.log('CLEANUP: Criando tabelas pin e dashboard_cache...');
+        await database.query(`CREATE TABLE IF NOT EXISTS pin (id INT AUTO_INCREMENT PRIMARY KEY, codigo VARCHAR(255) NOT NULL UNIQUE, validade TEXT NOT NULL)`);
+        await database.query(`INSERT IGNORE INTO pin (codigo, validade) VALUES ('61984213444', '31/12/2030')`);
+
+        await database.query(`CREATE TABLE IF NOT EXISTS dashboard_cache (
+            id INT PRIMARY KEY DEFAULT 1,
+            total INT DEFAULT 0, basico INT DEFAULT 0, completo INT DEFAULT 0,
+            ativos INT DEFAULT 0, inativos INT DEFAULT 0,
+            expirados INT DEFAULT 0, expiraEm30Dias INT DEFAULT 0,
+            semEmail INT DEFAULT NULL, semTelefone INT DEFAULT NULL, semEmailETelefone INT DEFAULT NULL,
+            porUf_json LONGTEXT, porMes_json LONGTEXT, cadernosPorUf_json LONGTEXT,
+            contatos_json LONGTEXT, lastUpdated DATETIME,
+            UNIQUE KEY idx_dashboard_cache_id (id)
+        )`);
+
+        const [finalSizes] = await database.query(`
+            SELECT table_name, ROUND((data_length + index_length) / 1024 / 1024, 2) AS total_mb
+            FROM information_schema.tables WHERE table_schema = DATABASE()
+            ORDER BY (data_length + index_length) DESC
+        `);
+        console.log('CLEANUP: Tamanho final:');
+        finalSizes.forEach(s => console.log(`  ${s.table_name}: ${s.total_mb} MB`));
+
+        console.log('CLEANUP: CONCLUIDO');
+        await database.close();
+    } catch (err) {
+        console.error('CLEANUP: ERRO:', err.message);
+    }
+}
+
 server.listen(port, async () => {
     console.log("rodando na porta: ", port);
+    if (process.env.RUN_CLEANUP === 'true') {
+        await runCleanup();
+        console.log('CLEANUP finalizado. Remova a env var RUN_CLEANUP.');
+    }
     await seedAdmin();
     await seedPin();
 });
