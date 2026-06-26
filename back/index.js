@@ -684,63 +684,118 @@ async function runCleanup() {
         console.log(`CLEANUP: DF id_uf = ${dfId}`);
 
         const [sizes] = await database.query(`
-            SELECT table_name, ROUND((data_length + index_length) / 1024 / 1024, 2) AS total_mb
+            SELECT table_name, ROUND((data_length + index_length) / 1024 / 1024, 2) AS total_mb, table_rows
             FROM information_schema.tables WHERE table_schema = DATABASE()
             ORDER BY (data_length + index_length) DESC
         `);
-        sizes.forEach(s => console.log(`  ${s.table_name}: ${s.total_mb} MB`));
+        sizes.forEach(s => console.log(`  ${s.table_name}: ${s.total_mb} MB (${s.table_rows} rows)`));
 
-        console.log('CLEANUP: Deletando importStage...');
-        await database.query('DELETE FROM importStage');
-
-        console.log('CLEANUP: Deletando anuncios nao-DF...');
-        await database.query(`DELETE FROM anuncio WHERE codUf != '${dfId}'`);
-
-        console.log('CLEANUP: Deletando cadernos nao-DF...');
-        await database.query(`DELETE FROM caderno WHERE codUf != '${dfId}'`);
-
-        console.log('CLEANUP: Deletando usuarios nao-DF...');
-        await database.query(`DELETE FROM usuario WHERE codUf != '${dfId}' AND codTipoUsuario != '1'`);
-
-        console.log('CLEANUP: Deletando campanhas nao-DF...');
-        await database.query('DELETE FROM campanhas WHERE uf != "DF"');
-
-        console.log('CLEANUP: Deletando promocoes nao-DF...');
-        await database.query('DELETE FROM promocao WHERE uf != "DF"');
-
-        console.log('CLEANUP: Deletando tokens_promocao...');
-        await database.query('DELETE FROM tokens_promocao');
-
-        console.log('CLEANUP: Deletando desconto orfaos...');
-        await database.query('DELETE FROM desconto WHERE codDesconto NOT IN (SELECT DISTINCT codDesconto FROM anuncio WHERE codDesconto IS NOT NULL)');
-
-        console.log('CLEANUP: OPTIMIZE tables...');
-        for (const t of ['anuncio', 'caderno', 'usuario', 'campanhas', 'promocao', 'desconto', 'importStage', 'pagamento', 'tokens_promocao']) {
-            try { await database.query(`OPTIMIZE TABLE ${t}`); } catch(e) {}
+        // TRUNCATE pra tabelas que vamos esvaziar completamente
+        console.log('CLEANUP: TRUNCATE importStage...');
+        try { await database.query('TRUNCATE TABLE importStage'); } catch(e) {
+            console.log('  TRUNCATE falhou, tentando DELETE por batches...');
+            let deleted = 1;
+            while (deleted > 0) {
+                const [r] = await database.query('DELETE FROM importStage LIMIT 500');
+                deleted = r.affectedRows;
+                if (deleted > 0) console.log(`  importStage: -${deleted}`);
+            }
         }
 
-        console.log('CLEANUP: Criando tabelas pin e dashboard_cache...');
-        await database.query(`CREATE TABLE IF NOT EXISTS pin (id INT AUTO_INCREMENT PRIMARY KEY, codigo VARCHAR(255) NOT NULL UNIQUE, validade TEXT NOT NULL)`);
-        await database.query(`INSERT IGNORE INTO pin (codigo, validade) VALUES ('61984213444', '31/12/2030')`);
+        // Anuncios nao-DF: batch DELETE por ID
+        console.log('CLEANUP: Deletando anuncios nao-DF em batches...');
+        {
+            let total = 0;
+            let deleted = 1;
+            while (deleted > 0) {
+                const [r] = await database.query(
+                    `DELETE FROM anuncio WHERE id IN (SELECT id FROM (SELECT id FROM anuncio WHERE codUf != '${dfId}' LIMIT 200) AS tmp)`
+                );
+                deleted = r.affectedRows;
+                total += deleted;
+                if (deleted > 0) console.log(`  anuncios: -${deleted} (total: ${total})`);
+            }
+        }
 
-        await database.query(`CREATE TABLE IF NOT EXISTS dashboard_cache (
-            id INT PRIMARY KEY DEFAULT 1,
-            total INT DEFAULT 0, basico INT DEFAULT 0, completo INT DEFAULT 0,
-            ativos INT DEFAULT 0, inativos INT DEFAULT 0,
-            expirados INT DEFAULT 0, expiraEm30Dias INT DEFAULT 0,
-            semEmail INT DEFAULT NULL, semTelefone INT DEFAULT NULL, semEmailETelefone INT DEFAULT NULL,
-            porUf_json LONGTEXT, porMes_json LONGTEXT, cadernosPorUf_json LONGTEXT,
-            contatos_json LONGTEXT, lastUpdated DATETIME,
-            UNIQUE KEY idx_dashboard_cache_id (id)
-        )`);
+        // Cadernos nao-DF: batch DELETE
+        console.log('CLEANUP: Deletando cadernos nao-DF em batches...');
+        {
+            let total = 0;
+            let deleted = 1;
+            while (deleted > 0) {
+                const [r] = await database.query(
+                    `DELETE FROM caderno WHERE codCaderno IN (SELECT codCaderno FROM (SELECT codCaderno FROM caderno WHERE codUf != '${dfId}' LIMIT 200) AS tmp)`
+                );
+                deleted = r.affectedRows;
+                total += deleted;
+                if (deleted > 0) console.log(`  cadernos: -${deleted} (total: ${total})`);
+            }
+        }
+
+        // Usuarios nao-DF: batch DELETE
+        console.log('CLEANUP: Deletando usuarios nao-DF em batches...');
+        {
+            let total = 0;
+            let deleted = 1;
+            while (deleted > 0) {
+                const [r] = await database.query(
+                    `DELETE FROM usuario WHERE codUsuario IN (SELECT codUsuario FROM (SELECT codUsuario FROM usuario WHERE codUf != '${dfId}' AND codTipoUsuario != '1' LIMIT 200) AS tmp)`
+                );
+                deleted = r.affectedRows;
+                total += deleted;
+                if (deleted > 0) console.log(`  usuarios: -${deleted} (total: ${total})`);
+            }
+        }
+
+        // Campanhas/Promocao nao-DF
+        console.log('CLEANUP: Deletando campanhas/promocao nao-DF...');
+        try { await database.query('DELETE FROM campanhas WHERE uf != "DF"'); } catch(e) { console.log('  campanhas:', e.message); }
+        try { await database.query('DELETE FROM promocao WHERE uf != "DF"'); } catch(e) { console.log('  promocoes:', e.message); }
+        try { await database.query('DELETE FROM tokens_promocao'); } catch(e) { console.log('  tokens:', e.message); }
+
+        // Desconto orfaos
+        console.log('CLEANUP: Deletando desconto orfaos...');
+        try { await database.query('DELETE FROM desconto WHERE codDesconto NOT IN (SELECT DISTINCT codDesconto FROM anuncio WHERE codDesconto IS NOT NULL)'); } catch(e) { console.log('  desconto:', e.message); }
+
+        // Pagamento orfaos
+        console.log('CLEANUP: Deletando pagamento orfaos...');
+        try { await database.query('DELETE FROM pagamento WHERE codUsuario NOT IN (SELECT codUsuario FROM usuario)'); } catch(e) { console.log('  pagamento:', e.message); }
+
+        // OPTIMIZE pra liberar espaco
+        console.log('CLEANUP: OPTIMIZE tables...');
+        for (const t of ['anuncio', 'caderno', 'usuario', 'campanhas', 'promocao', 'desconto', 'importStage', 'pagamento']) {
+            try { await database.query(`OPTIMIZE TABLE ${t}`); console.log(`  ${t} OK`); } catch(e) { console.log(`  ${t}: ${e.message}`); }
+        }
+
+        // Criar tabelas que falharam
+        console.log('CLEANUP: Criando pin e dashboard_cache...');
+        try {
+            await database.query(`CREATE TABLE IF NOT EXISTS pin (id INT AUTO_INCREMENT PRIMARY KEY, codigo VARCHAR(255) NOT NULL UNIQUE, validade TEXT NOT NULL)`);
+            await database.query(`INSERT IGNORE INTO pin (codigo, validade) VALUES ('61984213444', '31/12/2030')`);
+            console.log('  pin OK');
+        } catch(e) { console.log('  pin:', e.message); }
+
+        try {
+            await database.query(`CREATE TABLE IF NOT EXISTS dashboard_cache (
+                id INT PRIMARY KEY DEFAULT 1,
+                total INT DEFAULT 0, basico INT DEFAULT 0, completo INT DEFAULT 0,
+                ativos INT DEFAULT 0, inativos INT DEFAULT 0,
+                expirados INT DEFAULT 0, expiraEm30Dias INT DEFAULT 0,
+                semEmail INT DEFAULT NULL, semTelefone INT DEFAULT NULL, semEmailETelefone INT DEFAULT NULL,
+                porUf_json LONGTEXT, porMes_json LONGTEXT, cadernosPorUf_json LONGTEXT,
+                contatos_json LONGTEXT, lastUpdated DATETIME,
+                UNIQUE KEY idx_dashboard_cache_id (id)
+            )`);
+            console.log('  dashboard_cache OK');
+        } catch(e) { console.log('  dashboard_cache:', e.message); }
 
         const [finalSizes] = await database.query(`
-            SELECT table_name, ROUND((data_length + index_length) / 1024 / 1024, 2) AS total_mb
+            SELECT table_name, ROUND((data_length + index_length) / 1024 / 1024, 2) AS total_mb, table_rows
             FROM information_schema.tables WHERE table_schema = DATABASE()
             ORDER BY (data_length + index_length) DESC
         `);
         console.log('CLEANUP: Tamanho final:');
-        finalSizes.forEach(s => console.log(`  ${s.table_name}: ${s.total_mb} MB`));
+        finalSizes.forEach(s => console.log(`  ${s.table_name}: ${s.total_mb} MB (${s.table_rows} rows)`));
 
         console.log('CLEANUP: CONCLUIDO');
         await database.close();
