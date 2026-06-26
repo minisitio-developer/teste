@@ -166,7 +166,7 @@ function Login() {
                                         </div>
                                     </div>
                                     <div className="col-md-12 continuar">
-                                        <button type="button" className="btn cinza btn-step-one" onClick={() => navigate('/criar-cadastro')}><i className="fa fa-arrow-right"></i>criar cadastro</button>
+                                        <button type="button" className="btn cinza btn-step-one" onClick={() => { const cpf = document.querySelector('#rdescCPFCNPJ')?.value || ''; navigate(`/criar-cadastro?doc=${encodeURIComponent(cpf)}`); }}><i className="fa fa-arrow-right"></i>criar cadastro</button>
                                     </div>
                                 </div>
                             </form>

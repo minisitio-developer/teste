@@ -6,18 +6,20 @@ const fs = require('node:fs/promises');
 
 module.exports = {
     uploadImg: async (req, res) => {
-        console.log(req.query.cod)
         if (req.file) {
-            //console.log(req.file);
-
-            /*    const listaAnuncio = await Anuncio.update({
-                   descImagem: req.file.filename
-               }, {
-                   where: {
-   
-                   }
-               }); */
-
+            if (req.query.cod) {
+                try {
+                    await Anuncio.update({
+                        descImagem: req.file.filename
+                    }, {
+                        where: {
+                            codAnuncio: req.query.cod
+                        }
+                    });
+                } catch (err) {
+                    console.error('Erro ao salvar descImagem no banco:', err.message);
+                }
+            }
 
             return res.json({
                 success: true,

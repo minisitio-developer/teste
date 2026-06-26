@@ -63,7 +63,7 @@ const AssinanteCadastro = (props) => {
 
 
     const doc = searchParams.get('doc');
-    setCPF(doc);
+    setCPF(doc || '');
 
   }, []);
 

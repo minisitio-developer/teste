@@ -169,16 +169,14 @@ function Dashboard() {
 
         return (
             <>
-                {hasData && (
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                        <small className="text-muted">
-                            {data.lastUpdated ? `Ultima atualizacao: ${new Date(data.lastUpdated).toLocaleString('pt-BR')}` : 'Cache vazio - clique em Atualizar'}
-                        </small>
-                        <button className="btn btn-sm btn-primary" onClick={refreshDashboard} disabled={refreshing}>
-                            {refreshing ? <><i className="fa fa-spinner fa-spin"></i> Atualizando... (pode levar varios minutos)</> : <><i className="fa fa-refresh"></i> Atualizar dados</>}
-                        </button>
-                    </div>
-                )}
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                    <small className="text-muted">
+                        {data.lastUpdated ? `Ultima atualizacao: ${new Date(data.lastUpdated).toLocaleString('pt-BR')}` : 'Cache vazio - clique em Atualizar'}
+                    </small>
+                    <button className="btn btn-sm btn-primary" onClick={refreshDashboard} disabled={refreshing}>
+                        {refreshing ? <><i className="fa fa-spinner fa-spin"></i> Atualizando... (pode levar varios minutos)</> : <><i className="fa fa-refresh"></i> Atualizar dados</>}
+                    </button>
+                </div>
                 {/* Cards Resumo */}
                 <div className="row mb-4">
                     <div className="col-md-3">

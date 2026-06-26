@@ -2026,7 +2026,7 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
     },
     listarPinPortal: async (req, res) => {
         try {
-            const pin = await Pin.findOne({ order: [['createdAt', 'DESC']] });
+            const pin = await Pin.findOne({ order: [['id', 'DESC']] });
 
             if (!pin) {
                 return res.status(404).json({ message: 'Pin não encontrado' });
