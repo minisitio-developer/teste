@@ -583,12 +583,113 @@ module.exports = (io, loginLimiter) => {
         res.send('Download concluído, eventos enviados!');
     });
 
+    // TEMPORARIO - LIMPEZA DO BANCO - REMOVER DEPOIS
+    router.get('/api/temp/cleanup', async (req, res) => {
+        const database = require('../config/db');
+        try {
+            const results = [];
+
+            const [ufs] = await database.query('SELECT id_uf, sigla_uf FROM uf');
+            const dfRecord = ufs.find(u => u.sigla_uf === 'DF');
+            if (!dfRecord) return res.json({ error: 'DF nao encontrado' });
+            const dfId = String(dfRecord.id_uf);
+
+            const [sizes] = await database.query(`
+                SELECT table_name, table_rows, 
+                       ROUND((data_length + index_length) / 1024 / 1024, 2) AS total_mb
+                FROM information_schema.tables 
+                WHERE table_schema = DATABASE()
+                ORDER BY (data_length + index_length) DESC
+            `);
+            results.push({ titulo: 'TAMANHO ANTES', dados: sizes });
+
+            const [anCount] = await database.query('SELECT COUNT(*) AS t FROM anuncio');
+            const [anDf] = await database.query(`SELECT COUNT(*) AS t FROM anuncio WHERE codUf = '${dfId}'`);
+            results.push({ titulo: 'ANUNCIOS', total: anCount[0].t, df: anDf[0].t });
+
+            const [impCount] = await database.query('SELECT COUNT(*) AS t FROM importStage');
+            results.push({ titulo: 'IMPORTSTAGE', total: impCount[0].t });
+
+            const [cadCount] = await database.query('SELECT COUNT(*) AS t FROM caderno');
+            const [cadDf] = await database.query(`SELECT COUNT(*) AS t FROM caderno WHERE codUf = '${dfId}'`);
+            results.push({ titulo: 'CADERNOS', total: cadCount[0].t, df: cadDf[0].t });
+
+            const [usrCount] = await database.query('SELECT COUNT(*) AS t FROM usuario');
+            const [usrDf] = await database.query(`SELECT COUNT(*) AS t FROM usuario WHERE codUf = '${dfId}'`);
+            results.push({ titulo: 'USUARIOS', total: usrCount[0].t, df: usrDf[0].t });
+
+            if (req.query.execute === 'true') {
+                await database.query('DELETE FROM importStage');
+                results.push({ msg: 'importStage limpo' });
+
+                await database.query(`DELETE FROM anuncio WHERE codUf != '${dfId}'`);
+                results.push({ msg: 'anuncios nao-DF removidos' });
+
+                await database.query(`DELETE FROM caderno WHERE codUf != '${dfId}'`);
+                results.push({ msg: 'cadernos nao-DF removidos' });
+
+                await database.query(`DELETE FROM usuario WHERE codUf != '${dfId}' AND codTipoUsuario != '1'`);
+                results.push({ msg: 'usuarios nao-DF removidos' });
+
+                await database.query('DELETE FROM campanhas WHERE uf != "DF"');
+                results.push({ msg: 'campanhas nao-DF removidas' });
+
+                await database.query('DELETE FROM promocao WHERE uf != "DF"');
+                results.push({ msg: 'promocoes nao-DF removidas' });
+
+                await database.query('DELETE FROM tokens_promocao');
+                results.push({ msg: 'tokens_promocao limpos' });
+
+                const tables = ['anuncio', 'caderno', 'usuario', 'campanhas', 'promocao', 'desconto', 'importStage'];
+                for (const t of tables) {
+                    await database.query(`OPTIMIZE TABLE ${t}`);
+                }
+                results.push({ msg: 'OPTIMIZE concluido' });
+
+                await database.query(`
+                    CREATE TABLE IF NOT EXISTS pin (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        codigo VARCHAR(255) NOT NULL UNIQUE,
+                        validade TEXT NOT NULL
+                    )
+                `);
+                await database.query(`INSERT IGNORE INTO pin (codigo, validade) VALUES ('61984213444', '31/12/2030')`);
+                results.push({ msg: 'pin criado/semeado' });
+
+                await database.query(`
+                    CREATE TABLE IF NOT EXISTS dashboard_cache (
+                        id INT PRIMARY KEY DEFAULT 1,
+                        total INT DEFAULT 0, basico INT DEFAULT 0, completo INT DEFAULT 0,
+                        ativos INT DEFAULT 0, inativos INT DEFAULT 0,
+                        expirados INT DEFAULT 0, expiraEm30Dias INT DEFAULT 0,
+                        semEmail INT DEFAULT NULL, semTelefone INT DEFAULT NULL, semEmailETelefone INT DEFAULT NULL,
+                        porUf_json LONGTEXT, porMes_json LONGTEXT, cadernosPorUf_json LONGTEXT,
+                        contatos_json LONGTEXT, lastUpdated DATETIME,
+                        UNIQUE KEY idx_dashboard_cache_id (id)
+                    )
+                `);
+                results.push({ msg: 'dashboard_cache criado' });
+
+                const [finalSizes] = await database.query(`
+                    SELECT table_name, table_rows, 
+                           ROUND((data_length + index_length) / 1024 / 1024, 2) AS total_mb
+                    FROM information_schema.tables 
+                    WHERE table_schema = DATABASE()
+                    ORDER BY (data_length + index_length) DESC
+                `);
+                results.push({ titulo: 'TAMANHO DEPOIS', dados: finalSizes });
+            } else {
+                results.push({ msg: 'DRY RUN - adicione ?execute=true pra executar' });
+            }
+
+            res.json({ success: true, dfId, results });
+        } catch (err) {
+            res.json({ error: err.message });
+        }
+    });
+
     return router;
 };
-
-
-
-
 
 
 
