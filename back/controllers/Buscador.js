@@ -407,7 +407,7 @@ module.exports = {
         const porPagina = 20;
         const offset = (paginaAtual - 1) * porPagina;
 
-        const { uf, cidade, bairro, profissao } = req.query;
+        const { uf, bairro, profissao } = req.query;
 
         try {
             let whereConditions = ['a.activate = 1'];
@@ -417,17 +417,14 @@ module.exports = {
                 whereConditions.push('a.codUf = :uf');
                 replacements.uf = uf;
             }
-            if (cidade) {
-                whereConditions.push('a.codCaderno = :cidade');
-                replacements.cidade = cidade;
-            }
             if (bairro) {
-                whereConditions.push('a.descEndereco LIKE :bairro');
-                replacements.bairro = `%${bairro}%`;
+                whereConditions.push('a.codCaderno = :bairro');
+                replacements.bairro = bairro;
             }
             if (profissao) {
-                whereConditions.push('(atv.atividade LIKE :profissao OR atv.nomeAmigavel LIKE :profissao)');
+                whereConditions.push('(atv.atividade LIKE :profissao OR atv.nomeAmigavel LIKE :profissao OR atv.nomeAmigavel LIKE :profissaoAlt)');
                 replacements.profissao = `%${profissao}%`;
+                replacements.profissaoAlt = `%${profissao.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')}%`;
             }
 
             const whereClause = whereConditions.join(' AND ');

@@ -11,7 +11,6 @@ export default function BuscarProfissionais() {
     const [paginacao, setPaginacao] = useState({ paginaAtual: 1, totalPaginas: 1, totalItem: 0 });
 
     const [filtroUf, setFiltroUf] = useState('');
-    const [filtroCidade, setFiltroCidade] = useState('');
     const [filtroBairro, setFiltroBairro] = useState('');
     const [filtroProfissao, setFiltroProfissao] = useState('');
 
@@ -36,14 +35,13 @@ export default function BuscarProfissionais() {
         } else {
             setCidades([]);
         }
-        setFiltroCidade('');
+        setFiltroBairro('');
     }, [filtroUf]);
 
     const buscar = useCallback((page = 1) => {
         setLoading(true);
         const params = new URLSearchParams();
         if (filtroUf) params.append('uf', filtroUf);
-        if (filtroCidade) params.append('cidade', filtroCidade);
         if (filtroBairro) params.append('bairro', filtroBairro);
         if (filtroProfissao) params.append('profissao', filtroProfissao);
         params.append('page', page);
@@ -63,7 +61,7 @@ export default function BuscarProfissionais() {
                 console.error('Erro ao buscar profissionais:', err);
                 setLoading(false);
             });
-    }, [filtroUf, filtroCidade, filtroBairro, filtroProfissao]);
+    }, [filtroUf, filtroBairro, filtroProfissao]);
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -91,7 +89,7 @@ export default function BuscarProfissionais() {
                         <div className="card-body">
                             <form onSubmit={handleSearch}>
                                 <div className="row">
-                                    <div className="col-md-3 mb-3">
+                                    <div className="col-md-4 mb-3">
                                         <label className="form-label">
                                             <MapPin size={16} className="me-1" />
                                             UF
@@ -110,18 +108,18 @@ export default function BuscarProfissionais() {
                                         </select>
                                     </div>
 
-                                    <div className="col-md-3 mb-3">
+                                    <div className="col-md-4 mb-3">
                                         <label className="form-label">
                                             <Building2 size={16} className="me-1" />
-                                            Cidade
+                                            Bairro
                                         </label>
                                         <select
                                             className="form-select"
-                                            value={filtroCidade}
-                                            onChange={(e) => setFiltroCidade(e.target.value)}
+                                            value={filtroBairro}
+                                            onChange={(e) => setFiltroBairro(e.target.value)}
                                             disabled={!filtroUf}
                                         >
-                                            <option value="">Todas</option>
+                                            <option value="">Todos</option>
                                             {cidades.map(c => (
                                                 <option key={c.codCaderno} value={c.codCaderno}>
                                                     {c.nomeCadernoFriendly || c.nomeCaderno}
@@ -130,29 +128,15 @@ export default function BuscarProfissionais() {
                                         </select>
                                     </div>
 
-                                    <div className="col-md-3 mb-3">
-                                        <label className="form-label">
-                                            <MapPin size={16} className="me-1" />
-                                            Bairro
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Buscar por bairro..."
-                                            value={filtroBairro}
-                                            onChange={(e) => setFiltroBairro(e.target.value)}
-                                        />
-                                    </div>
-
-                                    <div className="col-md-3 mb-3">
+                                    <div className="col-md-4 mb-3">
                                         <label className="form-label">
                                             <Briefcase size={16} className="me-1" />
-                                            Profissão
+                                            Profissão / CNAE
                                         </label>
                                         <input
                                             type="text"
                                             className="form-control"
-                                            placeholder="Ex: Barbeiro, Dentista..."
+                                            placeholder="Ex: Barbeiro, Dentista, 4520-5/00..."
                                             value={filtroProfissao}
                                             onChange={(e) => setFiltroProfissao(e.target.value)}
                                         />
@@ -204,9 +188,8 @@ export default function BuscarProfissionais() {
                                         <thead>
                                             <tr>
                                                 <th>Profissional</th>
-                                                <th>Profissão</th>
-                                                <th>Cidade/UF</th>
-                                                <th>Endereço</th>
+                                                <th>Profissão / CNAE</th>
+                                                <th>Bairro/UF</th>
                                                 <th>Telefone</th>
                                                 <th>Perfil</th>
                                             </tr>
@@ -223,9 +206,6 @@ export default function BuscarProfissionais() {
                                                         </span>
                                                     </td>
                                                     <td>{item.cidade}/{item.estado}</td>
-                                                    <td className="text-muted small">
-                                                        {item.descEndereco}
-                                                    </td>
                                                     <td>{item.descTelefone || item.descCelular}</td>
                                                     <td>
                                                         <a
