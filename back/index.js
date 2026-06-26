@@ -623,11 +623,14 @@ async function seedAdmin() {
                 descEmail: 'admin@teste.com',
                 senha: hash,
                 codTipoUsuario: 1,
-                codUf: 27,
-                codCidade: 0,
-                Telefone: '',
-                RepresentanteConvenio: '',
-                Endereco: '',
+                codUf: '27',
+                codCidade: '0',
+                descTelefone: '',
+                descRepresentanteConvenio: '',
+                descEndereco: '',
+                usuarioCod: '0',
+                dtCadastro2: '2025-01-01',
+                dtAlteracao: '2025-01-01',
                 ativo: 1
             }
         });
