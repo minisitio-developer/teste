@@ -9,11 +9,11 @@ function Nav(props) {
         fetch(`${masterPath.url}/portal/pin/`)
             .then(x => x.json())
             .then(res => {
-                if (res.success) {
+                if (res.success && res.pin) {
                     setPin(res.pin.codigo)
                 }
-
-            });
+            })
+            .catch(() => {});
     }, []);
 
     return (

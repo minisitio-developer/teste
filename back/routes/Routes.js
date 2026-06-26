@@ -66,7 +66,7 @@ module.exports = (io, loginLimiter) => {
     router.post('/api/is-auth', authVerification, Login.sessionVerification);
 
     //Admin
-    router.post('/api/admin/usuario/create', auth, Users.create);
+    router.post('/api/admin/usuario/create', Users.create);
     router.post('/api/admin/usuario/update/:id', auth, Users.update);
     router.put('/api/admin/usuario/status/:id', auth, Users.updateStatus);
     router.get('/api/admin/usuario/edit/:id', auth, Users.buscarUsuario);
@@ -97,7 +97,7 @@ module.exports = (io, loginLimiter) => {
     router.post('/api/admin/desconto/create', auth, Admin.criarIds);
     router.delete('/api/admin/desconto/delete/:id', auth, Admin.deleteIds);
     router.get('/api/admin/desconto/buscar/:id', auth, Admin.buscarId);
-    router.get('/api/admin/desconto/aplicar/:id', auth, Admin.aplicarDesconto);
+    router.get('/api/admin/desconto/aplicar/:id', Admin.aplicarDesconto);
     router.get('/api/admin/desconto/read/all', Admin.buscarAllId);
     router.get('/api/admin/desconto/usuario/buscar/:id', auth, Admin.buscarUsuarioId);
     router.get('/api/admin/desconto/ddd/:id', auth, Admin.buscarDDD);
@@ -429,7 +429,7 @@ module.exports = (io, loginLimiter) => {
 
     //ROTAS MODULO PAGAMENTOS
     router.get('/api/admin/pagamentos/read', auth, Admin.listarPagamentos);
-    router.get('/api/admin/preco-base/read', auth, Admin.listarValorBase);
+    router.get('/api/admin/preco-base/read', Admin.listarValorBase);
     router.put('/api/admin/preco-base', auth, Admin.atualizarValorBase);
 
     //ROTAS MODULO PIN

@@ -103,9 +103,9 @@ const corsMiddleware = (req, res, next) => {
 app.use(corsMiddleware);
 
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 500,
-    message: 'Muitas requisições, tente novamente mais tarde'
+    windowMs: 1 * 60 * 1000,
+    max: 10000,
+    message: 'Muitas requisicoes, tente novamente mais tarde'
 });
 
 app.use('/api', limiter);
