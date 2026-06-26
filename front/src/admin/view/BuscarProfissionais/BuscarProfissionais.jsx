@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { masterPath } from '../../config/config';
+import { masterPath } from '../../../config/config';
 import { Search, MapPin, Briefcase, Building2 } from 'lucide-react';
 
 export default function BuscarProfissionais() {
