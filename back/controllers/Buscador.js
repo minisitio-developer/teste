@@ -422,7 +422,7 @@ module.exports = {
                 replacements.bairro = bairro;
             }
             if (profissao) {
-                whereConditions.push('(a.codAtividade LIKE :profissao OR atv.nomeAmigavel LIKE :profissao)');
+                whereConditions.push('a.codAtividade LIKE :profissao');
                 replacements.profissao = `%${profissao}%`;
             }
 
@@ -431,7 +431,6 @@ module.exports = {
             const countQuery = `
                 SELECT COUNT(*) as total
                 FROM anuncio a
-                LEFT JOIN atividade atv ON a.codAtividade = atv.nomeAmigavel
                 WHERE ${whereClause}
             `;
 
@@ -444,7 +443,6 @@ module.exports = {
                     a.codCaderno AS cidade,
                     a.codUf AS estado
                 FROM anuncio a
-                LEFT JOIN atividade atv ON a.codAtividade = atv.nomeAmigavel
                 WHERE ${whereClause}
                 ORDER BY a.descAnuncio ASC
                 LIMIT :limit OFFSET :offset
