@@ -126,6 +126,43 @@ module.exports = (io, loginLimiter) => {
     router.post('/api/admin/anuncio/duplicate', auth, EspacosController.duplicar);
     router.get('/api/admin/anuncio/classificado/:caderno/:uf', EspacosController.listarClassificado);
     router.get('/api/buscar-profissionais', Buscador.buscarProfissionais);
+
+    // DEBUG: dados brutos para diagnosticar busca
+    router.get('/api/debug/busca', async (req, res) => {
+        try {
+            const [ufCount] = await database.query(`SELECT COUNT(*) as total FROM uf`, { type: database.QueryTypes.SELECT });
+            const [cadernoCount] = await database.query(`SELECT COUNT(*) as total FROM caderno`, { type: database.QueryTypes.SELECT });
+            const [atividadeCount] = await database.query(`SELECT COUNT(*) as total FROM atividade`, { type: database.QueryTypes.SELECT });
+            const [anuncioCount] = await database.query(`SELECT COUNT(*) as total FROM anuncio`, { type: database.QueryTypes.SELECT });
+            const [anuncioAtivo] = await database.query(`SELECT COUNT(*) as total FROM anuncio WHERE activate = 1`, { type: database.QueryTypes.SELECT });
+            const [anuncioJoin] = await database.query(`
+                SELECT COUNT(*) as total FROM anuncio a
+                LEFT JOIN atividade atv ON a.codAtividade = atv.id
+                WHERE a.activate = 1 AND atv.id IS NOT NULL
+            `, { type: database.QueryTypes.SELECT });
+
+            const sampleAnuncio = await database.query(
+                `SELECT a.codAnuncio, a.descAnuncio, a.codAtividade, a.codCaderno, a.codUf, a.activate,
+                        atv.id as atv_id, atv.atividade as atv_codigo, atv.nomeAmigavel
+                 FROM anuncio a
+                 LEFT JOIN atividade atv ON a.codAtividade = atv.id
+                 WHERE a.activate = 1 LIMIT 5`,
+                { type: database.QueryTypes.SELECT }
+            );
+
+            const sampleUf = await database.query(`SELECT * FROM uf LIMIT 5`, { type: database.QueryTypes.SELECT });
+            const sampleCaderno = await database.query(`SELECT codCaderno, UF, nomeCaderno FROM caderno LIMIT 5`, { type: database.QueryTypes.SELECT });
+            const sampleAtividade = await database.query(`SELECT id, atividade, nomeAmigavel FROM atividade LIMIT 5`, { type: database.QueryTypes.SELECT });
+
+            res.json({
+                counts: { uf: ufCount.total, caderno: cadernoCount.total, atividade: atividadeCount.total, anuncio: anuncioCount.total, anuncioAtivo: anuncioAtivo.total, comAtividade: anuncioJoin.total },
+                sampleAnuncio, sampleUf, sampleCaderno, sampleAtividade
+            });
+        } catch (error) {
+            console.error('Erro debug:', error);
+            res.status(500).json({ error: error.message });
+        }
+    });
     router.get('/api/admin/anuncio/classificado/geral/:caderno/:uf', EspacosController.listarClassificadoGeral);
     router.get('/api/admin/anuncio/classificado/todos/:caderno/:uf', EspacosController.listarTodosClassificados);
     router.get('/api/admin/anuncio/classificado/geral2', EspacosController.listarClassificadoGeral2);
