@@ -103,7 +103,7 @@ export default function BuscarProfissionais() {
                                         >
                                             <option value="">Todas</option>
                                             {ufs.map(uf => (
-                                                <option key={uf.id_uf} value={uf.sigla_uf}>
+                                                <option key={uf.id_uf} value={uf.id_uf}>
                                                     {uf.sigla_uf} - {uf.nome_uf}
                                                 </option>
                                             ))}
@@ -123,8 +123,8 @@ export default function BuscarProfissionais() {
                                         >
                                             <option value="">Todas</option>
                                             {cidades.map(c => (
-                                                <option key={c.codCaderno} value={c.nomeCaderno}>
-                                                    {c.nomeCaderno}
+                                                <option key={c.codCaderno} value={c.codCaderno}>
+                                                    {c.nomeCadernoFriendly || c.nomeCaderno}
                                                 </option>
                                             ))}
                                         </select>
