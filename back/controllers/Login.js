@@ -27,12 +27,6 @@ module.exports = {
         if (docType === 'Invalid') {
             return res.status(400).json({ success: false, message: "CPF/CNPJ com formato inválido" });
         }
-        if (docType === 'CPF' && !validateCPF(descCPFCNPJ)) {
-            return res.status(400).json({ success: false, message: "CPF inválido" });
-        }
-        if (docType === 'CNPJ' && !validateCNPJ(descCPFCNPJ)) {
-            return res.status(400).json({ success: false, message: "CNPJ inválido" });
-        }
 
         if (typeof senha !== 'string' || senha.length > 128) {
             return res.status(400).json({ success: false, message: "Senha inválida" });
