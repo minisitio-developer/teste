@@ -123,12 +123,15 @@ function UserActions(props) {
 
         const link = props.urlShare;
         const nomePerfil = props.data?.descAnuncio || 'Meu Minisitio';
-        const textoShare = encodeURIComponent(`Confira o perfil de ${nomePerfil} no Minisitio:\n\n${link}`);
+        const descImagem = props.data?.descImagem || '';
+        const miniaturaUrl = descImagem ? `${masterPath.url}/files/3/${encodeURIComponent(descImagem)}` : '';
+        const textoShare = encodeURIComponent(`Acesse o Link Seguro - PERFIL NO MINISITIO: ${nomePerfil}\n\n${link}`);
         const textoShareShort = encodeURIComponent(`${link}`);
         Swal.fire({
             title: 'Compartilhe Seu Minisitio',
             html: `
                       <div style="" className="cart-digital-modal py-3">
+                          ${miniaturaUrl ? `<div style="margin-bottom: 15px;"><img src="${miniaturaUrl}" alt="Miniatura do perfil" style="max-width: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);" /><p style="font-size: 12px; color: #666; margin-top: 5px;">Link Seguro - PERFIL NO MINISITIO</p></div>` : ''}
                           <a href="https://api.whatsapp.com/send?text=${textoShare}" target="_blank" className="mb-2 d-flex flex-column align-items-center" style="gap: 10px;" rel="noreferrer">
                               <img src="../assets/img/icon-share/share_whatsapp.svg" width="80" alt="whatsapp" />    
                               Compartilhar no WhatsApp

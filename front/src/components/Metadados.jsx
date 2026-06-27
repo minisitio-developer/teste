@@ -8,6 +8,11 @@ import '../assets/css/metadados.css';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+function trimUrl(url) {
+    if (!url || typeof url !== 'string') return url;
+    return url.replace(/\s/g, '');
+}
 import { Modal, Button } from 'react-bootstrap';
 /* import 'font-awesome/css/font-awesome.min.css'; */
 
@@ -115,7 +120,7 @@ function Metadados(props) {
                     <div className="col-md-12">
                         <i className="fa fa-globe"></i>
                         <h4>
-                            <a href={props.data.descSite !== "0" ? props.data.descSite : ""} data-toggle="tooltip" title="Site" target="_blank" rel="noopener  noreferrer">
+                            <a href={props.data.descSite !== "0" ? trimUrl(props.data.descSite) : ""} data-toggle="tooltip" title="Site" target="_blank" rel="noopener  noreferrer">
                                 {props.data.descSite !== "0" ? props.data.descSite : ""}
                             </a>
                         </h4>
@@ -124,7 +129,7 @@ function Metadados(props) {
                         <div className="col-md-12 link-cinza">
                             <img src="../assets/img/teste/facebook.png" alt="Facebook icon" />
                             <h4>
-                                <a href={props.data.descFacebook !== "teste" ? props.data.descFacebook : ""} data-toggle="tooltip" title="Facebook" target="_blank" rel="noopener  noreferrer">
+                                <a href={props.data.descFacebook !== "teste" ? trimUrl(props.data.descFacebook) : ""} data-toggle="tooltip" title="Facebook" target="_blank" rel="noopener  noreferrer">
                                     {props.data.descFacebook !== "teste" ? props.data.descFacebook : ""}
                                 </a>
                             </h4>
@@ -135,7 +140,7 @@ function Metadados(props) {
                         <div className="col-md-12 link-cinza">
                             <img src="../assets/img/teste/instagram.png" alt="Instagram icon" />
                             <h4>
-                                <a href={props.data.descInsta !== "0" ? props.data.descInsta : ""} data-toggle="tooltip" title="Instagram" target="_blank" rel="noopener  noreferrer">
+                                <a href={props.data.descInsta !== "0" ? trimUrl(props.data.descInsta) : ""} data-toggle="tooltip" title="Instagram" target="_blank" rel="noopener  noreferrer">
                                     {props.data.descInsta !== "0" ? props.data.descInsta : ""}
                                 </a>
                             </h4>
@@ -146,7 +151,7 @@ function Metadados(props) {
                         <div className="col-md-12 link-cinza">
                             <img src="../assets/img/redes/unnamed.webp" className="rounded" alt="Social media icon" />
                             <h4>
-                                <a href={props.data.descTweeter !== "teste" ? props.data.descTweeter : ""} data-toggle="tooltip" title="Twitter" target="_blank" rel="noopener  noreferrer">
+                                <a href={props.data.descTweeter !== "teste" ? trimUrl(props.data.descTweeter) : ""} data-toggle="tooltip" title="Twitter" target="_blank" rel="noopener  noreferrer">
                                     {props.data.descTweeter !== "teste" ? props.data.descTweeter : ""}
                                 </a>
                             </h4>
@@ -157,7 +162,7 @@ function Metadados(props) {
                         <div className="col-md-12 link-cinza">
                             <img src="../assets/img/teste/linkedin.png" alt="LinkedIn icon" />
                             <h4>
-                                <a href={props.data.descLinkedin !== "0" ? props.data.descLinkedin : ""} data-toggle="tooltip" title="Linkedin" target="_blank" rel="noopener  noreferrer">
+                                <a href={props.data.descLinkedin !== "0" ? trimUrl(props.data.descLinkedin) : ""} data-toggle="tooltip" title="Linkedin" target="_blank" rel="noopener  noreferrer">
                                     {props.data.descLinkedin !== "0" ? props.data.descLinkedin : ""}
                                 </a>
                             </h4>
@@ -190,7 +195,7 @@ function Metadados(props) {
                         <div className="col-md-12 link-cinza">
                             <img src="../assets/img/teste/icons8-meu-negócio-48.png" alt="Google My Business icon" />
                             <h4>
-                                <a href={props.data.descSkype !== "0" ? props.data.descSkype : ""} target="_blank" data-toggle="tooltip" title="google-meu-negocio" rel="noopener  noreferrer">
+                                <a href={props.data.descSkype !== "0" ? trimUrl(props.data.descSkype) : ""} target="_blank" data-toggle="tooltip" title="google-meu-negocio" rel="noopener  noreferrer">
                                     {props.data.descSkype !== "0" ? props.data.descSkype : ""}
                                 </a>
                             </h4>
@@ -244,12 +249,12 @@ function Metadados(props) {
                     {(props.data.descAndroid && props.data.descAndroid !== "teste") &&
                         <div className="col-md-12 link-cinza">
                             {(props.data.descAndroid != "0" && props.data.descAndroid != "") &&
-                                <a href={props.data.descAndroid !== "0" ? props.data.descAndroid : ""} target="_blank" data-toggle="tooltip" title="android" rel="noopener  noreferrer">
+                                <a href={props.data.descAndroid !== "0" ? trimUrl(props.data.descAndroid) : ""} target="_blank" data-toggle="tooltip" title="android" rel="noopener  noreferrer">
                                     <img src="../assets/img/icons/android.png" width={200} style={{ marginLeft: "-10px" }} alt="Android app icon" />
                                 </a>
                             }
                             {(props.data.descAndroid === "0" || props.data.descAndroid === "") &&
-                                <a href={props.data.descAndroid !== "0" ? props.data.descAndroid : ""} target="_blank" data-toggle="tooltip" title="android" rel="noopener  noreferrer">
+                                <a href={props.data.descAndroid !== "0" ? trimUrl(props.data.descAndroid) : ""} target="_blank" data-toggle="tooltip" title="android" rel="noopener  noreferrer">
                                     <img src="../assets/img/icons/android.png" width={200} style={{ filter: "grayscale(1)", webkitFilter: "grayscale(1)", marginLeft: "-10px" }} alt='android' />
                                 </a>
                             }
@@ -259,12 +264,12 @@ function Metadados(props) {
                         <div className="col-md-12 link-cinza">
                             {console.log(props.data.descApple)}
                             {(props.data.descApple != "0" && props.data.descApple != "") &&
-                                <a href={props.data.descApple !== "0" ? props.data.descApple : ""} target="_blank" data-toggle="tooltip" title="android" rel="noopener  noreferrer">
+                                <a href={props.data.descApple !== "0" ? trimUrl(props.data.descApple) : ""} target="_blank" data-toggle="tooltip" title="android" rel="noopener  noreferrer">
                                     <img src="../assets/img/icons/ios.png" width={180} height={60} alt="iOS app icon" />
                                 </a>
                             }
                             {(props.data.descApple === "0" || props.data.descApple === "") &&
-                                <a href={props.data.descApple !== "0" ? props.data.descApple : ""} target="_blank" data-toggle="tooltip" title="apple" rel="noreferrer">
+                                <a href={props.data.descApple !== "0" ? trimUrl(props.data.descApple) : ""} target="_blank" data-toggle="tooltip" title="apple" rel="noreferrer">
                                     <img src="../assets/img/icons/ios.png" width={180} height={60} style={{ filter: "grayscale(1)", webkitFilter: "grayscale(1)" }} alt='iOS app icon' />
                                 </a>
                             }

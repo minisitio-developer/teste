@@ -12,7 +12,7 @@ export function checkoutUpdate(radioCheck, descontoAtivado, minisitio, codDescon
     fetch(`${masterPath.url}/admin/desconto/buscar/${codDescontoInserido}`)
         .then((x) => x.json())
         .then((res) => {
-            minisitio.codTipoAnuncio = "3";
+            minisitio.codTipoAnuncio = String(radioCheck);
 
             let descontoAprovado = false;
             if (res.success) {

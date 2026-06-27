@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, use } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { masterPath } from "../../config/config";
 import he from 'he';
 import './style.css';
@@ -41,6 +41,7 @@ import TagsInput from "./TagsInput";
 
 function Editar(props) {
   //States
+  const navigate = useNavigate();
   const [ufSelected, setUf] = useState(0);
   const [uf, setUfs] = useState([]);
   const [caderno, setCaderno] = useState([]);
@@ -1461,15 +1462,23 @@ function Editar(props) {
                       14/04/2025.
                     </p>} */}
                     {!validation &&
-                      <button
-                        type="button"
-                        className="btn-block formulario-de-cadastro btn btn-primary"
-                        id="anunciar"
-                        /* data-bs-toggle="modal" data-bs-target="#myModal"*/
-                        onClick={editIDP}
-                      >
-                        ATUALIZAR
-                      </button>
+                      <div className="d-flex gap-2">
+                        <button
+                          type="button"
+                          className="btn-block formulario-de-cadastro btn btn-primary"
+                          id="anunciar"
+                          onClick={editIDP}
+                        >
+                          ATUALIZAR
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-block formulario-de-cadastro btn btn-success"
+                          onClick={() => navigate(`/renovar/perfil/${props.espacoId}`)}
+                        >
+                          RENOVAR
+                        </button>
+                      </div>
                     }
                   </div>
                 </div>

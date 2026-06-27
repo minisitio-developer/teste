@@ -86,6 +86,7 @@ function ComprarAnuncio({ isAdmin }) {
       .then((x) => x.json())
       .then((res) => {
         setMinisitio(res[0]);
+        setRadioCheck(Number(res[0].codTipoAnuncio) || 3);
 
 
         /*    fetch(`${masterPath.url}/cadernos?uf=${res[0].codUf}`)

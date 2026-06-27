@@ -28,6 +28,11 @@ import Socialmidia from './Socialmidia';
 import SocialShareButtons from './SocialShareButtons';
 import TemplateModalPromo from "../components/Modal/TemplateModalPromo";
 
+function trimUrl(url) {
+    if (!url || typeof url !== 'string') return url;
+    return url.replace(/\s/g, '');
+}
+
 
 function FullWebCard(props) {
     const { result, setResult } = useBusca();
@@ -165,7 +170,7 @@ function FullWebCard(props) {
                                         <div className='col-md-4'>{resultLocal.certificado_texto ? resultLocal.certificado_texto : "TEXTO"}</div>
                                         <div className='col-md-4'>
                                             {(resultLocal.certificado_link || resultLocal.certificado_imagem) && (
-                                                <a href={resultLocal.certificado_imagem != '' ? `${masterPath.url}/files/imgCertificado/${resultLocal.certificado_imagem}` : resultLocal.certificado_link} target="_blank" rel="noopener noreferrer">
+                                                <a href={resultLocal.certificado_imagem != '' ? `${masterPath.url}/files/imgCertificado/${resultLocal.certificado_imagem}` : trimUrl(resultLocal.certificado_link)} target="_blank" rel="noopener noreferrer">
                                                     <i className="link-cinza flex justify-center">
                                                         <img
                                                             src={
@@ -232,7 +237,7 @@ function FullWebCard(props) {
                                 </h2>
                                 <div className="text-center btn-comprar border-cinza">
                                     {resultLocal.link_comprar != "" &&
-                                        <a href={resultLocal.link_comprar}
+                                        <a href={trimUrl(resultLocal.link_comprar)}
                                             className="btn d-flex justify-content-center align-items-center w-50"
                                             target="_blank"
                                             rel="noopener noreferrer"
@@ -252,7 +257,7 @@ function FullWebCard(props) {
                                 <div className='py-3 border-cinza'>
                                     <i className='link-cinza flex justify-center'>
                                         {
-                                            promoChange(resultLocal) && <a href={resultLocal.linkPromo}><img src="../assets/img/link_promocao.png" alt="icone" width={60} /></a>
+                                            promoChange(resultLocal) && <a href={trimUrl(resultLocal.linkPromo)}><img src="../assets/img/link_promocao.png" alt="icone" width={60} /></a>
                                         }
                                         {
                                             !promoChange(resultLocal) ?
@@ -311,7 +316,7 @@ function FullWebCard(props) {
                                 }
 
                                 {cashbackCondicoes(resultLocal.cashback_logo, resultLocal.cashback_link) === "condicao2" &&
-                                    <a href={resultLocal.cashback_link} target="_blank" rel="noopener  noreferrer">
+                                    <a href={trimUrl(resultLocal.cashback_link)} target="_blank" rel="noopener  noreferrer">
                                         <i className='link-cinza flex justify-center border-cinza '>
                                             <img src={`${masterPath.url}/files/logoCashBack/${resultLocal.cashback_logo}`} className='rounded my-1' alt="cashback" style={{ maxWidth: '150px', maxHeight: '50px', objectFit: 'contain' }} />
                                         </i>
@@ -320,7 +325,7 @@ function FullWebCard(props) {
                                 }
 
                                 {cashbackCondicoes(resultLocal.cashback_logo, resultLocal.cashback_link) === "condicao3" &&
-                                    <a href={resultLocal.cashback_link} target="_blank" rel="noopener  noreferrer">
+                                    <a href={trimUrl(resultLocal.cashback_link)} target="_blank" rel="noopener  noreferrer">
                                         <i className='link-cinza flex justify-center border-cinza '>
                                             <img src="../assets/img/teste/cashback.jpg" className='my-1' alt="cashback" width={100} height={40} />
                                         </i>
@@ -333,7 +338,7 @@ function FullWebCard(props) {
                                     PARCEIRO
                                 </h2>
                                 {resultLocal.descParceiro && resultLocal.descParceiro !== "0" && resultLocal.descParceiro !== "teste" ? (
-                                    <a href={resultLocal.descParceiroLink && resultLocal.descParceiroLink !== "0" ? resultLocal.descParceiroLink : "#"} target="_blank" data-toggle="tooltip" title="parceiro" rel="noopener  noreferrer">
+                                    <a href={resultLocal.descParceiroLink && resultLocal.descParceiroLink !== "0" ? trimUrl(resultLocal.descParceiroLink) : "#"} target="_blank" data-toggle="tooltip" title="parceiro" rel="noopener  noreferrer">
                                         <i className='link-cinza flex justify-center border-cinza'>
                                             <img src={`${masterPath.url}/files/logoParceiro/${resultLocal.descParceiro}`} width={150} height={58} className='rounded my-1' alt="parceiro" />
                                         </i>
