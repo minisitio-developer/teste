@@ -188,7 +188,7 @@ export default function BuscarProfissionais() {
                                         <thead>
                                             <tr>
                                                 <th>Profissional</th>
-                                                <th>Profissão / CNAE</th>
+                                                <th style={{ width: '33%', wordBreak: 'break-word' }}>Profissão / CNAE</th>
                                                 <th>Bairro/UF</th>
                                                 <th>Telefone</th>
                                                 <th>Perfil</th>
@@ -201,7 +201,7 @@ export default function BuscarProfissionais() {
                                                         <strong>{item.descAnuncio}</strong>
                                                     </td>
                                                     <td>
-                                                        <span className="badge bg-secondary">
+                                                        <span className="badge bg-secondary" style={{ wordBreak: 'break-word', whiteSpace: 'normal' }}>
                                                             {item.profissao || 'Não informado'}
                                                         </span>
                                                     </td>

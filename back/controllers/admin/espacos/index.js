@@ -469,34 +469,20 @@ module.exports = {
     },
     listarClassificado: async (req, res) => {
 
-        const paginaAtual = req.query.page ? parseInt(req.query.page) : 1; // Página atual, padrão: 1
-        const porPagina = 10; // Número de itens por página
-
-        console.log(req.params)
-
         try {
-            /*    const result = await Anuncio.findAll({
-                   where: {
-                       [Op.and]: [
-                           { codUf: req.params.uf },
-                           { codCaderno: req.params.caderno },
-                           { codAtividade: { [Op.ne]: "ADMINISTRAÇÃO REGIONAL / PREFEITURA" } }
-                       ]
-                   },
-                   attributes: [
-                       'codAtividade', 'codCaderno', 'codAnuncio', 'codUf', 'descAnuncio',
-                       [Sequelize.fn('COUNT', Sequelize.col('codAtividade')), 'quantidade']
-                   ],
-                   group: ['codAtividade'],
-                   order: [['codAtividade', 'ASC']]
-               }); */
-
             const cadernoParam = decodeURIComponent(req.params.caderno);
 
-            const cadernoData = await Caderno.findOne({
+            let cadernoData = await Caderno.findOne({
                 where: { UF: req.params.uf, [Op.or]: [{ nomeCadernoFriendly: cadernoParam }, { nomeCaderno: cadernoParam }] },
                 raw: true
             });
+
+            if (!cadernoData && !isNaN(parseInt(cadernoParam))) {
+                cadernoData = await Caderno.findOne({
+                    where: { codCaderno: parseInt(cadernoParam) },
+                    raw: true
+                });
+            }
 
             if (!cadernoData) {
                 return res.json({ success: true, teste: { count: 0, rows: [] }, mosaico: null, totalRegistros: 0 });
@@ -533,9 +519,8 @@ module.exports = {
 
         } catch (error) {
             console.error('Erro ao buscar dados:', error);
+            res.status(500).json({ success: false, message: 'Erro ao buscar classificado' });
         }
-
-
 
         return;
 
@@ -856,56 +841,86 @@ module.exports = {
         const limit = 10;
         const offset = Math.max(0, (page - 1) * limit);
 
+        try {
+            const cadernoParam = decodeURIComponent(req.params.caderno);
+            let nomeCadernoReal = cadernoParam;
+            let codCadernoNum = null;
 
-        const anuncioTeste = await Anuncio.findAndCountAll({
-            where: {
+            const cadernoData = await Caderno.findOne({
+                where: { UF: req.params.uf, [Op.or]: [{ nomeCadernoFriendly: cadernoParam }, { nomeCaderno: cadernoParam }] },
+                raw: true
+            });
+
+            if (cadernoData) {
+                nomeCadernoReal = cadernoData.nomeCaderno;
+                codCadernoNum = String(cadernoData.codCaderno);
+            } else if (!isNaN(parseInt(cadernoParam))) {
+                codCadernoNum = cadernoParam;
+            }
+
+            const whereConditions = {
                 [Op.and]: [
                     { codUf: req.params.uf },
-                    { codCaderno: req.params.caderno },
-                    { page: parseInt(req.query.page) || 1 },
                     { activate: 1 }
                 ],
                 codAtividade: {
-                    [Op.notIn]: ['ADMINISTRAÇÃO REGIONAL / PREFEITURA', "EMERGÊNCIA", "UTILIDADE PÚBLICA", "HOSPITAIS PÚBLICOS", "CÂMARA DE VEREADORES - CÂMARA DISTRITAL", "SECRETARIA DE TURISMO", "INFORMAÇÕES", "EVENTOS NA CIDADE"]  // Ignorar esse valor
+                    [Op.notIn]: ['ADMINISTRAÇÃO REGIONAL / PREFEITURA', "EMERGÊNCIA", "UTILIDADE PÚBLICA", "HOSPITAIS PÚBLICOS", "CÂMARA DE VEREADORES - CÂMARA DISTRITAL", "SECRETARIA DE TURISMO", "INFORMAÇÕES", "EVENTOS NA CIDADE"]
                 },
-            },
-            order: [['codAtividade', 'ASC'], ['codTipoAnuncio', 'DESC'], ['createdAt', 'ASC'], ['descAnuncio', 'ASC']],
-            limit,
-            offset,
-            attributes: ['codAnuncio', 'codAtividade', 'descAnuncio', 'descTelefone', 'descImagem', 'codDesconto', 'page', 'descInsta', 'descFacebook', 'descSite'],
-            include: [
-                {
-                    model: Atividade,
-                    attributes: ['nomeAmigavel'],
-                    as: 'atividadeAmigavel',
-                }
-            ]
-        });
+            };
 
-        const contador = await Anuncio.count({
-            where: { codUf: req.params.uf, codCaderno: req.params.caderno },
-        })
+            if (codCadernoNum) {
+                whereConditions[Op.and].push({ [Op.or]: [{ codCaderno: nomeCadernoReal }, { codCaderno: codCadernoNum }] });
+            } else {
+                whereConditions[Op.and].push({ codCaderno: nomeCadernoReal });
+            }
 
-        let mosaicoImg = 0;
-        try {
-            const cadernoData = await Caderno.findOne({
-                where: { UF: req.params.uf, nomeCaderno: req.params.caderno },
-                raw: true
+            if (req.query.page) {
+                whereConditions[Op.and].push({ page: parseInt(req.query.page) });
+            }
+
+            const anuncioTeste = await Anuncio.findAndCountAll({
+                where: whereConditions,
+                order: [['codAtividade', 'ASC'], ['codTipoAnuncio', 'DESC'], ['createdAt', 'ASC'], ['descAnuncio', 'ASC']],
+                limit,
+                offset,
+                attributes: ['codAnuncio', 'codAtividade', 'descAnuncio', 'descTelefone', 'descImagem', 'codDesconto', 'page', 'descInsta', 'descFacebook', 'descSite', 'codCaderno', 'codUf'],
+                include: [
+                    {
+                        model: Atividade,
+                        attributes: ['nomeAmigavel'],
+                        as: 'atividadeAmigavel',
+                    }
+                ]
             });
-            if (cadernoData) mosaicoImg = cadernoData.descImagem;
-        } catch (e) { /* ignore */ }
 
-        res.json({
-            success: true,
-            teste: anuncioTeste,
-            mosaico: mosaicoImg,
-            qtdaConsulta: contador,
-            paginaLocalizada: req.query.page,
-        });
+            const contador = await Anuncio.count({
+                where: {
+                    codUf: req.params.uf,
+                    [Op.or]: codCadernoNum ? [{ codCaderno: nomeCadernoReal }, { codCaderno: codCadernoNum }] : [{ codCaderno: nomeCadernoReal }]
+                },
+            });
 
+            let mosaicoImg = 0;
+            try {
+                const cadernoMosaico = await Caderno.findOne({
+                    where: { UF: req.params.uf, nomeCaderno: nomeCadernoReal },
+                    raw: true
+                });
+                if (cadernoMosaico) mosaicoImg = cadernoMosaico.descImagem;
+            } catch (e) { /* ignore */ }
 
+            res.json({
+                success: true,
+                teste: anuncioTeste,
+                mosaico: mosaicoImg,
+                qtdaConsulta: contador,
+                paginaLocalizada: req.query.page,
+            });
 
-
+        } catch (error) {
+            console.error('Erro ao listar classificado geral:', error);
+            res.status(500).json({ success: false, message: 'Erro ao buscar classificado' });
+        }
     },
     listarTodosClassificados: async (req, res) => {
 

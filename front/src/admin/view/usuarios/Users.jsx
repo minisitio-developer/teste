@@ -143,7 +143,11 @@ const Users = () => {
             })
             .then((res) => {
                 if (res && res.success) {
-                    fetch(`${masterPath.url}/admin/usuario?page=${param}`)
+            fetch(`${masterPath.url}/admin/usuario?page=${param}`, {
+                headers: {
+                    "authorization": 'Bearer ' + tokenAuth
+                }
+            })
                         .then((x) => x.json())
                         .then((res) => {
                             setUsuarios(res);

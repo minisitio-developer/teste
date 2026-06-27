@@ -207,19 +207,23 @@ module.exports = {
             });
             return res.json(cadernos);
         } catch (error) {
-            console.log(error)
+            console.error('Erro ao buscar cadernos:', error);
+            res.status(500).json([]);
         }
   
     },
     buscarUf: async (req, res) => {
-
-        const ufs = await Uf.findAll({
-              order: [
-                ['sigla_uf', 'ASC'],
-            ],
-        });
-
-        res.json(ufs);
+        try {
+            const ufs = await Uf.findAll({
+                order: [
+                    ['sigla_uf', 'ASC'],
+                ],
+            });
+            res.json(ufs);
+        } catch (error) {
+            console.error('Erro ao buscar UFs:', error);
+            res.status(500).json([]);
+        }
     },
     buscarAtividades: async (req, res) => {
         try {
@@ -428,7 +432,7 @@ module.exports = {
                 replacements.bairro = bairro;
             }
             if (profissao) {
-                whereConditions.push('a.codAtividade LIKE :profissao');
+                whereConditions.push('(a.codAtividade LIKE :profissao OR atv.nomeAmigavel LIKE :profissao)');
                 replacements.profissao = `%${profissao}%`;
             }
 
@@ -437,6 +441,7 @@ module.exports = {
             const countQuery = `
                 SELECT COUNT(*) as total
                 FROM anuncio a
+                LEFT JOIN atividade atv ON atv.atividade = a.codAtividade
                 WHERE ${whereClause}
             `;
 
@@ -445,10 +450,11 @@ module.exports = {
                     a.codAnuncio, a.descAnuncio, a.descTelefone,
                     a.descCelular, a.descImagem, a.codAtividade, a.codCaderno, a.codUf,
                     a.descCPFCNPJ, a.descEmailComercial, a.createdAt,
-                    a.codAtividade AS profissao,
+                    atv.nomeAmigavel AS profissao,
                     a.codCaderno AS cidade,
                     a.codUf AS estado
                 FROM anuncio a
+                LEFT JOIN atividade atv ON atv.atividade = a.codAtividade
                 WHERE ${whereClause}
                 ORDER BY a.descAnuncio ASC
                 LIMIT :limit OFFSET :offset

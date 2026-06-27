@@ -32,10 +32,15 @@ function Dashboard() {
             .then(res => {
                 if (res.success) {
                     setData(res.data);
+                    setLoading(false);
+                    if (!res.data.lastUpdated && !sessionStorage.getItem('dashboardRefreshed')) {
+                        sessionStorage.setItem('dashboardRefreshed', '1');
+                        refreshDashboard();
+                    }
                 } else {
                     setError('Erro ao carregar dados');
+                    setLoading(false);
                 }
-                setLoading(false);
             })
             .catch(() => {
                 setError('Erro de conexao');
