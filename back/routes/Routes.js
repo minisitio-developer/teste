@@ -237,20 +237,31 @@ module.exports = (io, loginLimiter) => {
 
             const cadernosPorUf = await database.query(`SELECT UF, COUNT(*) as total FROM caderno GROUP BY UF ORDER BY total DESC`, { type: database.QueryTypes.SELECT });
 
+            const [contatos] = await database.query(
+                `SELECT
+                    SUM(CASE WHEN descEmailComercial IS NULL OR descEmailComercial = '' OR descEmailComercial = 'atualizar' OR descEmailComercial = '0' THEN 1 ELSE 0 END) as semEmail,
+                    SUM(CASE WHEN descTelefone IS NULL OR descTelefone = '' OR descTelefone = 'atualizar' THEN 1 ELSE 0 END) as semTelefone,
+                    SUM(CASE WHEN (descEmailComercial IS NULL OR descEmailComercial = '' OR descEmailComercial = 'atualizar' OR descEmailComercial = '0') AND (descTelefone IS NULL OR descTelefone = '' OR descTelefone = 'atualizar') THEN 1 ELSE 0 END) as semEmailETelefone
+                 FROM anuncio WHERE activate = 1`,
+                { type: database.QueryTypes.SELECT }
+            );
+
             await database.query(
-                `INSERT INTO dashboard_cache (id, total, basico, completo, ativos, inativos, expirados, expiraEm30Dias, porUf_json, porMes_json, cadernosPorUf_json, lastUpdated)
-                 VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                `INSERT INTO dashboard_cache (id, total, basico, completo, ativos, inativos, expirados, expiraEm30Dias, semEmail, semTelefone, semEmailETelefone, porUf_json, porMes_json, cadernosPorUf_json, contatos_json, lastUpdated)
+                 VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
                  ON DUPLICATE KEY UPDATE
                     total=VALUES(total), basico=VALUES(basico), completo=VALUES(completo),
                     ativos=VALUES(ativos), inativos=VALUES(inativos),
                     expirados=VALUES(expirados), expiraEm30Dias=VALUES(expiraEm30Dias),
+                    semEmail=VALUES(semEmail), semTelefone=VALUES(semTelefone), semEmailETelefone=VALUES(semEmailETelefone),
                     porUf_json=VALUES(porUf_json), porMes_json=VALUES(porMes_json),
-                    cadernosPorUf_json=VALUES(cadernosPorUf_json), lastUpdated=NOW()`,
+                    cadernosPorUf_json=VALUES(cadernosPorUf_json), contatos_json=VALUES(contatos_json), lastUpdated=NOW()`,
                 {
                     replacements: [
                         stats.total, stats.basico, stats.completo, stats.ativos, stats.inativos,
                         stats.expirados, stats.expiraEm30Dias,
-                        JSON.stringify(porUf), JSON.stringify(porMes), JSON.stringify(cadernosPorUf)
+                        contatos.semEmail, contatos.semTelefone, contatos.semEmailETelefone,
+                        JSON.stringify(porUf), JSON.stringify(porMes), JSON.stringify(cadernosPorUf), JSON.stringify(contatos)
                     ],
                     type: database.QueryTypes.INSERT
                 }
