@@ -2144,7 +2144,10 @@ module.exports = {
         const porPagina = 10; // Número de itens por página
         const offset = (paginaAtual - 1) * porPagina;
 
-        if (!requisito) return;
+        if (!requisito) {
+            buscaNormal();
+            return;
+        }
 
 
         if (requisito === 'codCaderno') {
@@ -2334,15 +2337,17 @@ module.exports = {
         }
         async function buscaNormal() {
 
-            const whereClause = {
-                [requisito]: nu_hash,
+            const whereClause = {};
+
+            if (nu_hash && nu_hash !== 'outer') {
+                whereClause.descAnuncio = { [Op.like]: `%${nu_hash}%` };
             }
 
-            if (estado != 'todos' && estado != 'null') {
+            if (estado && estado != 'todos' && estado != 'null') {
                 whereClause.codUf = estado;
             }
 
-            if (caderno != 'todos' && caderno != 'null') {
+            if (caderno && caderno != 'todos' && caderno != 'null') {
                 whereClause.codCaderno = caderno;
             }
 
