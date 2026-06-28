@@ -114,17 +114,32 @@ const Atividades = () => {
         fetch(`${masterPath.url}/admin/atividade?nome=${campoPesquisa.value}`, {
             headers: { "authorization": 'Bearer ' + tokenAuth }
         })
-            .then((x) => x.json())
+            .then((x) => {
+                if (x.status === 401) {
+                    navigate('/login');
+                    return Promise.reject('Sessão expirada');
+                }
+                return x.json();
+            })
             .then((res) => {
                 if (res.success) {
                     setAtividades(res.message);
                     setShowSpinner(false);
                 } else {
-                    alert("Usuário não encontrado na base de dados");
+                    Swal.fire("Ops!", res.message || "Nenhuma atividade encontrada.", "warning");
                     setShowSpinner(false);
                 }
-
             })
+            .catch((err) => {
+                console.error('Erro ao buscar:', err);
+                setShowSpinner(false);
+            });
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            buscarUserId();
+        }
     };
 
     const style = {
@@ -179,7 +194,7 @@ const Atividades = () => {
                         </div>
                         <div className="span6 col-md-6">
                             <div className="pull-right d-flex justify-content-center align-items-center">
-                                <input id="buscar" type="text" placeholder="Buscar" />
+                                <input id="buscar" type="text" placeholder="Buscar" onKeyPress={handleKeyPress} />
                                 <button id="btnBuscar" className="" type="button" onClick={buscarUserId}>
                                     <i className="icon-search"></i>
                                 </button>
