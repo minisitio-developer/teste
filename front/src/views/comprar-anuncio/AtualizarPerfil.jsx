@@ -81,24 +81,34 @@ function ComprarAnuncio({ isAdmin }) {
   };
 
   useEffect(() => {
+    const tokenAuth = sessionStorage.getItem('userTokenAccess');
 
-    fetch(`${masterPath.url}/admin/anuncio/edit/${codAnuncio}`)
-      .then((x) => x.json())
+    fetch(`${masterPath.url}/admin/anuncio/edit/${codAnuncio}`, {
+      headers: { "authorization": 'Bearer ' + tokenAuth }
+    })
+      .then((x) => {
+        if (x.status === 401) {
+          Swal.fire({
+            title: 'Atenção',
+            text: 'Você precisa estar logado para renovar o perfil.',
+            icon: 'warning'
+          }).then(() => {
+            window.location.href = '/login';
+          });
+          return null;
+        }
+        return x.json();
+      })
       .then((res) => {
+        if (!res || !res[0]) {
+          console.error('Anúncio não encontrado');
+          return;
+        }
         setMinisitio(res[0]);
         setRadioCheck(Number(res[0].codTipoAnuncio) || 3);
-
-
-        /*    fetch(`${masterPath.url}/cadernos?uf=${res[0].codUf}`)
-             .then((x) => x.json())
-             .then((res) => {
-               setCaderno(res);
-             })
-           setUf(res[0].codUf) */
-        document.querySelector("#descAnuncio").focus();
-
+        document.querySelector("#descAnuncio")?.focus();
       }).catch((err) => {
-        console.log(err)
+        console.error('Erro ao carregar dados:', err);
       })
 
 
