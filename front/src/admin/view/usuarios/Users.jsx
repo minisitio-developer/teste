@@ -61,11 +61,19 @@ const Users = () => {
                 });
         } else {
             fetch(`${masterPath.url}/admin/usuario?page=${param}`)
-                .then((x) => x.json())
+                .then((x) => {
+                    if (x.status === 401) {
+                        navigate('/login');
+                        window.location.reload();
+                        return Promise.reject('Sessão expirada');
+                    }
+                    return x.json();
+                })
                 .then((res) => {
                     setUsuarios(res);
                     setShowSpinner(false);
                 })
+                .catch(() => { setShowSpinner(false); })
         }
 
 
