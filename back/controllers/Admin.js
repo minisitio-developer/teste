@@ -1189,17 +1189,14 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
     },
     criarAtividade: async (req, res) => {
         try {
-            //Atividades
             const atividadeCriada = await Atividade.create({
                 nomeAmigavel: req.body.atividade,
                 atividade: req.body.atividade,
                 corTitulo: req.body.corTitulo
-
             });
-            //console.log(atividadeCriada);
-            res.json({ success: true, message: atividadeCriada });
+            res.json({ success: true, message: `Atividade "${atividadeCriada.atividade}" criada com sucesso!` });
         } catch (err) {
-            res.json({ success: false, message: err });
+            res.json({ success: false, message: err.message || "Erro ao criar atividade." });
         }
 
     },
