@@ -204,7 +204,7 @@ const FormEdit = () => {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "authorization": 'Bearer ' + masterPath.accessToken
+                "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess')
             },
             body: JSON.stringify(ids)
         };

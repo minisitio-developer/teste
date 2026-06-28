@@ -140,7 +140,7 @@ const DadosPessoais = (props) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "authorization": 'Bearer ' + masterPath.accessToken
+        "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess')
     },
       body: JSON.stringify(obj),
     })
@@ -191,7 +191,7 @@ const DadosPessoais = (props) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "authorization": 'Bearer ' + masterPath.accessToken
+          "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess')
       },
         body: JSON.stringify(user)
     };

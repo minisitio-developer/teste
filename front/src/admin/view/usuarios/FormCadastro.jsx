@@ -173,7 +173,7 @@ const FormCadastro = () => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "authorization": 'Bearer ' + masterPath.accessToken
+                "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess')
             },
             body: JSON.stringify(data)
         };
