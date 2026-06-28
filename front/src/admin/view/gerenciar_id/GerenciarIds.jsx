@@ -102,22 +102,29 @@ const GerenciarIds = () => {
                 if (x.status === 409) {
                     setShowSpinner(false);
                     return x.json().then((data) => {
-                        Swal.fire("Bloqueado", data.message, "warning");
+                        Swal.fire("Bloqueado", data.message || "Este registro está vinculado e não pode ser excluído.", "warning");
                         return Promise.reject(data.message);
                     });
+                }
+                if (!x.ok) {
+                    throw new Error(`Erro HTTP: ${x.status}`);
                 }
                 return x.json();
             })
             .then((res) => {
                 if (res && res.success) {
                     setShowSpinner(false);
-                    Swal.fire("Excluído!", res.message, "success");
+                    Swal.fire("Excluído!", res.message || "Registro removido com sucesso.", "success");
                     document.querySelector(".selecionada")?.remove();
+                } else {
+                    setShowSpinner(false);
+                    Swal.fire("Erro", res.message || "Não foi possível excluir o registro.", "error");
                 }
             })
             .catch((err) => {
                 setShowSpinner(false);
-                Swal.fire("Erro", "Não foi possível excluir o registro. Tente novamente ou entre em contato com o suporte.", "error");
+                const msg = err?.message || "Não foi possível excluir o registro. Tente novamente.";
+                Swal.fire("Erro", msg, "error");
             })
     };
 
