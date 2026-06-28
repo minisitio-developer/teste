@@ -3263,7 +3263,7 @@ module.exports = {
                 }
             });
 
-            res.json({ success: true, message: listaAnuncios }); // Envia a resposta primeiro
+            res.json({ success: true, message: `Anúncio ${listaAnuncios.dataValues.codAnuncio} criado com sucesso!` });
 
             // Executa a query em segundo plano
 
@@ -3292,7 +3292,7 @@ module.exports = {
 
         } catch (err) {
             console.log(err)
-            res.json({ success: false, message: err, ter: codTipoAnuncio })
+            res.json({ success: false, message: err.message || "Erro ao criar anúncio. Verifique os dados e tente novamente." })
         }
 
         function dataNow() {
