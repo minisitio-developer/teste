@@ -662,19 +662,8 @@ async function seedPin() {
                 validade TEXT NOT NULL
             )
         `);
-        const Pin = require('./models/table_pin');
-        const [pin, created] = await Pin.findOrCreate({
-            where: { codigo: '61984213444' },
-            defaults: {
-                codigo: '61984213444',
-                validade: '31/12/2030'
-            }
-        });
-        if (created) {
-            console.log('SEED: PIN criado: 61984213444');
-        } else {
-            console.log('SEED: PIN ja existe: 61984213444');
-        }
+        await database.query(`INSERT IGNORE INTO pin (codigo, validade) VALUES ('61984213444', '31/12/2030')`);
+        console.log('SEED: PIN 61984213444 verificado/criado');
     } catch (err) {
         console.error('SEED PIN: Erro:', err.message);
     }
