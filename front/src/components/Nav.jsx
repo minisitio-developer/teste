@@ -30,7 +30,7 @@ function Nav(props) {
                         <a className="nav-link" href="/institucional">INSTITUCIONAL</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="https://vendas.minisitio.net" target='_blank' rel='noopener noreferrer' >TRABALHE CONOSCO</a>
+                        <a className="nav-link" href="https://9fffd075-9657-453a-acdc-237b7f47b8c1-00-3uwg4at33lca3.kirk.replit.dev/" target='_blank' rel='noopener noreferrer' >TRABALHE CONOSCO</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="/contato">CONTATO</a>
