@@ -299,7 +299,7 @@ const Espacos = () => {
                     <CardHeader className="flex items-center justify-between">
                         <div>
                             <h1 className="text-2xl font-bold text-foreground tracking-tight">Importar Perfil</h1>
-                            <p className="text-sm text-muted-foreground">Faça importação de perfis/espaços</p>
+                            <p className="text-sm text-muted-foreground">Faça importação de perfis/espaços (Limite máximo: 100.000 registros por arquivo)</p>
                         </div>
                     </CardHeader>
                 </Card>

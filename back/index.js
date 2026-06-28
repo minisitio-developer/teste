@@ -403,6 +403,7 @@ app.post('/api/admin/anuncio/import/:socketId', saveImport().single('uploadedfil
             console.log("Iniciando leitura do arquivo...");
             let index = 1;
             let importError = false;
+            const MAX_IMPORT_RECORDS = 100000;
             const stream = fs.createReadStream(arquivoImportado).pipe(csv({
                 separator: ';',
                 quote: '"',
@@ -410,6 +411,14 @@ app.post('/api/admin/anuncio/import/:socketId', saveImport().single('uploadedfil
 
             for await (const row of stream) {
                 if (importError) break;
+
+                if (index > MAX_IMPORT_RECORDS) {
+                    console.log(`Limite de ${MAX_IMPORT_RECORDS} registros atingido. Importação finalizada.`);
+                    if (!res.headersSent) {
+                        return res.json({ success: true, message: `Importação limitada a ${MAX_IMPORT_RECORDS} registros.` });
+                    }
+                    break;
+                }
 
                 let codigoDeDesconto = await Descontos.findOne({ where: { hash: row["ID"] } });
 
