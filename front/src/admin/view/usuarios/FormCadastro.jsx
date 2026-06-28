@@ -282,8 +282,8 @@ const FormCadastro = () => {
                             {/*  <input type="password" className="form-control h-25 w-50" id="pwd" placeholder="" name="pwd" /> */}
                             <select name="codTipoPessoa" id="codTipoPessoa" className="w-50 py-1">
                                 <option value="" selected="selected">- Selecione o tipo de pessoa -</option>
-                                <option value="pf">Fisica</option>
-                                <option value="pj">Jurídica</option>
+                                <option value="F">Fisica</option>
+                                <option value="J">Jurídica</option>
                             </select>
                         </div>
 
