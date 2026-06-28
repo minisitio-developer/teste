@@ -41,45 +41,50 @@ const FormCadastro = () => {
         var validation = false;
         setShowSpinner(true);
 
-        document.querySelectorAll('[name="pwd"]').forEach((item) => {
-            if (item.value === "") {
-                item.style.border = "1px solid red";
-                validation = false;
-                return;
-            } else {
-                item.style.border = "1px solid gray";
-                validation = true;
-            };
-        });
+        const atividadeInput = document.getElementById('in_atividade');
+        const corTituloSelect = document.getElementById('corTitulo');
 
-        document.querySelectorAll('select').forEach((item) => {
-            if (item.value === "") {
-                item.style.border = "1px solid red";
-                validation = false;
-                return;
-            } else {
-                item.style.border = "1px solid gray";
-                validation = true;
-            };
-        });
+        if (atividadeInput.value === "") {
+            atividadeInput.style.border = "1px solid red";
+            validation = false;
+        } else {
+            atividadeInput.style.border = "1px solid gray";
+            validation = true;
+        }
+
+        if (corTituloSelect.value === "") {
+            corTituloSelect.style.border = "1px solid red";
+            validation = false;
+        } else {
+            corTituloSelect.style.border = "1px solid gray";
+        }
 
         const data = {
-            "atividade": document.getElementById('in_atividade').value,
-            "corTitulo": document.getElementById('corTitulo').value,
+            "atividade": atividadeInput.value,
+            "nomeAmigavel": atividadeInput.value,
+            "corTitulo": corTituloSelect.value,
         };
+
+        const currentToken = sessionStorage.getItem('userTokenAccess');
 
         const config = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "authorization": 'Bearer ' + tokenAuth
+                "authorization": 'Bearer ' + currentToken
             },
             body: JSON.stringify(data)
         };
 
         if (validation) {
             fetch(`${masterPath.url}/admin/atividade/create`, config)
-                .then((x) => x.json())
+                .then((x) => {
+                    if (x.status === 401) {
+                        navigate('/login');
+                        return Promise.reject('Sessão expirada');
+                    }
+                    return x.json();
+                })
                 .then((res) => {
                     if (res.success) {
                         setShowSpinner(false);
@@ -87,30 +92,31 @@ const FormCadastro = () => {
                             title: "Success!",
                             text: "Nova atividade registrada!",
                             icon: "success"
+                        }).then(() => {
+                            navigate('/admin/atividades');
                         });
-                        document.querySelector("#modu-atividade").click();
                     } else {
                         setShowSpinner(false);
-                        console.log(res.message);
+                        Swal.fire({
+                            title: "Erro!",
+                            text: res.message || "Não foi possível criar a atividade.",
+                            icon: "error"
+                        });
                     }
                 })
+                .catch((err) => {
+                    setShowSpinner(false);
+                    console.error('Erro:', err);
+                    if (err !== 'Sessão expirada') {
+                        Swal.fire("Erro", "Não foi possível criar a atividade.", "error");
+                    }
+                });
+        } else {
+            setShowSpinner(false);
         }
 
     };
 
-
-    //liberar campo select
-    document.querySelectorAll('select').forEach((item) => {
-        item.addEventListener("change", (event) => {
-            event.target.style.border = "1px solid gray";
-        })
-    });
-    //liberar campo input
-    document.querySelectorAll('[name="pwd"]').forEach((item) => {
-        item.addEventListener("change", (event) => {
-            event.target.style.border = "1px solid gray";
-        })
-    });
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -150,7 +156,7 @@ const FormCadastro = () => {
                     <form action="/action_page.php">
                         <div className="form-group d-flex flex-column align-items-center py-3">
                             <label for="in_atividade" className="w-50 px-1">Atividade:</label>
-                            <input type="text" className="form-control h-25 w-50" id="in_atividade" placeholder="" name="atividade" />
+                            <input type="text" className="form-control h-25 w-50" id="in_atividade" placeholder="" name="atividade" onChange={handleChange} />
                         </div>
                         <div className="form-group d-flex flex-column align-items-center py-3">
                             <label for="corTitulo" className="w-50 px-1">Tipo Titulo:</label>

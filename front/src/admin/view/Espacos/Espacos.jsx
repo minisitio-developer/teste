@@ -179,9 +179,16 @@ const Espacos = () => {
                             setShowSpinner(false);
                             Swal.fire("Excluído!", "Anúncio removido.", "success");
                             document.querySelector(".selecionada")?.remove();
+                        } else {
+                            setShowSpinner(false);
+                            Swal.fire("Erro", res?.message || "Não foi possível excluir.", "error");
                         }
                     })
-                    .catch(() => { setShowSpinner(false); })
+                    .catch((err) => {
+                        setShowSpinner(false);
+                        console.error('Erro ao excluir:', err);
+                        Swal.fire("Erro", "Não foi possível excluir o anúncio.", "error");
+                    })
             }
         })
     };
@@ -199,29 +206,42 @@ const Espacos = () => {
                         "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess')
                     },
                 })
-                    .then((x) => x.json())
+                    .then((x) => {
+                        if (x.status === 401) {
+                            navigate('/login');
+                            return Promise.reject('Sessão expirada');
+                        }
+                        return x.json();
+                    })
                     .then((res) => {
                         if (res.success) {
-                            setShowSpinner(false);
                             //line.closest('tr').remove();
-
-                            fetch(`${masterPath.url}/admin/espacos/read?page=${param}`, {
-                                headers: { "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess') }
-                            }).then((x) => x.json())
-                                .then((resAnuncio) => {
-                                    //console.log(resAnuncio.message.anuncios)
-                                    setAnucios(resAnuncio);
-                                    setShowSpinner(false);
-                                })
-                                .catch(error => {
-                                    console.error('Error fetching data:', error);
-                                    setShowSpinner(false);
-                                });
+                            setShowSpinner(false);
+                        } else {
+                            setShowSpinner(false);
+                            Swal.fire("Erro", res.message || "Falha ao excluir.", "error");
                         }
-
                     })
+                    .catch(error => {
+                        console.error('Error deleting:', error);
+                        setShowSpinner(false);
+                    });
             }
         });
+
+        setShowSpinner(true);
+        fetch(`${masterPath.url}/admin/espacos/read?page=${param}`, {
+            headers: { "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess') }
+        }).then((x) => x.json())
+            .then((resAnuncio) => {
+                setAnucios(resAnuncio);
+                setShowSpinner(false);
+                Swal.fire("Excluídos!", "Anúncios removidos.", "success");
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                setShowSpinner(false);
+            });
     };
 
     function apagarDup() {
