@@ -110,7 +110,7 @@ function WebcardThumb(props) {
             {/* {console.log(listaIds.descricao, listaIds.descImagem, listaIds.descImagem)}  */}
             <div className='container my-2 p-0' >
                 <div className='cartao'>
-                    {listaIds.descricao !== "valor padrao" && listaIds.descImagem !== "" && listaIds.descImagem !== "null" && listaIds.descImagem !== null &&
+                    {listaIds.descricao !== "valor padrao" && (partner(listaIds.descImagem) || partner(listaIds.descImagem2) || partner(listaIds.descImagem3)) &&
                         <div className="apoio">
                             <div>
                                 {partner(listaIds.descImagem) &&
@@ -118,12 +118,12 @@ function WebcardThumb(props) {
                                          <img src={`${masterPath.url}/files/logoParceiro/${listaIds.descImagem}`} alt="Logo do parceiro" />
                                     </a>
                                 }
-                                {partner(listaIds.descImagem2) != "" &&
+                                {partner(listaIds.descImagem2) &&
                                     <a href={listaIds.descLink2} target="_blank" rel="noopener noreferrer">
                                          <img src={`${masterPath.url}/files/logoParceiro/${listaIds.descImagem2}`} alt="Logo do parceiro 2" />
                                     </a>
                                 }
-                                {partner(listaIds.descImagem3) != "" &&
+                                {partner(listaIds.descImagem3) &&
                                     <a href={listaIds.descLink3} target="_blank" rel="noopener noreferrer">
                                          <img src={`${masterPath.url}/files/logoParceiro/${listaIds.descImagem3}`} alt="Logo do parceiro 3" />
                                     </a>
