@@ -151,6 +151,7 @@ const imageFolders = {
     '/api/files/descImagem/': 'descImagem',
     '/api/files/logoParceiro/': 'logoParceiro',
     '/api/files/mosaico/': 'mosaico',
+    '/api/files/promocao/': 'promocao',
 };
 
 Object.entries(imageFolders).forEach(([routePrefix, folder]) => {
@@ -166,7 +167,17 @@ Object.entries(imageFolders).forEach(([routePrefix, folder]) => {
             if (proxyRes.statusCode === 200) {
                 res.setHeader('Content-Type', proxyRes.headers['content-type'] || 'application/octet-stream');
                 res.setHeader('Cache-Control', 'public, max-age=86400');
-                proxyRes.pipe(res);
+                const chunks = [];
+                proxyRes.on('data', (chunk) => chunks.push(chunk));
+                proxyRes.on('end', () => {
+                    const buffer = Buffer.concat(chunks);
+                    res.end(buffer);
+                    const dir = path.dirname(localPath);
+                    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+                    fs.writeFile(localPath, buffer, (err) => {
+                        if (err) console.error(`Erro ao salvar imagem ${filename}:`, err.message);
+                    });
+                });
             } else {
                 res.status(404).send('Not found');
             }

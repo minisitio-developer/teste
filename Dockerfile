@@ -22,5 +22,12 @@ COPY back/ .
 RUN mkdir -p /app/front
 COPY --from=frontend-build /app/front/build /app/front/build
 
+# Seed images: copy to a backup location before volume mounts
+RUN cp -r /app/back/public/upload /app/back/upload_seed
+
+# Startup script: sync seed images to volume on first start
+COPY scripts/init-volume.sh /app/init-volume.sh
+RUN chmod +x /app/init-volume.sh
+
 EXPOSE 3032
-CMD ["node", "index.js"]
+CMD ["/app/init-volume.sh"]
