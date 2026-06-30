@@ -158,12 +158,23 @@ function Busca(props) {
         fetch(`${masterPath.url}/read/promocao/${props.caderno}/${props.uf}`)
             .then(x => x.json())
             .then(res => {
-                if (res.success) {
+                if (res.success && res.promocoes && res.promocoes.length > 0) {
                     if (btnPromo.current) {
                         btnPromo.current.classList.add('pulse-promotion');
                     }
-
+                    const promoImgDesktop = document.querySelector('.area-promo .btnPromocao img');
+                    if (promoImgDesktop) {
+                        promoImgDesktop.classList.add('animated', 'infinite', 'flash');
+                    }
+                    const promoCardMobile = document.querySelector('.area-promo-mobile img');
+                    if (promoCardMobile) {
+                        promoCardMobile.classList.add('animated', 'infinite', 'flash');
+                    }
                     setPromocao(res.promocoes);
+                } else {
+                    if (btnPromo.current) {
+                        btnPromo.current.classList.remove('pulse-promotion');
+                    }
                 }
 
             })
@@ -472,7 +483,7 @@ function Busca(props) {
                                     <div className="col-lg-3 col-md-4 col-sm-4 hidden-xs area-promo">
                                         <div className="btn-group" role="group">
                                             <button type="button" className="btn btnGrupo btnPromocao" style={{boxShadow: "none"}} ref={btnPromo} data-promocao="1" title="Promoção" onClick={() => abrirPromocao()}>
-                                                <img src="/assets/img/icone-promo.png" alt="Promoção" className="img-responsive animated infinite flash" />
+                                                <img src="/assets/img/icone-promo.png" alt="Promoção" className="img-responsive" />
                                             </button>
                                         </div>
                                     </div>
@@ -539,9 +550,9 @@ function Busca(props) {
                                             <img src="/assets/img/icone-promo.png" alt="Promoção" className="img-responsive animated infinite flash" />
                                         </button>
                                     </div> */}
-                                    <Card /* bg="warning" */ className='d-flex' style={{ height: '60px', background: '#FFCC29' }}>
+                                    <Card /* bg="warning" */ className='d-flex area-promo-mobile' style={{ height: '60px', background: '#FFCC29' }}>
                                         <Card.Body className='d-flex align-items-center'>
-                                            <img src="/assets/img/icone-promo.png" alt="Promoção" className="img-responsive animated infinite flash" />
+                                            <img src="/assets/img/icone-promo.png" alt="Promoção" className="img-responsive" />
                                             <Card.Title className='text-center px-2'>Promoção</Card.Title>
                                         </Card.Body>
                                     </Card>

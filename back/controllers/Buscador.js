@@ -392,10 +392,16 @@ module.exports = {
     buscarPromocoes: async (req, res) => {
         const { caderno, uf } = req.params;
 
+        const hoje = new Date().toISOString().split('T')[0];
+
         const promocoes = await Promocao.findAll({
             where: {
                 uf: uf,
-                caderno: caderno
+                caderno: caderno,
+                [Sequelize.Op.or]: [
+                    { data_validade: null },
+                    { data_validade: { [Sequelize.Op.gte]: hoje } }
+                ]
             },
             include: {
                 model: Anuncio,
