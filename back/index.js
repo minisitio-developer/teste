@@ -304,23 +304,43 @@ async function seedPin() {
 async function fixAutoIncrement() {
     try {
         const database = require('./config/db');
-        const tables = ['atividade', 'caderno', 'anuncio', 'usuarios', 'desconto', 'promocao', 'campanha', 'pin', 'globals', 'importStage', 'pagamentos'];
+        
+        // Tabela atividade - a mais crítica para o erro reportado
+        try {
+            await database.query(`ALTER TABLE atividade MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT`);
+            console.log('FIX: AUTO_INCREMENT verificado na tabela atividade');
+        } catch (e) {
+            console.error('FIX atividade:', e.message);
+            // Se a tabela não existe ou tem estrutura diferente, tentar criar
+            try {
+                await database.query(`
+                    CREATE TABLE IF NOT EXISTS atividade (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        atividade TEXT NOT NULL,
+                        nomeAmigavel TEXT NOT NULL,
+                        corTitulo TEXT NOT NULL,
+                        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    )
+                `);
+                console.log('FIX: Tabela atividade criada/verificada');
+            } catch (e2) {
+                console.error('FIX atividade CREATE:', e2.message);
+            }
+        }
+
+        // Outras tabelas principais
+        const tables = ['caderno', 'anuncio', 'usuarios', 'desconto', 'promocao', 'campanha', 'globals', 'importStage', 'pagamentos'];
         for (const table of tables) {
-            await database.query(`
-                SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
-                WHERE TABLE_SCHEMA = DATABASE() 
-                AND TABLE_NAME = '${table}' 
-                AND COLUMN_NAME = 'id' 
-                AND EXTRA LIKE '%auto_increment%'
-            `).then(async ([results]) => {
-                if (results.length === 0) {
-                    await database.query(`ALTER TABLE \`${table}\` MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT`);
-                    console.log(`FIX: AUTO_INCREMENT adicionado na tabela ${table}`);
-                }
-            }).catch(() => {});
+            try {
+                await database.query(`ALTER TABLE \`${table}\` MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT`);
+                console.log(`FIX: AUTO_INCREMENT verificado na tabela ${table}`);
+            } catch (e) {
+                // Ignorar erros de tabelas que podem não existir ou já ter AUTO_INCREMENT
+            }
         }
     } catch (err) {
-        console.error('FIX AUTO_INCREMENT: Erro:', err.message);
+        console.error('FIX AUTO_INCREMENT: Erro geral:', err.message);
     }
 }
 
