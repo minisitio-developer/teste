@@ -10,6 +10,7 @@ import '../../components/Modal/css/formChild.css';
 //Components
 import InputCpf from '../../components/InputCpf';
 import AlertMsg from "../../components/Alerts/AlertMsg";
+import PasswordInput from "../../admin/components/PasswordInput";
 
 const DadosPessoais = (props) => {
   //state
@@ -301,15 +302,14 @@ const DadosPessoais = (props) => {
                     <div className="col-md-6 col-sm-6">
                       <div className="input-icon margin-top-10">
                         <i className="fa fa-key"></i>
-                        <input
-                          type="password"
+                        <PasswordInput
                           name="senha"
                           id="senha"
                           className="form-control"
                           value={user.senha}
                           onChange={handleChange}
                           placeholder="Digite sua senha"
-                        />{" "}
+                        />
                       </div>
                     </div>
                     <div className="col-md-6 col-sm-6">

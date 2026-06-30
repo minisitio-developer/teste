@@ -310,14 +310,16 @@ module.exports = {
 
         const uuid = req.params.id;
 
-        //Atividades
-        const resultAnuncio = await Users.findAll({
+        //Usa o model table_usuarios que tem todos os campos
+        const resultAnuncio = await Usuario.findAll({
             where: {
                 codUsuario: uuid
             }
         });
 
-
+        if (!resultAnuncio || resultAnuncio.length === 0) {
+            return res.status(404).json({ success: false, message: "Usuário não encontrado" });
+        }
 
         res.json(resultAnuncio[0]);
     },

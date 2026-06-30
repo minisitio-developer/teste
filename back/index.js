@@ -303,44 +303,24 @@ async function seedPin() {
 
 async function fixAutoIncrement() {
     try {
-        const database = require('./config/db');
+        const Atividade = require('./models/table_atividade');
         
-        // Tabela atividade - a mais crítica para o erro reportado
-        try {
-            await database.query(`ALTER TABLE atividade MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT`);
-            console.log('FIX: AUTO_INCREMENT verificado na tabela atividade');
-        } catch (e) {
-            console.error('FIX atividade:', e.message);
-            // Se a tabela não existe ou tem estrutura diferente, tentar criar
-            try {
-                await database.query(`
-                    CREATE TABLE IF NOT EXISTS atividade (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        atividade TEXT NOT NULL,
-                        nomeAmigavel TEXT NOT NULL,
-                        corTitulo TEXT NOT NULL,
-                        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-                        updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-                    )
-                `);
-                console.log('FIX: Tabela atividade criada/verificada');
-            } catch (e2) {
-                console.error('FIX atividade CREATE:', e2.message);
-            }
-        }
+        // sync({ alter: true }) faz o Sequelize comparar o modelo com a tabela real
+        // e executar ALTER TABLE automaticamente para cada coluna que difere
+        await Atividade.sync({ alter: true });
+        console.log('FIX: Tabela atividade sincronizada com AUTO_INCREMENT');
 
-        // Outras tabelas principais
-        const tables = ['caderno', 'anuncio', 'usuarios', 'desconto', 'promocao', 'campanha', 'globals', 'importStage', 'pagamentos'];
-        for (const table of tables) {
-            try {
-                await database.query(`ALTER TABLE \`${table}\` MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT`);
-                console.log(`FIX: AUTO_INCREMENT verificado na tabela ${table}`);
-            } catch (e) {
-                // Ignorar erros de tabelas que podem não existir ou já ter AUTO_INCREMENT
-            }
-        }
     } catch (err) {
-        console.error('FIX AUTO_INCREMENT: Erro geral:', err.message);
+        console.error('FIX AUTO_INCREMENT atividade:', err.message);
+        
+        // Fallback: tentar via SQL direto
+        try {
+            const database = require('./config/db');
+            await database.query(`ALTER TABLE atividade MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT`);
+            console.log('FIX: AUTO_INCREMENT adicionado via SQL direto');
+        } catch (e2) {
+            console.error('FIX SQL fallback:', e2.message);
+        }
     }
 }
 

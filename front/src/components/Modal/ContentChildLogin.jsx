@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { masterPath } from "../../config/config";
+import PasswordInput from "../../admin/components/PasswordInput";
 
 /* import '../../assets/css/main.css';//assets/css/main.css
 import '../../admin/assets/css/login.css';//assets/css/login.css
@@ -285,7 +286,13 @@ const ContentChildLogin = (props) => {
                   <div className="col-md-12">
                     <div className="input-icon margin-top-10 py-3">
                       <i className="fa fa-key"></i>
-                      <input type="password" className="form-control assinante" placeholder="Digite sua senha" id="senha" ref={passValue} onKeyDown={teclaLogin} />
+                      <PasswordInput 
+                        className="form-control assinante" 
+                        placeholder="Digite sua senha" 
+                        id="senha" 
+                        name="senha"
+                        onKeyDown={teclaLogin}
+                      />
                     </div>
                   </div>
                   <div className="col-md-6 col-sm-5 senha">

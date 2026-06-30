@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 //componente
 import Header from "../Header";
 import Spinner from '../../../components/Spinner';
+import PasswordInput from '../../components/PasswordInput';
 
 const validateCPF = (cpf) => {
     cpf = cpf.replace(/[^\d]+/g, '');

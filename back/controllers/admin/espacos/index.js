@@ -7213,6 +7213,74 @@ module.exports = {
         res.json({ success: true, message: 'Arquivo recebido com sucesso!' });
         //res.redirect("https://minitest.minisitio.online/admin/espacos");
     },
+
+    deleteBulk: async (req, res) => {
+        const { search, uf, caderno } = req.body;
+
+        if (!search && !uf && !caderno) {
+            return res.status(400).json({ success: false, message: "Parâmetros de busca obrigatórios" });
+        }
+
+        try {
+            const whereClause = {};
+            
+            if (search) {
+                whereClause[Sequelize.Op.or] = [
+                    { descAnuncio: { [Sequelize.Op.like]: `%${search}%` } },
+                    { descCPFCNPJ: { [Sequelize.Op.like]: `%${search}%` } },
+                    { descEmailRetorno: { [Sequelize.Op.like]: `%${search}%` } }
+                ];
+            }
+            if (uf) whereClause.codUf = uf;
+            if (caderno) whereClause.codCaderno = caderno;
+
+            // Primeiro buscar os anúncios para atualizar contadores
+            const anuncios = await Anuncio.findAll({
+                where: whereClause,
+                attributes: ['codTipoAnuncio', 'codUf', 'codCaderno'],
+                raw: true
+            });
+
+            if (anuncios.length === 0) {
+                return res.json({ success: true, deletedCount: 0, message: "Nenhum registro encontrado" });
+            }
+
+            // Contar por tipo para atualizar cadernos
+            const contadores = {};
+            for (const a of anuncios) {
+                const key = `${a.codUf}|${a.codCaderno}`;
+                if (!contadores[key]) contadores[key] = { uf: a.codUf, caderno: a.codCaderno, basico: 0, completo: 0, total: 0 };
+                contadores[key].total++;
+                if (a.codTipoAnuncio == 1) contadores[key].basico++;
+                if (a.codTipoAnuncio == 3) contadores[key].completo++;
+            }
+
+            // Deletar em massa
+            const deletedCount = await Anuncio.destroy({ where: whereClause });
+
+            // Atualizar contadores dos cadernos
+            for (const key of Object.keys(contadores)) {
+                const c = contadores[key];
+                const cadernoReg = await Caderno.findOne({
+                    where: { UF: c.uf, nomeCaderno: c.caderno },
+                    attributes: ['codCaderno', 'basico', 'completo', 'total']
+                });
+                if (cadernoReg) {
+                    if (c.basico > 0) cadernoReg.basico = Math.max(0, cadernoReg.basico - c.basico);
+                    if (c.completo > 0) cadernoReg.completo = Math.max(0, cadernoReg.completo - c.completo);
+                    cadernoReg.total = Math.max(0, cadernoReg.total - c.total);
+                    await cadernoReg.save();
+                }
+            }
+
+            console.log(`DELETE BULK: ${deletedCount} registros deletados (busca: "${search}")`);
+            res.json({ success: true, deletedCount, message: `${deletedCount} registro(s) deletado(s)` });
+
+        } catch (err) {
+            console.error('Erro no delete bulk:', err);
+            res.status(500).json({ success: false, message: "Erro ao excluir registros" });
+        }
+    },
 }
 
 function dataNow() {

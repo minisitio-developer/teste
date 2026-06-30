@@ -194,6 +194,62 @@ const Espacos = () => {
     };
 
     async function apagarMultiplosAnucios() {
+        const searchValue = campoBusca.current?.value;
+        const hasSearch = searchValue && searchValue !== '';
+
+        // Se tem busca ativa, usar exclusão em massa via API (deleta TODOS os resultados da busca)
+        if (hasSearch) {
+            const result = await Swal.fire({
+                title: "Excluir todos da busca?",
+                text: `Deseja excluir TODOS os registros que contêm "${searchValue}"?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim, excluir todos!",
+                cancelButtonText: "Cancelar"
+            });
+
+            if (!result.isConfirmed) return;
+
+            setShowSpinner(true);
+            try {
+                const response = await fetch(`${masterPath.url}/admin/anuncio/delete-bulk`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess')
+                    },
+                    body: JSON.stringify({
+                        search: searchValue,
+                        uf: estadoSelecionado || undefined,
+                        caderno: cadernoSelecionado || undefined
+                    })
+                });
+
+                if (response.status === 401) {
+                    navigate('/login');
+                    return;
+                }
+
+                const data = await response.json();
+
+                await carregarAnuncios();
+                setShowSpinner(false);
+
+                if (data.success) {
+                    Swal.fire("Excluídos!", `${data.deletedCount} registro(s) removido(s).`, "success");
+                } else {
+                    Swal.fire("Erro", data.message || "Falha ao excluir.", "error");
+                }
+            } catch (error) {
+                console.error('Error bulk deleting:', error);
+                setShowSpinner(false);
+                Swal.fire("Erro", "Falha ao excluir registros.", "error");
+            }
+            return;
+        }
+
+        // Sem busca: deletar apenas os selecionados na página
         let checkboxs = document.querySelectorAll('.chkChildren');
         const selectedIds = [];
 
@@ -204,7 +260,7 @@ const Espacos = () => {
         });
 
         if (selectedIds.length === 0) {
-            Swal.fire("Aviso", "Nenhum registro selecionado.", "warning");
+            Swal.fire("Aviso", "Nenhum registro selecionado. Use 'Selecionar Todos' primeiro ou faça uma busca.", "warning");
             return;
         }
 
@@ -232,11 +288,7 @@ const Espacos = () => {
             const successCount = results.filter(r => r && r.success).length;
             const failCount = selectedIds.length - successCount;
 
-            const response = await fetch(`${masterPath.url}/admin/espacos/read?page=${param}`, {
-                headers: { "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess') }
-            });
-            const resAnuncio = await response.json();
-            setAnucios(resAnuncio);
+            await carregarAnuncios();
             setShowSpinner(false);
 
             if (failCount > 0) {

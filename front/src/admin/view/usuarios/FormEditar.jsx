@@ -8,6 +8,7 @@ import { masterPath } from '../../../config/config';
 //componente
 import Header from "../Header";
 import Spinner from '../../../components/Spinner';
+import PasswordInput from '../../components/PasswordInput';
 
 const FormCadastro = () => {
 
@@ -311,13 +312,12 @@ const FormCadastro = () => {
                         </div>
                         <div className="form-group d-flex flex-column align-items-center py-3">
                             <label for="pwd" className="w-50 px-1">Senha:</label>
-                            <input type="password"
-                                className="form-control h-25 w-50"
+                            <PasswordInput
                                 id="senha"
-                                placeholder=""
-                                name="pwd"
-                                value={usuarios.senha}
-                                onChange={handleChange} />
+                                className="form-control h-25 w-50"
+                                value={usuarios.senha || ''}
+                                onChange={handleChange}
+                            />
                         </div>
 
                         <div className="form-group d-flex flex-column align-items-center py-3">

@@ -118,6 +118,7 @@ module.exports = (io, loginLimiter) => {
     router.put('/api/admin/anuncio/status/:id', auth, EspacosController.updateAnuncioStatus);
     router.put('/api/admin/anuncio/moderacao/:id', auth, EspacosController.atualizarModeracao);
     router.delete('/api/admin/anuncio/delete/:id', auth, EspacosController.deleteAnuncio);
+    router.post('/api/admin/anuncio/delete-bulk', auth, EspacosController.deleteBulk);
     router.put('/api/admin/anuncio/update', auth, EspacosController.atualizarAnuncio);
     router.put('/api/admin/anuncio/update/tipo', auth, EspacosController.atualizarTipoPerfil);
     router.get('/api/admin/anuncio/buscar', auth, EspacosController.buscarAnuncioId);
