@@ -13,6 +13,7 @@ import Pagination from '../../components/Pagination';
 import Spinner from '../../../components/Spinner';
 import BtnActivate from '../../components/BntActivate';
 import MsgConfirm from '../../components/MsgConfirm';
+import ColumnFilter from '../../components/ColumnFilter';
 import Swal from 'sweetalert2';
 
 const GerenciarIds = () => {
@@ -29,13 +30,13 @@ const GerenciarIds = () => {
     const [showSpinner, setShowSpinner] = useState(true);
     const [del, setDel] = useState(false);
     const [showMsgBox, setShowMsgBox] = useState(false);
-    const [filtroUsuario, setFiltroUsuario] = useState('');
-    const [filtroDesconto, setFiltroDesconto] = useState('');
-    const [filtroCodigo, setFiltroCodigo] = useState('');
-    const [filtroDescricao, setFiltroDescricao] = useState('');
-    const [filtroData, setFiltroData] = useState('');
-    const [filtroQtde, setFiltroQtde] = useState('');
-    const [filtroSaldo, setFiltroSaldo] = useState('');
+    const [selUsuario, setSelUsuario] = useState([]);
+    const [selDesconto, setSelDesconto] = useState([]);
+    const [selCodigo, setSelCodigo] = useState([]);
+    const [selDescricao, setSelDescricao] = useState([]);
+    const [selData, setSelData] = useState([]);
+    const [selQtde, setSelQtde] = useState([]);
+    const [selSaldo, setSelSaldo] = useState([]);
 
     const location = useLocation();
 
@@ -264,6 +265,19 @@ const GerenciarIds = () => {
               }) */
     };
 
+    function filtrarDados(item) {
+        const matchUsuario = selUsuario.length === 0 || selUsuario.includes(item.nmUsuario || '');
+        const matchDesconto = selDesconto.length === 0 || selDesconto.includes(String(parseFloat(item.desconto).toFixed(2)).replace('.', ','));
+        const matchCodigo = selCodigo.length === 0 || selCodigo.includes(item.hash || '');
+        const matchDescricao = selDescricao.length === 0 || selDescricao.includes(item.descricao || '');
+        const matchData = selData.length === 0 || selData.includes(formatData(item.dtCadastro));
+        const matchQtde = selQtde.length === 0 || selQtde.includes(String(item.total_registros));
+        const matchSaldo = selSaldo.length === 0 || selSaldo.includes(String(item.saldo));
+        return matchUsuario && matchDesconto && matchCodigo && matchDescricao && matchData && matchQtde && matchSaldo;
+    }
+
+    const idsFiltrados = ids?.IdsValue ? ids.IdsValue.filter(filtrarDados) : [];
+
     return (
         <div className="users">
           {/*   <header style={style} className='w-100'>
@@ -325,13 +339,13 @@ const GerenciarIds = () => {
                                         <th style={{ "width": "100px" }}>Status</th>
                                     </tr>
                                     <tr>
-                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroUsuario} onChange={e => setFiltroUsuario(e.target.value)} onClick={e => e.stopPropagation()} /></th>
-                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroDesconto} onChange={e => setFiltroDesconto(e.target.value)} onClick={e => e.stopPropagation()} /></th>
-                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroCodigo} onChange={e => setFiltroCodigo(e.target.value)} onClick={e => e.stopPropagation()} /></th>
-                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroDescricao} onChange={e => setFiltroDescricao(e.target.value)} onClick={e => e.stopPropagation()} /></th>
-                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroData} onChange={e => setFiltroData(e.target.value)} onClick={e => e.stopPropagation()} /></th>
-                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroQtde} onChange={e => setFiltroQtde(e.target.value)} onClick={e => e.stopPropagation()} /></th>
-                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroSaldo} onChange={e => setFiltroSaldo(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><ColumnFilter values={(ids?.IdsValue || []).map(i => i.nmUsuario)} selected={selUsuario} onChange={setSelUsuario} /></th>
+                                        <th><ColumnFilter values={(ids?.IdsValue || []).map(i => String(parseFloat(i.desconto).toFixed(2)).replace('.', ','))} selected={selDesconto} onChange={setSelDesconto} /></th>
+                                        <th><ColumnFilter values={(ids?.IdsValue || []).map(i => i.hash)} selected={selCodigo} onChange={setSelCodigo} /></th>
+                                        <th><ColumnFilter values={(ids?.IdsValue || []).map(i => i.descricao)} selected={selDescricao} onChange={setSelDescricao} /></th>
+                                        <th><ColumnFilter values={(ids?.IdsValue || []).map(i => formatData(i.dtCadastro))} selected={selData} onChange={setSelData} /></th>
+                                        <th><ColumnFilter values={(ids?.IdsValue || []).map(i => String(i.total_registros))} selected={selQtde} onChange={setSelQtde} /></th>
+                                        <th><ColumnFilter values={(ids?.IdsValue || []).map(i => String(i.saldo))} selected={selSaldo} onChange={setSelSaldo} /></th>
                                         <th></th>
                                     </tr>
                                 </thead>

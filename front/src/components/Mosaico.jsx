@@ -17,7 +17,7 @@ function Mosaico(props) {
 
     const logoHeader = {
         margin: "none !important",
-        height: "60px"
+        height: "40px"
     }
     const assineAgora = {
         background: "#ffcc29",
@@ -35,7 +35,7 @@ function Mosaico(props) {
                 props.mosaicoImg ? style : { boxShadow: props.borda }
             }>
                 <div className="container header-new-mosaico" /* style={{ paddingTop: "45px" }} */>
-                    <div className="row logo-new-mosaico" style={{ height: "70px" }}>
+                    <div className="row logo-new-mosaico" style={{ height: "50px" }}>
                         {/* <QrcodeMosaico /> */}
                         <div className="col-4 col-md-3 col-sm-12 pull-right faixa-header d-flex justify-content-start align-items-center">
                             {props.logoTop ? <a href="/" className='h-100'><img src="/assets/img/logo.png" style={logoHeader} alt="Logo Minisitio" /></a> : ''}

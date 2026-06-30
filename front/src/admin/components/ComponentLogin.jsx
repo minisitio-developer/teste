@@ -110,8 +110,8 @@ function Login() {
 
     return (
         <div className="component-login">
-            <div className="header hidden-print d-flex justify-content-center align-items-center">
-                <h2>Área do assinante</h2>
+            <div className="header hidden-print d-flex justify-content-center align-items-center" style={{ padding: '8px 0' }}>
+                <h2 style={{ fontSize: '20px', margin: 0 }}>Área do assinante</h2>
             </div>
 
             {showSpinner && <Spinner />}

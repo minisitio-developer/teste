@@ -1,10 +1,11 @@
 .container-login {
-    height: 70vh;
+    height: auto;
+    min-height: 50vh;
 }
 
 .cadastro {
     background-color: #ffcc29;
-    padding: 20px;
+    padding: 12px;
 
     & button i {
         padding-left: 5px;
@@ -24,8 +25,8 @@
 .vantagens {
     background-color: #4f4f4f;
     text-align: center;
-    font-size: 20px;
-    padding: 10px;
+    font-size: 14px;
+    padding: 6px;
     text-align: center;
 }
 
@@ -47,7 +48,7 @@
 
 .component-login .bg-cinza {
     background-color: #edecec;
-    padding: 20px;
+    padding: 12px;
     margin-bottom: 10px;
 
     & button i {
@@ -65,7 +66,7 @@
 }
 
 .component-login h2 {
-    font-size: 27px;
+    font-size: 18px;
     font-weight: bold;
 }
 

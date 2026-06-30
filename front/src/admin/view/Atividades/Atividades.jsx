@@ -11,6 +11,7 @@ import Header from "../Header";
 import Pagination from '../../components/Pagination';
 import Spinner from '../../../components/Spinner';
 import MsgConfirm from '../../components/MsgConfirm';
+import ColumnFilter from '../../components/ColumnFilter';
 
 const Atividades = () => {
 
@@ -22,9 +23,9 @@ const Atividades = () => {
     const [atividades, setAtividades] = useState([]);
     const [showSpinner, setShowSpinner] = useState(true);
     const [showMsgBox, setShowMsgBox] = useState(false);
-    const [filtroCNAE, setFiltroCNAE] = useState('');
-    const [filtroNome, setFiltroNome] = useState('');
-    const [filtroTipo, setFiltroTipo] = useState('');
+    const [selCNAE, setSelCNAE] = useState([]);
+    const [selNome, setSelNome] = useState([]);
+    const [selTipo, setSelTipo] = useState([]);
 
     const location = useLocation();
     const navigator = useNavigate();
@@ -173,9 +174,9 @@ const Atividades = () => {
     };
 
     const atividadesFiltradas = (atividades || []).filter(item => {
-        const matchCNAE = !filtroCNAE || (item.atividade || '').toLowerCase().includes(filtroCNAE.toLowerCase());
-        const matchNome = !filtroNome || (item.nomeAmigavel || '').toLowerCase().includes(filtroNome.toLowerCase());
-        const matchTipo = !filtroTipo || (item.corTitulo || '').toLowerCase().includes(filtroTipo.toLowerCase());
+        const matchCNAE = selCNAE.length === 0 || selCNAE.includes(item.atividade || '');
+        const matchNome = selNome.length === 0 || selNome.includes(item.nomeAmigavel || '');
+        const matchTipo = selTipo.length === 0 || selTipo.includes(item.corTitulo || '');
         return matchCNAE && matchNome && matchTipo;
     });
 
@@ -224,9 +225,9 @@ const Atividades = () => {
                                         <th>Tipo</th>
                                     </tr>
                                     <tr>
-                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroCNAE} onChange={e => setFiltroCNAE(e.target.value)} onClick={e => e.stopPropagation()} /></th>
-                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroNome} onChange={e => setFiltroNome(e.target.value)} onClick={e => e.stopPropagation()} /></th>
-                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroTipo} onChange={e => setFiltroTipo(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><ColumnFilter values={atividades.map(i => i.atividade)} selected={selCNAE} onChange={setSelCNAE} /></th>
+                                        <th><ColumnFilter values={atividades.map(i => i.nomeAmigavel)} selected={selNome} onChange={setSelNome} /></th>
+                                        <th><ColumnFilter values={atividades.map(i => i.corTitulo)} selected={selTipo} onChange={setSelTipo} /></th>
                                     </tr>
                                 </thead>
                                 <tbody>
