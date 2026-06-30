@@ -163,8 +163,7 @@ app.get('/api/files/2/download/:filename', (req, res) => {
 
 
 app.get('/outapi', (req, res) => {
-    console.log(req)
-    res.json({})
+    res.json({ status: 'ok' });
 });
 
 // WebSocket
@@ -182,389 +181,12 @@ app.get('/outapi', (req, res) => {
 
 }); */
 
-const saveImport = require('./functions/serverImport');
-const csv = require('csv-parser');
-const Atividade = require('./models/table_atividade');
-const Usuarios = require('./models/table_usuarios');
-const Descontos = require('./models/table_desconto');
-//const Anuncio = require('./models/table_anuncio');
-const ImportStage = require('./models/table_importStage');
-const Caderno = require('./models/table_caderno');
+const ImportController = require('./controllers/ImportController');
+const importCtrl = ImportController(io);
+app.post('/api/admin/anuncio/import/:socketId', importCtrl.upload, importCtrl.importar);
+
 const database = require('./config/db');
 const Sequelize = require('sequelize');
-const Globals = require('./models/table_globals');
-const { Op } = Sequelize;
-
-app.post('/api/admin/anuncio/import/:socketId', saveImport().single('uploadedfile'), async (req, res) => {
-    //res.json({ success: true, message: "Importação" });
-
-
-    // const io = req.io;
-    const socketId = req.params.socketId;
-    const readline = require('readline');
-
-    console.log("🔌 Cliente conectado.", socketId);
-
-
-    const filePath = path.join(__dirname, './public/importLog.json');
-    const arquivoImportado = path.join(__dirname, './public/import/uploadedfile.csv');
-    const DELAY_MS = 1000; // Delay configurável entre linhas
-    let qtdaBasico = 0;
-    let qtdaCompleto = 0;
-    let dataObjGeral;
-
-
-
-    const fileStream = fs.createReadStream(arquivoImportado);
-    const rl = readline.createInterface({
-        input: fileStream,
-        crlfDelay: Infinity
-    });
-
-    let total = 0;
-
-    for await (const line of rl) {
-        if (line.trim() !== '') total++; // ignora linhas vazias
-    }
-
-    const totalLinhasCsv = total - 1;
-
-
-    const salvarQtdaImportacao = await Globals.update({
-        value: totalLinhasCsv
-    }, {
-        where: {
-            keyValue: "total_importacao"
-        }
-    })
-
-    /*            const consultarRegistros = await Globals.findAll({
-                where: {
-                    keyValue: "total_usuarios"
-                },
-                raw: true
-            }) */
-
-
-
-    async function importarPerfis() {
-        let totalLinhas = 0;
-
-        function updateJsonName(filePath, endProccess, progress) {
-            try {
-                const now = new Date();
-                const hours = now.getHours();
-                const minutes = now.getMinutes();
-                const seconds = now.getSeconds();
-
-                const jsonData = fs.readFileSync(filePath, 'utf8');
-                const data = JSON.parse(jsonData);
-
-                data.progress = progress;
-                data.fim = `${hours}:${minutes}:${seconds}`;
-                data.endProccess = endProccess;
-
-                fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
-                console.log(`Progresso atualizado para: ${progress}`);
-            } catch (error) {
-                console.error('Erro ao atualizar progresso:', error);
-            }
-        }
-
-        async function processRow(row, index) {
-            /*      console.log(`Processando linha ${index}:`, totalAtual.count);
-                 return; */
-            try {
-                if (index === 1) updateJsonName(filePath, false, 0);
-
-                const idImport = row['idImport'];
-                const codTipoAnuncio = row['TIPO'];
-                const idDesconto = row['ID'];
-                const nomeAnuncio = row['NOME'];
-                const telefone = row['TELEFONE'];
-                const cep = row['CEP'];
-                const estado = row['UF'];
-                const cidade = row['CIDADE'];
-                let tipoAtividade = row['ATIVIDADE_PRINCIPAL_CNAE'];
-                const nuDocumento = row['CNPJ_CPF'];
-                const autorizante = row['AUTORIZANTE'];
-                const email = row['EMAIL'];
-                const senha = 12345;
-
-                console.log(tipoAtividade)
-
-                const verificarAtividadeExists = await Atividade.findOne({
-                    where: { atividade: tipoAtividade }
-                });
-
-                if (!verificarAtividadeExists) {
-                    tipoAtividade = "Compras e Serviços";
-                }
-                console.log("very", tipoAtividade)
-
-                const verificarUserExists = await Usuarios.findOne({
-                    where: { descCPFCNPJ: nuDocumento }
-                });
-
-                let codUser;
-                if (verificarUserExists) {
-                    codUser = verificarUserExists.dataValues.codUsuario;
-                } else {
-                    const dadosUsuario = {
-                        codTipoPessoa: "pf",
-                        descCPFCNPJ: nuDocumento,
-                        descNome: nomeAnuncio || `import${index}`,
-                        descEmail: email || "atualizar",
-                        descEndereco: "atualizar",
-                        senha,
-                        hashCode: "0",
-                        codTipoUsuario: 3,
-                        descTelefone: telefone || "atualizar",
-                        codUf: estado,
-                        codCidade: cidade,
-                        dtCadastro: dataNow(),
-                        usuarioCod: 0,
-                        dtCadastro2: dataNow(),
-                        dtAlteracao: dataNow(),
-                        ativo: "1"
-                    };
-                    const novoUsuario = await Usuarios.create(dadosUsuario);
-                    codUser = novoUsuario.dataValues.codUsuario;
-                }
-
-                let codigoDeDesconto = await Descontos.findOne({ where: { hash: idDesconto } });
-
-                const dataObj = {
-                    codUsuario: codUser,
-                    idImport: idImport,
-                    codTipoAnuncio,
-                    codAtividade: tipoAtividade,
-                    codCaderno: cidade,
-                    codUf: estado,
-                    codCidade: cidade,
-                    descAnuncio: nomeAnuncio || `import${index}`,
-                    descImagem: 0,
-                    descEndereco: "atualizar",
-                    descTelefone: telefone || "atualizar",
-                    descCelular: 0,
-                    descEmailComercial: 0,
-                    descEmailRetorno: email,
-                    descWhatsApp: 0,
-                    descCEP: cep,
-                    descTipoPessoa: "pf",
-                    descCPFCNPJ: nuDocumento,
-                    descNomeAutorizante: autorizante || `import${index}`,
-                    descEmailAutorizante: 0,
-                    codDesconto: codigoDeDesconto ? codigoDeDesconto.hash : '00.000.0000',
-                    descChavePix: 'chavePix',
-                    qntVisualizacoes: 0,
-                    codDuplicado: 0,
-                    descPromocao: 0,
-                    activate: 1,
-                };
-
-                dataObjGeral = dataObj;
-
-                if (dataObj.codTipoAnuncio === 1) {
-                    qtdaBasico += 1
-                }
-
-                if (dataObj.codTipoAnuncio === 3) {
-                    qtdaCompleto += 1
-                }
-
-                await ImportStage.create(dataObj);
-                updateJsonName(filePath, false, index);
-                console.log(`Linha ${index} importada com sucesso.`);
-
-                const progress = Math.round((index / totalLinhasCsv) * 100);
-
-                //console.log("progredindo", progress, index, totalLinhasCsv)
-                io.to(socketId).emit('download-progress', { progress });
-
-
-            } catch (error) {
-                console.error(`Erro ao importar linha ${index}:`, error);
-            }
-        }
-
-        function dataNow() {
-            const dataAtual = new Date();
-            const ano = dataAtual.getFullYear();
-            const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
-            const dia = String(dataAtual.getDate()).padStart(2, '0');
-            const hora = String(dataAtual.getHours()).padStart(2, '0');
-            const minutos = String(dataAtual.getMinutes()).padStart(2, '0');
-            const segundos = String(dataAtual.getSeconds()).padStart(2, '0');
-            return `${ano}-${mes}-${dia} ${hora}:${minutos}:${segundos}`;
-        }
-
-        async function processFile() {
-            console.log("Iniciando leitura do arquivo...");
-            let index = 1;
-            let importError = false;
-            const MAX_IMPORT_RECORDS = 100000;
-            const stream = fs.createReadStream(arquivoImportado).pipe(csv({
-                separator: ';',
-                quote: '"',
-            }));
-
-            for await (const row of stream) {
-                if (importError) break;
-
-                if (index > MAX_IMPORT_RECORDS) {
-                    console.log(`Limite de ${MAX_IMPORT_RECORDS} registros atingido. Importação finalizada.`);
-                    if (!res.headersSent) {
-                        return res.json({ success: true, message: `Importação limitada a ${MAX_IMPORT_RECORDS} registros.` });
-                    }
-                    break;
-                }
-
-                let codigoDeDesconto = await Descontos.findOne({ where: { hash: row["ID"] } });
-
-                if (!codigoDeDesconto) {
-                    console.log(`Processando linha ${row['ID']}:`);
-                    importError = true;
-                    if (!res.headersSent) {
-                        return res.status(404).json({ success: false, message: "O codigo de ID não foi encontrado. Por favor insira um ID válido no arquivo ou gere um novo ID e tente novamente." });
-                    }
-                    break;
-                }
-                await processRow(row, index);
-                await new Promise(resolve => setTimeout(resolve, DELAY_MS));
-                index++;
-            }
-
-            if (importError) return;
-
-            console.log("Arquivo lido com sucesso!");
-            res.json({ success: true, message: "Importação" });
-            updateJsonName(filePath, false, index - 1);
-            // Zera o arquivo importLog.json após a última iteração
-            const logInicial = {
-                progress: 0,
-                //fim: "",
-                endProccess: true
-            };
-            fs.writeFileSync(filePath, JSON.stringify(logInicial, null, 2), 'utf8');
-
-
-
-            try {
-
-                const cadernos = await Caderno.findOne({
-                    where: {
-                        UF: dataObjGeral.codUf,
-                        nomeCaderno: dataObjGeral.codCaderno
-                    },
-                    attributes: ['codCaderno', 'basico', 'completo', 'total']
-                });
-
-
-                if (dataObjGeral.codTipoAnuncio == 1) {
-                    cadernos.basico = cadernos.basico + qtdaBasico;
-                    cadernos.total = cadernos.total + (qtdaBasico + qtdaCompleto);
-
-                    await cadernos.save();
-                }
-
-                if (dataObjGeral.codTipoAnuncio == 3) {
-                    cadernos.completo = cadernos.completo + qtdaCompleto;
-                    cadernos.total = cadernos.total + (qtdaBasico + qtdaCompleto);
-
-                    await cadernos.save();
-                }
-
-                io.to(socketId).emit('download-complete');
-
-                const query = `UPDATE importStage
-                        JOIN (
-                            SELECT codAnuncio, 
-                                CEIL(ROW_NUMBER() OVER (ORDER BY codAtividade ASC, createdAt DESC) / 10) AS 'page_number'
-                            FROM importStage
-                            WHERE codUf = :estado AND codCaderno = :caderno
-                        ) AS temp
-                        ON importStage.codAnuncio = temp.codAnuncio
-                        SET importStage.page = temp.page_number
-                        WHERE importStage.codUf = :estado AND importStage.codCaderno = :caderno
-                    `;
-
-                /*        const query = `UPDATE anuncio
-                         JOIN (
-                             SELECT codAnuncio, 
-                                 CEIL(ROW_NUMBER() OVER (ORDER BY codAtividade ASC, createdAt DESC) / 10) AS 'page_number'
-                             FROM anuncio
-                             WHERE codUf = :estado AND codCaderno = :caderno
-                         ) AS temp
-                         ON anuncio.codAnuncio = temp.codAnuncio
-                         SET anuncio.page = temp.page_number
-                         WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno
-                     `; */
-
-                database.query(query, {
-                    replacements: { estado: dataObjGeral.codUf, caderno: dataObjGeral.codCaderno },
-                    type: Sequelize.QueryTypes.UPDATE,
-                });
-
-                console.log(`Reorganização concluída para o estado:`, dataObjGeral.codUf);
-                /* 
-                                const zerarGlobalsTotalImport = await Globals.update({
-                                    value: 0
-                                }, {
-                                    where: {
-                                        keyValue: "total_importacao"
-                                    }
-                                }) */
-
-            } catch (error) {
-                console.error("Erro ao executar a reorganização:", error);
-            }
-
-        }
-
-        await processFile();
-    }
-
-    // Para rodar a importação, basta chamar:
-    try {
-        await importarPerfis();
-    } catch (err) {
-        console.error("Erro ao importar perfis:", err);
-        if (!res.headersSent) {
-            return res.status(500).json({ success: false, message: "Erro ao importar perfis" });
-        }
-    }
-
-
-});
-
-function reorganizarAnuncios(codUf, codCaderno) {
-
-    try {
-        const query = `UPDATE anuncio
-                            JOIN (
-                                SELECT codAnuncio, 
-                                    CEIL(ROW_NUMBER() OVER (ORDER BY codAtividade ASC, createdAt DESC) / 10) AS 'page_number'
-                                FROM anuncio
-                                WHERE codUf = :estado AND codCaderno = :caderno
-                            ) AS temp
-                            ON anuncio.codAnuncio = temp.codAnuncio
-                            SET anuncio.page = temp.page_number
-                            WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno
-                        `;
-
-        database.query(query, {
-            replacements: { estado: codUf, caderno: codCaderno },
-            type: Sequelize.QueryTypes.UPDATE,
-        });
-
-        console.log(`Reorganização concluída para o estado:`, codUf);
-    } catch (error) {
-        console.error("Erro ao executar a reorganização:", error);
-    }
-}
-
-//reorganizarAnuncios("DF", "SUDOESTE - OCTOGONAL")
 
 
 
@@ -622,14 +244,24 @@ async function seedAdmin() {
     try {
         const bcrypt = require('bcryptjs');
         const Usuario = require('./models/table_usuarios');
+        
+        const adminCnpj = process.env.ADMIN_CNPJ;
+        const adminSenha = process.env.ADMIN_SENHA;
+        const adminEmail = process.env.ADMIN_EMAIL || 'admin@sistema.com';
+        
+        if (!adminCnpj || !adminSenha) {
+            console.log('SEED: Pulando seed admin (ADMIN_CNPJ/ADMIN_SENHA não definidos)');
+            return;
+        }
+        
         const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash('Admin123', salt);
+        const hash = await bcrypt.hash(adminSenha, salt);
         const [user, created] = await Usuario.findOrCreate({
-            where: { descCPFCNPJ: '23707648000199' },
+            where: { descCPFCNPJ: adminCnpj },
             defaults: {
                 codTipoPessoa: 'J',
-                descNome: 'Administrador Teste',
-                descEmail: 'admin@teste.com',
+                descNome: 'Administrador',
+                descEmail: adminEmail,
                 senha: hash,
                 codTipoUsuario: 1,
                 codUf: '27',
@@ -638,15 +270,15 @@ async function seedAdmin() {
                 descRepresentanteConvenio: '',
                 descEndereco: '',
                 usuarioCod: '0',
-                dtCadastro2: '2025-01-01',
-                dtAlteracao: '2025-01-01',
+                dtCadastro2: new Date().toISOString().split('T')[0],
+                dtAlteracao: new Date().toISOString().split('T')[0],
                 ativo: 1
             }
         });
         if (!created) {
             await user.update({ senha: hash, ativo: 1 });
         }
-        console.log('SEED: Admin pronto - CNPJ: 23707648000199 / Senha: Admin123');
+        console.log('SEED: Admin pronto');
     } catch (err) {
         console.error('SEED: Erro:', err.message);
     }

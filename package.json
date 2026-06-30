@@ -1,6 +1,14 @@
 {
-  "dependencies": {
-    "react-scripts": "^5.0.1",
-    "source-map": "^0.7.6"
+  "name": "minisitio",
+  "version": "2.1.29",
+  "private": true,
+  "description": "Sistema de guia comercial digital",
+  "scripts": {
+    "start:backend": "cd back && npm start",
+    "start:frontend": "cd front && npm start",
+    "start:dev": "cd back && npm run dev",
+    "build": "cd front && npm run build",
+    "docker:up": "docker-compose up --build",
+    "docker:down": "docker-compose down"
   }
 }

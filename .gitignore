@@ -21,9 +21,6 @@ out/
 
 # Logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 # Arquivos de Sistema
 .DS_Store
@@ -39,16 +36,6 @@ front/node_modules/
 back/.env
 front/.env
 front/build/
-front/front.log
-front/testlog.txt
-front/buildlog.txt
-front/build-final.log
-front/build-log.txt
-front/build-output.log
-front/build-tree.txt
-backend_start.log
-.gemini/
-.antigravityignore
 front/src/.env
 
 # Dumps de banco de dados (NUNCA versionar - arquivos gigantes e dados sensíveis)
