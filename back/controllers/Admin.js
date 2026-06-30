@@ -1191,6 +1191,11 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
         try {
             const database = require('../config/db');
 
+            // Corrigir tipo da coluna corTitulo se necessário
+            try {
+                await database.query(`ALTER TABLE atividade MODIFY COLUMN corTitulo VARCHAR(50) NOT NULL`);
+            } catch (e) { /* coluna já correta */ }
+
             // Buscar próximo ID disponível
             const [maxResult] = await database.query(`SELECT COALESCE(MAX(id), 0) + 1 AS nextId FROM atividade`);
             const nextId = maxResult[0].nextId;
