@@ -301,12 +301,36 @@ async function seedPin() {
     }
 }
 
+async function fixAutoIncrement() {
+    try {
+        const database = require('./config/db');
+        const tables = ['atividade', 'caderno', 'anuncio', 'usuarios', 'desconto', 'promocao', 'campanha', 'pin', 'globals', 'importStage', 'pagamentos'];
+        for (const table of tables) {
+            await database.query(`
+                SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+                WHERE TABLE_SCHEMA = DATABASE() 
+                AND TABLE_NAME = '${table}' 
+                AND COLUMN_NAME = 'id' 
+                AND EXTRA LIKE '%auto_increment%'
+            `).then(async ([results]) => {
+                if (results.length === 0) {
+                    await database.query(`ALTER TABLE \`${table}\` MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT`);
+                    console.log(`FIX: AUTO_INCREMENT adicionado na tabela ${table}`);
+                }
+            }).catch(() => {});
+        }
+    } catch (err) {
+        console.error('FIX AUTO_INCREMENT: Erro:', err.message);
+    }
+}
+
 async function runCleanup() {
     return require('./migrations/runCleanup')();
 }
 
 server.listen(port, async () => {
     console.log("rodando na porta: ", port);
+    await fixAutoIncrement();
     if (process.env.RUN_CLEANUP === 'true') {
         await runCleanup();
         console.log('CLEANUP finalizado. Remova a env var RUN_CLEANUP.');
