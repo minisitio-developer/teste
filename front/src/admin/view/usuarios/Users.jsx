@@ -455,7 +455,7 @@ const Users = () => {
                                         <th>UF</th>
                                         <th>CIDADE</th>
                                         <th>Cadastrado em</th>
-                                        <th>Status</th>
+                                        <th style={{ width: "100px" }}>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>

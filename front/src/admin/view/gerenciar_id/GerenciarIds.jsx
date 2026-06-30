@@ -310,14 +310,14 @@ const GerenciarIds = () => {
                             <table className="table table-bordered table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Usuário</th>
-                                        <th>Desconto</th>
-                                        <th>Código</th>
-                                        <th>Descrição</th>
-                                        <th>Cadastrado em</th>
-                                        <th>Qtde Espaços</th>
-                                        <th>Saldo</th>
-                                        <th>Status</th>
+                                        <th style={{ "width": "200px" }}>Usuário</th>
+                                        <th style={{ "width": "100px" }}>Desconto</th>
+                                        <th style={{ "width": "150px" }}>Código</th>
+                                        <th style={{ "width": "250px" }}>Descrição</th>
+                                        <th style={{ "width": "200px" }}>Cadastrado em</th>
+                                        <th style={{ "width": "150px" }}>Qtde Espaços</th>
+                                        <th style={{ "width": "100px" }}>Saldo</th>
+                                        <th style={{ "width": "100px" }}>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>

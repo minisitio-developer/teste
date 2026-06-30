@@ -834,15 +834,15 @@ Para 100000 linhas: 312500ms
                             <table className="table table-bordered table-striped table-hover" style={{ tableLayout: 'fixed', width: '100%' }}>
                                 <thead>
                                     <tr>
-                                        <th>COD</th>
+                                        <th style={{ width: '111px' }}>COD</th>
                                         <th>COD_OR</th>
-                                        <th>DUPLI</th>
-                                        <th>CNPJ</th>
-                                        <th>NOME</th>
+                                        <th style={{ width: '58px' }}>DUPLI</th>
+                                        <th style={{ width: '120px' }}>CNPJ</th>
+                                        <th style={{ width: '200px' }}>NOME</th>
                                         <th>TIPO</th>
                                         <th>CADERNO</th>
                                         <th>UF</th>
-                                        <th>STATUS</th>
+                                        <th style={{ width: '111px' }}>STATUS</th>
                                         <th>PAG.</th>
                                         <th>DATA_PAG</th>
                                         <th>VALOR</th>
@@ -854,7 +854,7 @@ Para 100000 linhas: 312500ms
                                         <th>ID</th>
                                         <th>USUARIO/DECISOR</th>
                                         <th>LOGIN</th>
-                                        <th>SENHA</th>
+                                        <th style={{ width: '65px' }}>SENHA</th>
                                         <th>EMAIL</th>
                                         <th>CONTATO</th>
                                         <th>ATIVIDADE PRINCIPAL</th>
