@@ -17,8 +17,8 @@ function Home() {
   return (
     <div className="App">
       <Mosaico logoTop={false} />
-      <div className="d-flex justify-content-center align-items-center" style={{ "marginTop": "5%" }}>
-        <a href="/"><img src="../assets/img/logo.png" className="" alt="Logo Minisitio" /></a>
+      <div className="d-flex justify-content-center align-items-center" style={{ "padding": "10px 0" }}>
+        <a href="/"><img src="../assets/img/logo.png" alt="Logo Minisitio" style={{ maxWidth: "180px" }} /></a>
       </div>
 
       <Busca paginaAtual={"home"} />
