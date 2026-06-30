@@ -7222,8 +7222,6 @@ module.exports = {
         }
 
         try {
-            const database = require('../../config/db');
-
             // Construir WHERE SQL diretamente (muito mais eficiente que carregar tudo na memória)
             let conditions = [];
             let replacements = [];
