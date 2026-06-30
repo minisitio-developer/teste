@@ -77,6 +77,9 @@ function Header() {
                         <li className="nav-item">
                             <Link className="nav-link" to="/admin/pin" onClick={handleClick}>PINs</Link>
                         </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/admin/duplicidades" onClick={handleClick}>Duplicidades</Link>
+                        </li>
 
                         <li className="nav-item">
                             <a className="nav-link" href="/" onClick={sair}>Sair</a>

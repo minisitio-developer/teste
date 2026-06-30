@@ -65,6 +65,9 @@ import ConfiguracoesPortal from "../admin/view/ConfiguracoesPortal/Configuracoes
 import AdminInstitucional from "../admin/view/ConfiguracoesPortal/Institucioanl/Institucional";
 import AdminContato from "../admin/view/ConfiguracoesPortal/Contato/index";
 
+//IMPORT DUPLICIDADES
+import Duplicidades from "../admin/view/Duplicidades/Duplicidades";
+
 //PAINEL ADMIN ANUNCIANTE
 import PainelAdmin from "../views/painelAnuciante/PainelAdmin";
 
@@ -173,6 +176,9 @@ function Rotas() {
                     <Route path="admin/configuracoes" element={<PrivateRoute isAdmin={true}><ConfiguracoesPortal /></PrivateRoute>} />
                     <Route path="admin/institucional" element={<PrivateRoute isAdmin={true}><AdminInstitucional /></PrivateRoute>} />
                     <Route path="admin/contato" element={<PrivateRoute isAdmin={true}><AdminContato /></PrivateRoute>} />
+
+                    {/*ROTAS MODULO DUPLICIDADES*/}
+                    <Route path="admin/duplicidades" element={<PrivateRoute isAdmin={true}><Duplicidades /></PrivateRoute>} />
 
                     {/*ROTAS MODULO GERAR CAMPANHA*/}
                     <Route path="admin/campanha" element={<PrivateRoute isAdmin={true}><Campanha /></PrivateRoute>} />
