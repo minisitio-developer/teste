@@ -26,7 +26,7 @@ COPY --from=frontend-build /app/front/build /app/front/build
 RUN cp -r /app/back/public/upload /app/back/upload_seed
 
 # Startup script: sync seed images to volume on first start
-COPY scripts/init-volume.sh /app/init-volume.sh
+COPY back/init-volume.sh /app/init-volume.sh
 RUN chmod +x /app/init-volume.sh
 
 EXPOSE 3032
