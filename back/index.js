@@ -59,15 +59,18 @@ const server = http.createServer(app);
 const BASE_PATH = "/api";
 
 // ========== CONFIGURAÇÃO SEGURA DE CORS ==========
-const allowedOrigins = process.env.ALLOWED_ORIGINS 
-    ? process.env.ALLOWED_ORIGINS.split(',')
-    : [
-        'http://localhost:3000',      // Desenvolvimento local
-        'http://localhost:3001',      // Alternativa desenvolvimento
-        'https://meufrontend.com',
-        'https://admin.meufrontend.com',
-        'https://www.meufrontend.com'
-    ];
+const defaultOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+];
+if (process.env.ALLOWED_ORIGINS) {
+    defaultOrigins.push(...process.env.ALLOWED_ORIGINS.split(','));
+}
+const railwayDomain = process.env.RAILWAY_PUBLIC_DOMAIN;
+if (railwayDomain) {
+    defaultOrigins.push(`https://${railwayDomain}`);
+}
+const allowedOrigins = defaultOrigins;
 
 // Configuração segura de Socket.IO
 const socketOptions = {
