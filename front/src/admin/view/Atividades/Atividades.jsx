@@ -11,7 +11,6 @@ import Header from "../Header";
 import Pagination from '../../components/Pagination';
 import Spinner from '../../../components/Spinner';
 import MsgConfirm from '../../components/MsgConfirm';
-import ColumnFilter from '../../components/ColumnFilter';
 
 const Atividades = () => {
 
@@ -23,9 +22,6 @@ const Atividades = () => {
     const [atividades, setAtividades] = useState([]);
     const [showSpinner, setShowSpinner] = useState(true);
     const [showMsgBox, setShowMsgBox] = useState(false);
-    const [selCNAE, setSelCNAE] = useState([]);
-    const [selNome, setSelNome] = useState([]);
-    const [selTipo, setSelTipo] = useState([]);
 
     const location = useLocation();
     const navigator = useNavigate();
@@ -173,12 +169,7 @@ const Atividades = () => {
             })
     };
 
-    const atividadesFiltradas = (atividades || []).filter(item => {
-        const matchCNAE = selCNAE.length === 0 || selCNAE.includes(item.atividade || '');
-        const matchNome = selNome.length === 0 || selNome.includes(item.nomeAmigavel || '');
-        const matchTipo = selTipo.length === 0 || selTipo.includes(item.corTitulo || '');
-        return matchCNAE && matchNome && matchTipo;
-    });
+    const atividadesFiltradas = atividades || [];
 
     return (
         <div className="Atividades">
@@ -220,9 +211,9 @@ const Atividades = () => {
                             <table className="table table-bordered table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Ativadade-CNAE <ColumnFilter values={atividades.map(i => i.atividade)} selected={selCNAE} onChange={setSelCNAE} /></th>
-                                        <th>Atividade <ColumnFilter values={atividades.map(i => i.nomeAmigavel)} selected={selNome} onChange={setSelNome} /></th>
-                                        <th>Tipo <ColumnFilter values={atividades.map(i => i.corTitulo)} selected={selTipo} onChange={setSelTipo} /></th>
+                                        <th>Ativadade-CNAE</th>
+                                        <th>Atividade</th>
+                                        <th>Tipo</th>
                                     </tr>
                                 </thead>
                                 <tbody>

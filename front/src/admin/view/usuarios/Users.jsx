@@ -15,7 +15,6 @@ import Pagination from '../../components/Pagination';
 import Spinner from '../../../components/Spinner';
 import BtnActivate from '../../components/BntActivate';
 import MsgConfirm from '../../components/MsgConfirm';
-import ColumnFilter from '../../components/ColumnFilter';
 
 const Users = () => {
 
@@ -32,12 +31,6 @@ const Users = () => {
     const [optionSearch, setOptionSearch] = useState([]);
     const [estadoSelecionado, setEstadoSelecionado] = useState(null);
     const [cadernoSelecionado, setCadernoSelecionado] = useState(null);
-    const [selNome, setSelNome] = useState([]);
-    const [selEmail, setSelEmail] = useState([]);
-    const [selCPF, setSelCPF] = useState([]);
-    const [selTipo, setSelTipo] = useState([]);
-    const [selUF, setSelUF] = useState([]);
-    const [selCidade, setSelCidade] = useState([]);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -267,15 +260,7 @@ const Users = () => {
     }
 
     const tipoMap = { 1: 'SUPER ADMIN', 2: 'MASTER', 3: 'ANUNCIANTE', 4: 'MASTER / ANUNC', 5: 'PREFEITURA' };
-    const usuariosFiltrados = (usuarios?.usuarios || []).filter(item => {
-        const matchNome = selNome.length === 0 || selNome.includes(item.descNome || '');
-        const matchEmail = selEmail.length === 0 || selEmail.includes(item.descEmail || '');
-        const matchCPF = selCPF.length === 0 || selCPF.includes(item.descCPFCNPJ || '');
-        const matchTipo = selTipo.length === 0 || selTipo.includes(tipoMap[item.codTipoUsuario] || '');
-        const matchUF = selUF.length === 0 || selUF.includes(item.codUf || '');
-        const matchCidade = selCidade.length === 0 || selCidade.includes(item.codCidade || '');
-        return matchNome && matchEmail && matchCPF && matchTipo && matchUF && matchCidade;
-    });
+    const usuariosFiltrados = usuarios?.usuarios || [];
 
     function exportExcell() {
         const campoPesquisa = document.getElementById('buscar');
@@ -462,13 +447,13 @@ const Users = () => {
                             <table className="table table-bordered table-striped table-hover w-full text-xs">
                                 <thead>
                                     <tr>
-                                        <th>NOME <ColumnFilter values={(usuarios?.usuarios || []).map(i => i.descNome)} selected={selNome} onChange={setSelNome} /></th>
-                                        <th>E-MAIL <ColumnFilter values={(usuarios?.usuarios || []).map(i => i.descEmail)} selected={selEmail} onChange={setSelEmail} /></th>
-                                        <th>CPF/CNPJ <ColumnFilter values={(usuarios?.usuarios || []).map(i => i.descCPFCNPJ)} selected={selCPF} onChange={setSelCPF} /></th>
+                                        <th>NOME</th>
+                                        <th>E-MAIL</th>
+                                        <th>CPF/CNPJ</th>
                                         <th>SENHA</th>
-                                        <th>TIPO <ColumnFilter values={(usuarios?.usuarios || []).map(i => tipoMap[i.codTipoUsuario])} selected={selTipo} onChange={setSelTipo} /></th>
-                                        <th>UF <ColumnFilter values={(usuarios?.usuarios || []).map(i => i.codUf)} selected={selUF} onChange={setSelUF} /></th>
-                                        <th>CIDADE <ColumnFilter values={(usuarios?.usuarios || []).map(i => i.codCidade)} selected={selCidade} onChange={setSelCidade} /></th>
+                                        <th>TIPO</th>
+                                        <th>UF</th>
+                                        <th>CIDADE</th>
                                         <th>Cadastrado em</th>
                                         <th style={{ width: "100px" }}>Status</th>
                                     </tr>

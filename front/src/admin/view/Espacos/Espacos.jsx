@@ -21,7 +21,6 @@ import Spinner from '../../../components/Spinner';
 import Duplicate from './Duplicate';
 import BtnActivate from '../../components/BntActivate';
 import EspacosImport from './EspacosImport';
-import ColumnFilter from '../../components/ColumnFilter';
 
 //API
 import { fetchEspacos, deleteDuplicacaoEspaco } from '../../../api/admin/espacos';
@@ -45,14 +44,6 @@ const Espacos = () => {
     const [uf, setUfs] = useState([]);
     const [caderno, setCaderno] = useState([]);
     const [mostrarInputBusca, setMostrarInputBusca] = useState(true);
-    const [selCOD, setSelCOD] = useState([]);
-    const [selCNPJ, setSelCNPJ] = useState([]);
-    const [selNomeEsp, setSelNomeEsp] = useState([]);
-    const [selTipoEsp, setSelTipoEsp] = useState([]);
-    const [selCadernoEsp, setSelCadernoEsp] = useState([]);
-    const [selUFEsp, setSelUFEsp] = useState([]);
-    const [selEmailEsp, setSelEmailEsp] = useState([]);
-    const [selContatoEsp, setSelContatoEsp] = useState([]);
 
 
     const location = useLocation();
@@ -746,17 +737,7 @@ Para 100000 linhas: 312500ms
         zIndex: "999"
     }
 
-    const anunciosFiltrados = (anuncios?.message?.anuncios || []).filter(item => {
-        const matchCOD = selCOD.length === 0 || selCOD.includes(String(item.codAnuncio));
-        const matchCNPJ = selCNPJ.length === 0 || selCNPJ.includes(item.descCPFCNPJ || '');
-        const matchNome = selNomeEsp.length === 0 || selNomeEsp.includes(item.descAnuncio || '');
-        const matchTipo = selTipoEsp.length === 0 || selTipoEsp.includes(item.codTipoAnuncio || '');
-        const matchCaderno = selCadernoEsp.length === 0 || selCadernoEsp.includes(String(item.codCaderno));
-        const matchUF = selUFEsp.length === 0 || selUFEsp.includes(String(item.codUf));
-        const matchEmail = selEmailEsp.length === 0 || selEmailEsp.includes(item.descEmailComercial || '');
-        const matchContato = selContatoEsp.length === 0 || selContatoEsp.includes(item.descTelefone || '');
-        return matchCOD && matchCNPJ && matchNome && matchTipo && matchCaderno && matchUF && matchEmail && matchContato;
-    });
+    const anunciosFiltrados = anuncios?.message?.anuncios || [];
 
     return (
         <div className="users app-espacos">
@@ -853,14 +834,14 @@ Para 100000 linhas: 312500ms
                             <table className="table table-bordered table-striped table-hover" style={{ tableLayout: 'fixed', width: '100%' }}>
                                 <thead>
                                     <tr>
-                                        <th style={{ width: '111px' }}>COD <ColumnFilter values={(anuncios?.message?.anuncios || []).map(i => String(i.codAnuncio))} selected={selCOD} onChange={setSelCOD} /></th>
+                                        <th style={{ width: '111px' }}>COD</th>
                                         <th>COD_OR</th>
                                         <th style={{ width: '58px' }}>DUPLI</th>
-                                        <th style={{ width: '120px' }}>CNPJ <ColumnFilter values={(anuncios?.message?.anuncios || []).map(i => i.descCPFCNPJ)} selected={selCNPJ} onChange={setSelCNPJ} /></th>
-                                        <th style={{ width: '200px' }}>NOME <ColumnFilter values={(anuncios?.message?.anuncios || []).map(i => i.descAnuncio)} selected={selNomeEsp} onChange={setSelNomeEsp} /></th>
-                                        <th>TIPO <ColumnFilter values={(anuncios?.message?.anuncios || []).map(i => i.codTipoAnuncio)} selected={selTipoEsp} onChange={setSelTipoEsp} /></th>
-                                        <th>CADERNO <ColumnFilter values={(anuncios?.message?.anuncios || []).map(i => String(i.codCaderno))} selected={selCadernoEsp} onChange={setSelCadernoEsp} /></th>
-                                        <th>UF <ColumnFilter values={(anuncios?.message?.anuncios || []).map(i => String(i.codUf))} selected={selUFEsp} onChange={setSelUFEsp} /></th>
+                                        <th style={{ width: '120px' }}>CNPJ</th>
+                                        <th style={{ width: '200px' }}>NOME</th>
+                                        <th>TIPO</th>
+                                        <th>CADERNO</th>
+                                        <th>UF</th>
                                         <th style={{ width: '111px' }}>STATUS</th>
                                         <th>PAG.</th>
                                         <th>DATA_PAG</th>
@@ -874,8 +855,8 @@ Para 100000 linhas: 312500ms
                                         <th>USUARIO/DECISOR</th>
                                         <th>LOGIN</th>
                                         <th style={{ width: '65px' }}>SENHA</th>
-                                        <th>EMAIL <ColumnFilter values={(anuncios?.message?.anuncios || []).map(i => i.descEmailComercial)} selected={selEmailEsp} onChange={setSelEmailEsp} /></th>
-                                        <th>CONTATO <ColumnFilter values={(anuncios?.message?.anuncios || []).map(i => i.descTelefone)} selected={selContatoEsp} onChange={setSelContatoEsp} /></th>
+                                        <th>EMAIL</th>
+                                        <th>CONTATO</th>
                                         <th>ATIVIDADE PRINCIPAL</th>
                                         <th>LINK_PERFIL</th>
                                     </tr>

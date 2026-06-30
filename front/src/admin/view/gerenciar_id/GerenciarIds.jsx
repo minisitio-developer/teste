@@ -13,7 +13,6 @@ import Pagination from '../../components/Pagination';
 import Spinner from '../../../components/Spinner';
 import BtnActivate from '../../components/BntActivate';
 import MsgConfirm from '../../components/MsgConfirm';
-import ColumnFilter from '../../components/ColumnFilter';
 import Swal from 'sweetalert2';
 
 const GerenciarIds = () => {
@@ -30,13 +29,6 @@ const GerenciarIds = () => {
     const [showSpinner, setShowSpinner] = useState(true);
     const [del, setDel] = useState(false);
     const [showMsgBox, setShowMsgBox] = useState(false);
-    const [selUsuario, setSelUsuario] = useState([]);
-    const [selDesconto, setSelDesconto] = useState([]);
-    const [selCodigo, setSelCodigo] = useState([]);
-    const [selDescricao, setSelDescricao] = useState([]);
-    const [selData, setSelData] = useState([]);
-    const [selQtde, setSelQtde] = useState([]);
-    const [selSaldo, setSelSaldo] = useState([]);
 
     const location = useLocation();
 
@@ -265,18 +257,7 @@ const GerenciarIds = () => {
               }) */
     };
 
-    function filtrarDados(item) {
-        const matchUsuario = selUsuario.length === 0 || selUsuario.includes(item.nmUsuario || '');
-        const matchDesconto = selDesconto.length === 0 || selDesconto.includes(String(parseFloat(item.desconto).toFixed(2)).replace('.', ','));
-        const matchCodigo = selCodigo.length === 0 || selCodigo.includes(item.hash || '');
-        const matchDescricao = selDescricao.length === 0 || selDescricao.includes(item.descricao || '');
-        const matchData = selData.length === 0 || selData.includes(formatData(item.dtCadastro));
-        const matchQtde = selQtde.length === 0 || selQtde.includes(String(item.total_registros));
-        const matchSaldo = selSaldo.length === 0 || selSaldo.includes(String(item.saldo));
-        return matchUsuario && matchDesconto && matchCodigo && matchDescricao && matchData && matchQtde && matchSaldo;
-    }
-
-    const idsFiltrados = ids?.IdsValue ? ids.IdsValue.filter(filtrarDados) : [];
+    const idsFiltrados = ids?.IdsValue || [];
 
     return (
         <div className="users">
@@ -329,13 +310,13 @@ const GerenciarIds = () => {
                             <table className="table table-bordered table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        <th style={{ "width": "200px" }}>Usuário <ColumnFilter values={(ids?.IdsValue || []).map(i => i.nmUsuario)} selected={selUsuario} onChange={setSelUsuario} /></th>
-                                        <th style={{ "width": "100px" }}>Desconto <ColumnFilter values={(ids?.IdsValue || []).map(i => String(parseFloat(i.desconto).toFixed(2)).replace('.', ','))} selected={selDesconto} onChange={setSelDesconto} /></th>
-                                        <th style={{ "width": "150px" }}>Código <ColumnFilter values={(ids?.IdsValue || []).map(i => i.hash)} selected={selCodigo} onChange={setSelCodigo} /></th>
-                                        <th style={{ "width": "250px" }}>Descrição <ColumnFilter values={(ids?.IdsValue || []).map(i => i.descricao)} selected={selDescricao} onChange={setSelDescricao} /></th>
-                                        <th style={{ "width": "200px" }}>Cadastrado em <ColumnFilter values={(ids?.IdsValue || []).map(i => formatData(i.dtCadastro))} selected={selData} onChange={setSelData} /></th>
-                                        <th style={{ "width": "150px" }}>Qtde Espaços <ColumnFilter values={(ids?.IdsValue || []).map(i => String(i.total_registros))} selected={selQtde} onChange={setSelQtde} /></th>
-                                        <th style={{ "width": "100px" }}>Saldo <ColumnFilter values={(ids?.IdsValue || []).map(i => String(i.saldo))} selected={selSaldo} onChange={setSelSaldo} /></th>
+                                        <th style={{ "width": "200px" }}>Usuário</th>
+                                        <th style={{ "width": "100px" }}>Desconto</th>
+                                        <th style={{ "width": "150px" }}>Código</th>
+                                        <th style={{ "width": "250px" }}>Descrição</th>
+                                        <th style={{ "width": "200px" }}>Cadastrado em</th>
+                                        <th style={{ "width": "150px" }}>Qtde Espaços</th>
+                                        <th style={{ "width": "100px" }}>Saldo</th>
                                         <th style={{ "width": "100px" }}>Status</th>
                                     </tr>
                                 </thead>

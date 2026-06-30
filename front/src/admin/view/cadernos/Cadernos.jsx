@@ -14,7 +14,6 @@ import Header from "../Header";
 import Pagination from '../../components/Pagination';
 import Spinner from '../../../components/Spinner';
 import MsgConfirm from '../../components/MsgConfirm';
-import ColumnFilter from '../../components/ColumnFilter';
 
 const Cadernos = () => {
     const [estados, setEstado] = useState([]);
@@ -30,14 +29,6 @@ const Cadernos = () => {
     const [statusCount, setStatusCount] = useState(false);
     const [buscaAtiva, setBuscaAtiva] = useState(false);
     const [showMsgBox, setShowMsgBox] = useState(false);
-    const [selUF, setSelUF] = useState([]);
-    const [selCaderno, setSelCaderno] = useState([]);
-    const [selMosaico, setSelMosaico] = useState([]);
-    const [selCEPI, setSelCEPI] = useState([]);
-    const [selCEPF, setSelCEPF] = useState([]);
-    const [selBasico, setSelBasico] = useState([]);
-    const [selCompleto, setSelCompleto] = useState([]);
-    const [selTotal, setSelTotal] = useState([]);
 
     const location = useLocation();
     const navigator = useNavigate();
@@ -315,17 +306,7 @@ const Cadernos = () => {
     };
 
 
-    const cidadeFiltrada = (cidade || []).filter(item => {
-        const matchUF = selUF.length === 0 || selUF.includes(item.UF || '');
-        const matchCaderno = selCaderno.length === 0 || selCaderno.includes(item.nomeCaderno || '');
-        const matchMosaico = selMosaico.length === 0 || selMosaico.includes(item.descImagem ? 'SIM' : 'NÃO');
-        const matchCEPI = selCEPI.length === 0 || selCEPI.includes(item.cep_inicial || '');
-        const matchCEPF = selCEPF.length === 0 || selCEPF.includes(item.cep_final || '');
-        const matchBasico = selBasico.length === 0 || selBasico.includes(String(item.basico));
-        const matchCompleto = selCompleto.length === 0 || selCompleto.includes(String(item.completo));
-        const matchTotal = selTotal.length === 0 || selTotal.includes(String(item.total));
-        return matchUF && matchCaderno && matchMosaico && matchCEPI && matchCEPF && matchBasico && matchCompleto && matchTotal;
-    });
+    const cidadeFiltrada = cidade || [];
 
     return (
         <div className="Cadernos">
@@ -376,14 +357,14 @@ const Cadernos = () => {
                             <table className="table table-bordered table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        <th>UF <ColumnFilter values={cidade.map(i => i.UF)} selected={selUF} onChange={setSelUF} /></th>
-                                        <th>CADERNO <ColumnFilter values={cidade.map(i => i.nomeCaderno)} selected={selCaderno} onChange={setSelCaderno} /></th>
-                                        <th>MOSAICO <ColumnFilter values={cidade.map(i => i.descImagem ? 'SIM' : 'NÃO')} selected={selMosaico} onChange={setSelMosaico} /></th>
-                                        <th>CEP_INICIAL <ColumnFilter values={cidade.map(i => i.cep_inicial)} selected={selCEPI} onChange={setSelCEPI} /></th>
-                                        <th>CEP_FINAL <ColumnFilter values={cidade.map(i => i.cep_final)} selected={selCEPF} onChange={setSelCEPF} /></th>
-                                        <th>BÁSICOS <ColumnFilter values={cidade.map(i => String(i.basico))} selected={selBasico} onChange={setSelBasico} /></th>
-                                        <th>COMPLETOS <ColumnFilter values={cidade.map(i => String(i.completo))} selected={selCompleto} onChange={setSelCompleto} /></th>
-                                        <th>TOTAL <ColumnFilter values={cidade.map(i => String(i.total))} selected={selTotal} onChange={setSelTotal} /></th>
+                                        <th>UF</th>
+                                        <th>CADERNO</th>
+                                        <th>MOSAICO</th>
+                                        <th>CEP_INICIAL</th>
+                                        <th>CEP_FINAL</th>
+                                        <th>BÁSICOS</th>
+                                        <th>COMPLETOS</th>
+                                        <th>TOTAL</th>
                                     </tr>
                                 </thead>
                                 <tbody>
