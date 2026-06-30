@@ -1191,32 +1191,16 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
         try {
             const database = require('../config/db');
 
-            // Garantir AUTO_INCREMENT antes de inserir
-            try {
-                await database.query(`ALTER TABLE atividade MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT`);
-            } catch (e) {
-                // Se falhar, tentar criar a tabela completa
-                try {
-                    await database.query(`
-                        CREATE TABLE IF NOT EXISTS atividade (
-                            id INT AUTO_INCREMENT PRIMARY KEY,
-                            atividade TEXT NOT NULL,
-                            nomeAmigavel TEXT NOT NULL,
-                            corTitulo TEXT NOT NULL,
-                            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-                            updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-                        )
-                    `);
-                } catch (e2) {
-                    console.error('Erro ao criar/corrigir tabela atividade:', e2.message);
-                }
-            }
+            // Buscar próximo ID disponível
+            const [maxResult] = await database.query(`SELECT COALESCE(MAX(id), 0) + 1 AS nextId FROM atividade`);
+            const nextId = maxResult[0].nextId;
 
-            // Usar SQL direto para inserir
-            const [result] = await database.query(
-                `INSERT INTO atividade (atividade, nomeAmigavel, corTitulo, createdAt, updatedAt) VALUES (?, ?, ?, NOW(), NOW())`,
+            // Inserir com ID explícito
+            await database.query(
+                `INSERT INTO atividade (id, atividade, nomeAmigavel, corTitulo, createdAt, updatedAt) VALUES (?, ?, ?, ?, NOW(), NOW())`,
                 {
                     replacements: [
+                        nextId,
                         req.body.atividade,
                         req.body.atividade,
                         req.body.corTitulo
@@ -1224,8 +1208,10 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
                 }
             );
 
-            const insertedId = result.insertId;
-            res.json({ success: true, message: `Atividade "${req.body.atividade}" criada com sucesso!`, id: insertedId });
+            // Tentar adicionar AUTO_INCREMENT em background (para próximas inserções)
+            database.query(`ALTER TABLE atividade MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT`).catch(() => {});
+
+            res.json({ success: true, message: `Atividade "${req.body.atividade}" criada com sucesso!`, id: nextId });
         } catch (err) {
             console.error('Erro ao criar atividade:', err.message);
             res.json({ success: false, message: err.message || "Erro ao criar atividade." });
