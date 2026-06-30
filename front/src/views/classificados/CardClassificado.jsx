@@ -78,7 +78,21 @@ useEffect(() => {
                     }
                     <div className="conteudo" onClick={() => contadorVisualizacoes(masterPath.url, props.data.codAnuncio)}>
                         <a href={`${masterPath.domain}/perfil/${props.data.codAnuncio}`}>
-                            <img src={(props.data.descImagem && props.data.descImagem !== '0' && props.data.descImagem !== 'undefined') ? `${masterPath.url}/files/descImagem/${props.data.descImagem}` : '/assets/img/placeholder.png'} alt={props.data.descAnuncio} />
+                            <img
+                                src={
+                                    props.fallbackImg
+                                        ? props.fallbackImg
+                                        : (props.data.descImagem && props.data.descImagem !== '0' && props.data.descImagem !== 'undefined')
+                                            ? `${masterPath.url}/files/descImagem/${props.data.descImagem}`
+                                            : '/assets/img/placeholder.png'
+                                }
+                                alt={props.data.descAnuncio}
+                                onError={(e) => {
+                                    if (!props.fallbackImg) {
+                                        e.target.style.display = 'none';
+                                    }
+                                }}
+                            />
                         </a>
                     </div>
 

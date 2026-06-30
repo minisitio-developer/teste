@@ -18,6 +18,7 @@ import Letter from './classificados/Letter';
 import QrcodeMosaico from '../plugins/QrcodeMosaico';
 import SafeImage from '../components/SafeMosaico';
 import ButtonCapa from '../components/ButtonCapa';
+import { getCapaFallback } from '../config/capaFallbacks';
 
 import { Modal, Button } from 'react-bootstrap';
 import { QrCode } from "lucide-react";
@@ -299,16 +300,16 @@ function Caderno(props) {
                             ))}
                           </ul>
                         </li>
-                        <CardClassificado title={"UTILIDADE PÚBLICA"} pathImg={capa06} data={selectCapa("UTILIDADE PÚBLICA")} />
-                        <CardClassificado title={"CÂMARA DE VEREADORES/CÂMARA DISTRITAL"} pathImg={capa07} data={selectCapa("CÂMARA DE VEREADORES - CÂMARA DISTRITAL")} />
-                        <CardClassificado title={"INFORMAÇÕES"} pathImg={capa08} data={selectCapa("INFORMAÇÕES")} />
+                        <CardClassificado title={"UTILIDADE PÚBLICA"} pathImg={capa06} data={selectCapa("UTILIDADE PÚBLICA")} fallbackImg={getCapaFallback(estado, 0)} />
+                        <CardClassificado title={"CÂMARA DE VEREADORES/CÂMARA DISTRITAL"} pathImg={capa07} data={selectCapa("CÂMARA DE VEREADORES - CÂMARA DISTRITAL")} fallbackImg={getCapaFallback(estado, 1)} />
+                        <CardClassificado title={"INFORMAÇÕES"} pathImg={capa08} data={selectCapa("INFORMAÇÕES")} fallbackImg={getCapaFallback(estado, 2)} />
                       </ul>
                       <ul className="col-md-6 col-sm-6 col-xs-12 list-unstyled teste">
-                        <CardClassificado title={"ADMINISTRAÇÃO REGIONAL / PREFEITURA"} pathImg={capa01} data={selectCapa("ADMINISTRAÇÃO REGIONAL / PREFEITURA")} />
-                        <CardClassificado title={"EMERGÊNCIA"} pathImg={capa02} data={selectCapa("EMERGÊNCIA")} />
-                        <CardClassificado title={"HOSPITAIS PÚBLICOS"} pathImg={capa03} data={selectCapa("HOSPITAIS PÚBLICOS")} />
-                        <CardClassificado title={"SECRETARIA DE TURISMO"} pathImg={capa04} data={selectCapa("SECRETARIA DE TURISMO")} />
-                        <CardClassificado title={"EVENTOS NA CIDADE"} pathImg={capa05} data={selectCapa("EVENTOS NA CIDADE")} />
+                        <CardClassificado title={"ADMINISTRAÇÃO REGIONAL / PREFEITURA"} pathImg={capa01} data={selectCapa("ADMINISTRAÇÃO REGIONAL / PREFEITURA")} fallbackImg={getCapaFallback(estado, 3)} />
+                        <CardClassificado title={"EMERGÊNCIA"} pathImg={capa02} data={selectCapa("EMERGÊNCIA")} fallbackImg={getCapaFallback(estado, 4)} />
+                        <CardClassificado title={"HOSPITAIS PÚBLICOS"} pathImg={capa03} data={selectCapa("HOSPITAIS PÚBLICOS")} fallbackImg={getCapaFallback(estado, 5)} />
+                        <CardClassificado title={"SECRETARIA DE TURISMO"} pathImg={capa04} data={selectCapa("SECRETARIA DE TURISMO")} fallbackImg={getCapaFallback(estado, 6)} />
+                        <CardClassificado title={"EVENTOS NA CIDADE"} pathImg={capa05} data={selectCapa("EVENTOS NA CIDADE")} fallbackImg={getCapaFallback(estado, 7)} />
                       </ul>
 
                     </div>
