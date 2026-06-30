@@ -1,4 +1,10 @@
 /* ============================= */
+/* Imports externos              */
+/* ============================= */
+
+@import "./shadcn-base.css";
+
+/* ============================= */
 /* Tailwind v3 Directives       */
 /* ============================= */
 
@@ -6,11 +12,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ============================= */
-/* Imports externos              */
-/* ============================= */
 
-@import "./shadcn-base.css";
 
 /* ============================= */
 /* Dark variant customizado      */

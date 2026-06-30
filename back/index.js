@@ -12,7 +12,9 @@ process.on('uncaughtException', (err) => {
 });
 
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const app = express();
+app.use(cookieParser());
 app.set('trust proxy', 1);
 const port = Number(process.env.PORT || 3032);
 const rateLimit = require('express-rate-limit');

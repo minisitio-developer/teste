@@ -51,6 +51,13 @@ module.exports = {
 
         const token = jwt.sign({ id: user.id, role: user.codTipoUsuario, uuid: user.codUsuario, doc: user.descCPFCNPJ }, secretKey, { expiresIn: "1h" });
 
+        res.cookie('userTokenAccess', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 3600000 // 1h
+        });
+
         const { senha: _, ...safeUser } = user;
         safeUser.success = true;
 

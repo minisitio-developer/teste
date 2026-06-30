@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Form, Link, useParams, useNavigate } from 'react-router-dom';
 import '../../styles/globals.css';
-import { masterPath } from '../../config/config.js';
+import { masterPath } from '../../config/config.jsx';
 
 //LIBS
 import Swal from 'sweetalert2';

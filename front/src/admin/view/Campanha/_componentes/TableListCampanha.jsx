@@ -15,7 +15,7 @@ import {
   TooltipTrigger,
 } from "../../../../components/ui/tooltip.tsx";
 import Button from 'react-bootstrap/Button';
-import { verificarArquivoCampanha } from '../_requests/tableRequests.js';
+import { verificarArquivoCampanha } from '../_requests/tableRequests.jsx';
 
 
 export default function TableListCampanha({ campanhas, setShowSpinner, fetchCampanhas }) {

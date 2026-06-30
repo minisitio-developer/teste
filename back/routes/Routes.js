@@ -35,6 +35,7 @@ const uploadUser = require('../middlewares/uploadImage');
 const uploadPdf = require('../middlewares/uploadPdf');
 const RecuperarSenha = require('../controllers/RecuperarSenha.js');
 const database = require('../config/db.js');
+const redisClient = require('../config/redis.js');
 
 
 
@@ -140,6 +141,14 @@ module.exports = (io, loginLimiter) => {
     //DASHBOARD - Leitura do cache (instantanea)
     router.get('/api/admin/dashboard', auth, async (req, res) => {
         try {
+            if (redisClient.isReady) {
+                const redisData = await redisClient.get('dashboard_cache');
+                if (redisData) {
+                    return res.json({ success: true, data: JSON.parse(redisData) });
+                }
+            }
+            
+            // Fallback para MySQL
             let cache;
             try {
                 const result = await database.query(
@@ -164,25 +173,28 @@ module.exports = (io, loginLimiter) => {
                 });
             }
 
-            res.json({
-                success: true,
-                data: {
-                    total: cache.total,
-                    basico: cache.basico,
-                    completo: cache.completo,
-                    ativos: cache.ativos,
-                    inativos: cache.inativos,
-                    semEmail: null,
-                    semTelefone: null,
-                    semEmailETelefone: null,
-                    expirados: cache.expirados,
-                    expiraEm30Dias: cache.expiraEm30Dias,
-                    porUf: JSON.parse(cache.porUf_json || '[]'),
-                    porMes: JSON.parse(cache.porMes_json || '[]'),
-                    cadernosPorUf: JSON.parse(cache.cadernosPorUf_json || '[]'),
-                    lastUpdated: cache.lastUpdated
-                }
-            });
+            const dataToReturn = {
+                total: cache.total,
+                basico: cache.basico,
+                completo: cache.completo,
+                ativos: cache.ativos,
+                inativos: cache.inativos,
+                semEmail: null,
+                semTelefone: null,
+                semEmailETelefone: null,
+                expirados: cache.expirados,
+                expiraEm30Dias: cache.expiraEm30Dias,
+                porUf: JSON.parse(cache.porUf_json || '[]'),
+                porMes: JSON.parse(cache.porMes_json || '[]'),
+                cadernosPorUf: JSON.parse(cache.cadernosPorUf_json || '[]'),
+                lastUpdated: cache.lastUpdated
+            };
+            
+            if (redisClient.isReady) {
+                await redisClient.set('dashboard_cache', JSON.stringify(dataToReturn), { EX: 3600 }); // Expira em 1h
+            }
+
+            res.json({ success: true, data: dataToReturn });
         } catch (error) {
             console.error('Erro no dashboard:', error);
             res.status(500).json({ success: false, message: 'Erro ao buscar dados do dashboard' });
@@ -267,6 +279,27 @@ module.exports = (io, loginLimiter) => {
                     type: database.QueryTypes.INSERT
                 }
             );
+            
+            const payload = {
+                total: stats.total,
+                basico: stats.basico,
+                completo: stats.completo,
+                ativos: stats.ativos,
+                inativos: stats.inativos,
+                semEmail: contatos.semEmail,
+                semTelefone: contatos.semTelefone,
+                semEmailETelefone: contatos.semEmailETelefone,
+                expirados: stats.expirados,
+                expiraEm30Dias: stats.expiraEm30Dias,
+                porUf: porUf,
+                porMes: porMes,
+                cadernosPorUf: cadernosPorUf,
+                lastUpdated: new Date()
+            };
+            
+            if (redisClient.isReady) {
+                await redisClient.set('dashboard_cache', JSON.stringify(payload), { EX: 3600 });
+            }
 
             res.json({ success: true, message: 'Cache atualizado', lastUpdated: new Date() });
         } catch (error) {

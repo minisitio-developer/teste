@@ -4,7 +4,6 @@ import { masterPath } from '../config/config';
 
 import '../assets/css/navegacao.css'
 
-import { Navbar, Nav, NavDropdown, Container } from 'bootstrap';
 import Breadcrumb from '../plugins/Breadcrumb';
 
 function Navegacao({anuncio}) {

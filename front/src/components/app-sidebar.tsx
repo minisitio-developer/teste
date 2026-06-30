@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { AuthContext } from '../context/AuthContext.js';
+import { AuthContext } from '../context/AuthContext.jsx';
 import { BookOpen, Briefcase, Building2, Calendar, ChartNoAxesCombined, ChevronDown, ChevronUp, Copy, DollarSign, Home, Inbox, Newspaper, Search, Settings, Star, Ticket, Tickets, User2, Users } from "lucide-react"
 import {
     Sidebar,

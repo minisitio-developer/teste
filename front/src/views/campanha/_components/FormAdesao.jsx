@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { masterPath } from "../../../config/config";
 import Badge from 'react-bootstrap/Badge';
 import Stack from 'react-bootstrap/Stack';
-import moment, { now } from 'moment'
+import moment from 'moment'
 
 import InputMask from 'react-input-mask';
 
