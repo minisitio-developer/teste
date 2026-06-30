@@ -22,6 +22,9 @@ const Atividades = () => {
     const [atividades, setAtividades] = useState([]);
     const [showSpinner, setShowSpinner] = useState(true);
     const [showMsgBox, setShowMsgBox] = useState(false);
+    const [filtroCNAE, setFiltroCNAE] = useState('');
+    const [filtroNome, setFiltroNome] = useState('');
+    const [filtroTipo, setFiltroTipo] = useState('');
 
     const location = useLocation();
     const navigator = useNavigate();
@@ -169,6 +172,13 @@ const Atividades = () => {
             })
     };
 
+    const atividadesFiltradas = (atividades || []).filter(item => {
+        const matchCNAE = !filtroCNAE || (item.atividade || '').toLowerCase().includes(filtroCNAE.toLowerCase());
+        const matchNome = !filtroNome || (item.nomeAmigavel || '').toLowerCase().includes(filtroNome.toLowerCase());
+        const matchTipo = !filtroTipo || (item.corTitulo || '').toLowerCase().includes(filtroTipo.toLowerCase());
+        return matchCNAE && matchNome && matchTipo;
+    });
+
     return (
         <div className="Atividades">
         {/*     <header style={style} className='w-100'>
@@ -213,19 +223,22 @@ const Atividades = () => {
                                         <th>Atividade</th>
                                         <th>Tipo</th>
                                     </tr>
+                                    <tr>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroCNAE} onChange={e => setFiltroCNAE(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroNome} onChange={e => setFiltroNome(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroTipo} onChange={e => setFiltroTipo(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     {
-                                        atividades != '' && atividades.map((item) => (
+                                        atividadesFiltradas.map((item) => (
                                             <tr key={item.id} id={item.id} onClick={selecaoLinha}>
                                                 <td>{item.atividade}</td>
                                                 <td>{item.nomeAmigavel}</td>
                                                 <td>{item.corTitulo}</td>
                                             </tr>
-
                                         ))
                                     }
-
                                 </tbody>
                             </table>
                         </div>

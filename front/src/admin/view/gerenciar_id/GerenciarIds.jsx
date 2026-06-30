@@ -29,6 +29,13 @@ const GerenciarIds = () => {
     const [showSpinner, setShowSpinner] = useState(true);
     const [del, setDel] = useState(false);
     const [showMsgBox, setShowMsgBox] = useState(false);
+    const [filtroUsuario, setFiltroUsuario] = useState('');
+    const [filtroDesconto, setFiltroDesconto] = useState('');
+    const [filtroCodigo, setFiltroCodigo] = useState('');
+    const [filtroDescricao, setFiltroDescricao] = useState('');
+    const [filtroData, setFiltroData] = useState('');
+    const [filtroQtde, setFiltroQtde] = useState('');
+    const [filtroSaldo, setFiltroSaldo] = useState('');
 
     const location = useLocation();
 
@@ -308,36 +315,36 @@ const GerenciarIds = () => {
                             <table className="table table-bordered table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        {/* <th>Nome</th> */}
                                         <th style={{ "width": "200px" }}>Usuário</th>
                                         <th style={{ "width": "100px" }}>Desconto</th>
                                         <th style={{ "width": "150px" }}>Código</th>
                                         <th style={{ "width": "250px" }}>Descrição</th>
                                         <th style={{ "width": "200px" }}>Cadastrado em</th>
-
                                         <th style={{ "width": "150px" }}>Qtde Espaços</th>
                                         <th style={{ "width": "100px" }}>Saldo</th>
                                         <th style={{ "width": "100px" }}>Status</th>
                                     </tr>
+                                    <tr>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroUsuario} onChange={e => setFiltroUsuario(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroDesconto} onChange={e => setFiltroDesconto(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroCodigo} onChange={e => setFiltroCodigo(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroDescricao} onChange={e => setFiltroDescricao(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroData} onChange={e => setFiltroData(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroQtde} onChange={e => setFiltroQtde(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroSaldo} onChange={e => setFiltroSaldo(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th></th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     {
-                                        /* usuarios != '' && */
-                                        ids != '' && ids.IdsValue.map((item) => {
-                                            //console.log("map", usuarios)
-                                            //console.log("ids", ids)
-
+                                        idsFiltrados.map((item) => {
                                             return (
                                                 <tr key={item.idDesconto} id={item.idDesconto} onClick={selecaoLinha}>
-
-                                                    {/* <td>{teste(item.idUsuario)}</td> */}
                                                     <td>{item.nmUsuario}</td>
                                                     <td>{String(parseFloat(item.desconto).toFixed(2)).replace('.', ',')}</td>
-                                                    {/* <td>{parseFloat(item.desconto).toFixed(2)}</td> */}
                                                     <td>{item.hash}</td>
                                                     <td>{item.descricao}</td>
                                                     <td>{formatData(item.dtCadastro)}</td>
-                                                    {/*  <td>{item.ativo ? "Ativado" : "Desativado"}</td> */}
                                                     <td>{item.total_registros}</td>
                                                     <td>{item.saldo}</td>
                                                     <td><BtnActivate data={item.ativo} idd={item.idDesconto} modulo={"desconto"} /></td>

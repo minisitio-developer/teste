@@ -29,6 +29,14 @@ const Cadernos = () => {
     const [statusCount, setStatusCount] = useState(false);
     const [buscaAtiva, setBuscaAtiva] = useState(false);
     const [showMsgBox, setShowMsgBox] = useState(false);
+    const [filtroUF, setFiltroUF] = useState('');
+    const [filtroCaderno, setFiltroCaderno] = useState('');
+    const [filtroMosaico, setFiltroMosaico] = useState('');
+    const [filtroCEPInicial, setFiltroCEPInicial] = useState('');
+    const [filtroCEPFinal, setFiltroCEPFinal] = useState('');
+    const [filtroBasico, setFiltroBasico] = useState('');
+    const [filtroCompleto, setFiltroCompleto] = useState('');
+    const [filtroTotal, setFiltroTotal] = useState('');
 
     const location = useLocation();
     const navigator = useNavigate();
@@ -306,6 +314,18 @@ const Cadernos = () => {
     };
 
 
+    const cidadeFiltrada = (cidade || []).filter(item => {
+        const matchUF = !filtroUF || (item.UF || '').toLowerCase().includes(filtroUF.toLowerCase());
+        const matchCaderno = !filtroCaderno || (item.nomeCaderno || '').toLowerCase().includes(filtroCaderno.toLowerCase());
+        const matchMosaico = !filtroMosaico || (item.descImagem ? 'SIM' : 'NÃO').toLowerCase().includes(filtroMosaico.toLowerCase());
+        const matchCEPI = !filtroCEPInicial || (item.cep_inicial || '').includes(filtroCEPInicial);
+        const matchCEPF = !filtroCEPFinal || (item.cep_final || '').includes(filtroCEPFinal);
+        const matchBasico = !filtroBasico || String(item.basico).includes(filtroBasico);
+        const matchCompleto = !filtroCompleto || String(item.completo).includes(filtroCompleto);
+        const matchTotal = !filtroTotal || String(item.total).includes(filtroTotal);
+        return matchUF && matchCaderno && matchMosaico && matchCEPI && matchCEPF && matchBasico && matchCompleto && matchTotal;
+    });
+
     return (
         <div className="Cadernos">
       {/*       <header style={style} className='w-100'>
@@ -364,27 +384,30 @@ const Cadernos = () => {
                                         <th>COMPLETOS</th>
                                         <th>TOTAL</th>
                                     </tr>
+                                    <tr>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroUF} onChange={e => setFiltroUF(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroCaderno} onChange={e => setFiltroCaderno(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroMosaico} onChange={e => setFiltroMosaico(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroCEPInicial} onChange={e => setFiltroCEPInicial(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroCEPFinal} onChange={e => setFiltroCEPFinal(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroBasico} onChange={e => setFiltroBasico(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroCompleto} onChange={e => setFiltroCompleto(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroTotal} onChange={e => setFiltroTotal(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                    {cidade.map((item) => (
-                                        
+                                    {cidadeFiltrada.map((item) => (
                                         <tr onClick={selecaoLinha} key={item.id_uf} id={item.codCaderno}>
-                                            <td key={item.id_uf}>{item.UF}</td>
-                                            <td key={item.id_uf}>{item.nomeCaderno}</td>
-                                            {item.descImagem != '' ? <td key={item.id_uf}>SIM</td> : <td key={item.id_uf}>NÃO</td>}
-                                            <td key={item.id_uf}>{item.cep_inicial}</td>
-                                            <td key={item.id_uf}>{item.cep_final}</td>
-                                            <td key={item.id_uf}>{item.basico}</td>
-                                            <td key={item.id_uf}>{item.completo}</td>
-                                            <td key={item.id_uf}>{item.total}</td>
-                                           {/*  <td key={item.id_uf}>{statusCount ? countPerfis.find(perfil => perfil.codCaderno === item.nomeCaderno).basico : "Calculando..."}</td>
-                                            <td key={item.id_uf}>{statusCount ? countPerfis.find(perfil => perfil.codCaderno === item.nomeCaderno).completo : "Calculando..."}</td>  */}
-                                           {/*   <td key={item.id_uf}>{item.basico}</td>
-                                            <td key={item.id_uf}>{item.completo}</td>  */}
+                                            <td>{item.UF}</td>
+                                            <td>{item.nomeCaderno}</td>
+                                            {item.descImagem != '' ? <td>SIM</td> : <td>NÃO</td>}
+                                            <td>{item.cep_inicial}</td>
+                                            <td>{item.cep_final}</td>
+                                            <td>{item.basico}</td>
+                                            <td>{item.completo}</td>
+                                            <td>{item.total}</td>
                                         </tr>
                                     ))}
-
-
                                 </tbody>
                             </table>
                         </div>

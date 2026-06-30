@@ -31,6 +31,12 @@ const Users = () => {
     const [optionSearch, setOptionSearch] = useState([]);
     const [estadoSelecionado, setEstadoSelecionado] = useState(null);
     const [cadernoSelecionado, setCadernoSelecionado] = useState(null);
+    const [filtroNome, setFiltroNome] = useState('');
+    const [filtroEmail, setFiltroEmail] = useState('');
+    const [filtroCPF, setFiltroCPF] = useState('');
+    const [filtroTipo, setFiltroTipo] = useState('');
+    const [filtroUF, setFiltroUF] = useState('');
+    const [filtroCidade, setFiltroCidade] = useState('');
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -259,6 +265,17 @@ const Users = () => {
         zIndex: "999"
     }
 
+    const usuariosFiltrados = (usuarios?.usuarios || []).filter(item => {
+        const matchNome = !filtroNome || (item.descNome || '').toLowerCase().includes(filtroNome.toLowerCase());
+        const matchEmail = !filtroEmail || (item.descEmail || '').toLowerCase().includes(filtroEmail.toLowerCase());
+        const matchCPF = !filtroCPF || (item.descCPFCNPJ || '').includes(filtroCPF);
+        const tipoMap = { 1: 'SUPER ADMIN', 2: 'MASTER', 3: 'ANUNCIANTE', 4: 'MASTER / ANUNC', 5: 'PREFEITURA' };
+        const matchTipo = !filtroTipo || (tipoMap[item.codTipoUsuario] || '').toLowerCase().includes(filtroTipo.toLowerCase());
+        const matchUF = !filtroUF || (item.codUf || '').toLowerCase().includes(filtroUF.toLowerCase());
+        const matchCidade = !filtroCidade || (item.codCidade || '').toLowerCase().includes(filtroCidade.toLowerCase());
+        return matchNome && matchEmail && matchCPF && matchTipo && matchUF && matchCidade;
+    });
+
     function exportExcell() {
         const campoPesquisa = document.getElementById('buscar');
         setShowSpinner(true);
@@ -454,12 +471,21 @@ const Users = () => {
                                         <th>Cadastrado em</th>
                                         <th style={{ width: "100px" }}>Status</th>
                                     </tr>
+                                    <tr>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroNome} onChange={e => setFiltroNome(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroEmail} onChange={e => setFiltroEmail(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroCPF} onChange={e => setFiltroCPF(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroTipo} onChange={e => setFiltroTipo(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroUF} onChange={e => setFiltroUF(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th><input type="text" className="form-control form-control-sm" placeholder="Filtrar..." value={filtroCidade} onChange={e => setFiltroCidade(e.target.value)} onClick={e => e.stopPropagation()} /></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     {
-
-                                        usuarios != '' && usuarios.usuarios.map((item) => (
-
+                                        usuariosFiltrados.map((item) => (
                                             <tr key={item.codUsuario} id={item.codUsuario} onClick={selecaoLinha}>
                                                 <td>{item.descNome}</td>
                                                 <td>{item.descEmail}</td>
@@ -470,23 +496,10 @@ const Users = () => {
                                                 {item.codTipoUsuario === 3 ? <td>ANUNCIANTE</td> : ''}
                                                 {item.codTipoUsuario === 4 ? <td>MASTER / ANUNC</td> : ''}
                                                 {item.codTipoUsuario === 5 ? <td>PREFEITURA</td> : ''}
-                                                {/*  {uf.map((estado) => (
-                                                    estado.id_uf === item.codUf &&
-                                                    <td>{estado.sigla_uf}</td>
-                                                ))}
-                                                {caderno.map((cidade) => (
-                                                   
-                                                    cidade.codCaderno === item.codCidade &&
-                                                    <td>{cidade.nomeCaderno}</td>
-
-                                                ))} */}
                                                 <td>{item.codUf}</td>
                                                 <td>{item.codCidade}</td>
-                                                {item.codUf === 0 && <td>atualizar</td>}
-                                                {item.codCidade === 0 && <td>atualizar</td>}
                                                 <td>{formatData(item.dtCadastro)}</td>
                                                 <td><BtnActivate data={item.ativo} idd={item.codUsuario} modulo={"usuario"} /></td>
-                                                {/* <td>{item.ativo ? "Ativado" : "Desativado"}</td> */}
                                             </tr>
                                         ))
                                     }
