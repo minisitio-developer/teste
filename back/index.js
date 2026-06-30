@@ -8,6 +8,7 @@ process.on('unhandledRejection', (reason, promise) => {
 // Prevent uncaught exceptions from crashing the process
 process.on('uncaughtException', (err) => {
     console.error('Uncaught Exception:', err.message);
+    process.exit(1); // Finaliza o processo para permitir reinício limpo pelo gerenciador
 });
 
 const express = require('express');
@@ -113,7 +114,17 @@ const limiter = rateLimit({
 
 app.use('/api', limiter);
 app.use(helmet({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https:"],
+            imgSrc: ["'self'", "data:", "blob:", "https:"],
+            connectSrc: ["'self'", "https:", "wss:", "ws:"],
+            fontSrc: ["'self'", "https:", "data:"],
+        },
+    },
+    crossOriginEmbedderPolicy: false,
 }));
 
 const loginLimiter = rateLimit({
@@ -157,8 +168,16 @@ const imageFolders = {
 Object.entries(imageFolders).forEach(([routePrefix, folder]) => {
     app.get(`${routePrefix}*`, (req, res) => {
         const filename = req.params[0];
-        if (!filename || filename.includes('..')) return res.status(400).send('Invalid');
-        const localPath = path.resolve(__dirname, 'public', 'upload', 'img', folder, filename);
+        if (!filename) return res.status(400).send('Invalid');
+        
+        const baseDir = path.resolve(__dirname, 'public', 'upload', 'img', folder);
+        const localPath = path.resolve(baseDir, filename);
+        
+        // Proteção contra Path Traversal (LFI)
+        if (!localPath.startsWith(baseDir)) {
+            return res.status(403).send('Acesso Negado');
+        }
+
         if (fs.existsSync(localPath)) {
             return res.sendFile(localPath);
         }
@@ -253,15 +272,18 @@ cron.schedule('0 3 * * *', () => {
 // Backup diário do banco às 2h da manhã
 cron.schedule('0 2 * * *', () => {
     console.log('Iniciando backup do banco de dados...');
-    try {
-        const { execSync } = require('child_process');
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-        const filepath = `./backups/backup_${timestamp}.sql.gz`;
-        execSync(`mkdir -p ./backups && mysqldump -h ${process.env.DB_HOST || 'db'} -P ${process.env.DB_PORT || 3306} -u ${process.env.DB_USER || 'root'} -p${process.env.DB_PASSWORD || 'root'} ${process.env.DB_NAME || 'minisitio_local'} | gzip > "${filepath}"`, { stdio: 'pipe' });
+    const { exec } = require('child_process');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const filepath = `./backups/backup_${timestamp}.sql.gz`;
+    
+    exec(`mkdir -p ./backups && mysqldump -h ${process.env.DB_HOST || 'db'} -P ${process.env.DB_PORT || 3306} -u ${process.env.DB_USER || 'root'} -p${process.env.DB_PASSWORD || 'root'} ${process.env.DB_NAME || 'minisitio_local'} | gzip > "${filepath}"`, 
+    (error, stdout, stderr) => {
+        if (error) {
+            console.error(`✗ Erro no backup: ${error.message}`);
+            return;
+        }
         console.log(`✓ Backup concluído: ${filepath}`);
-    } catch (err) {
-        console.error(`✗ Erro no backup: ${err.message}`);
-    }
+    });
 });
 
 
@@ -348,24 +370,14 @@ async function seedPin() {
 
 async function fixAutoIncrement() {
     try {
-        const Atividade = require('./models/table_atividade');
+        console.log('AVISO: A sincronização automática de schema (sync) foi removida por segurança. Use Migrations em produção.');
         
-        // sync({ alter: true }) faz o Sequelize comparar o modelo com a tabela real
-        // e executar ALTER TABLE automaticamente para cada coluna que difere
-        await Atividade.sync({ alter: true });
-        console.log('FIX: Tabela atividade sincronizada com AUTO_INCREMENT');
-
+        // Fallback: tentar via SQL direto de forma menos invasiva
+        const database = require('./config/db');
+        await database.query(`ALTER TABLE atividade MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT`);
+        console.log('FIX: AUTO_INCREMENT verificado via SQL direto');
     } catch (err) {
-        console.error('FIX AUTO_INCREMENT atividade:', err.message);
-        
-        // Fallback: tentar via SQL direto
-        try {
-            const database = require('./config/db');
-            await database.query(`ALTER TABLE atividade MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT`);
-            console.log('FIX: AUTO_INCREMENT adicionado via SQL direto');
-        } catch (e2) {
-            console.error('FIX SQL fallback:', e2.message);
-        }
+        console.error('FIX AUTO_INCREMENT falhou (normal se a tabela já existir ou sem permissão):', err.message);
     }
 }
 
