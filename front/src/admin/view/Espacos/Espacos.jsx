@@ -193,55 +193,62 @@ const Espacos = () => {
         })
     };
 
-    function apagarMultiplosAnucios() {
+    async function apagarMultiplosAnucios() {
         let checkboxs = document.querySelectorAll('.chkChildren');
+        const selectedIds = [];
 
         checkboxs.forEach((line) => {
             if (line.checked) {
-                setShowSpinner(true);
-                fetch(`${masterPath.url}/admin/anuncio/delete/${line.id}`, {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess')
-                    },
-                })
-                    .then((x) => {
+                selectedIds.push(line.id);
+            }
+        });
+
+        if (selectedIds.length === 0) {
+            Swal.fire("Aviso", "Nenhum registro selecionado.", "warning");
+            return;
+        }
+
+        setShowSpinner(true);
+
+        try {
+            const results = await Promise.all(
+                selectedIds.map(id =>
+                    fetch(`${masterPath.url}/admin/anuncio/delete/${id}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess')
+                        },
+                    }).then(x => {
                         if (x.status === 401) {
                             navigate('/login');
                             return Promise.reject('Sessão expirada');
                         }
                         return x.json();
                     })
-                    .then((res) => {
-                        if (res.success) {
-                            //line.closest('tr').remove();
-                            setShowSpinner(false);
-                        } else {
-                            setShowSpinner(false);
-                            Swal.fire("Erro", res.message || "Falha ao excluir.", "error");
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error deleting:', error);
-                        setShowSpinner(false);
-                    });
-            }
-        });
+                )
+            );
 
-        setShowSpinner(true);
-        fetch(`${masterPath.url}/admin/espacos/read?page=${param}`, {
-            headers: { "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess') }
-        }).then((x) => x.json())
-            .then((resAnuncio) => {
-                setAnucios(resAnuncio);
-                setShowSpinner(false);
-                Swal.fire("Excluídos!", "Anúncios removidos.", "success");
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                setShowSpinner(false);
+            const successCount = results.filter(r => r && r.success).length;
+            const failCount = selectedIds.length - successCount;
+
+            const response = await fetch(`${masterPath.url}/admin/espacos/read?page=${param}`, {
+                headers: { "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess') }
             });
+            const resAnuncio = await response.json();
+            setAnucios(resAnuncio);
+            setShowSpinner(false);
+
+            if (failCount > 0) {
+                Swal.fire("Resultado", `${successCount} excluído(s), ${failCount} falha(s).`, "warning");
+            } else {
+                Swal.fire("Excluídos!", `${successCount} anúncio(s) removido(s).`, "success");
+            }
+        } catch (error) {
+            console.error('Error deleting:', error);
+            setShowSpinner(false);
+            Swal.fire("Erro", "Falha ao excluir anúncios.", "error");
+        }
     };
 
     function apagarDup() {
