@@ -145,6 +145,37 @@ app.use('/api/files/institucional', express.static(path.resolve(__dirname, "publ
 app.use('/api/files/og', express.static(path.resolve(__dirname, "public", "OG")));
 app.use('/api/files/campanha', express.static(path.resolve(__dirname, "public", "upload", "campanha")));
 
+const OLD_SERVER = 'https://minisitio.com.br';
+const https = require('https');
+const imageFolders = {
+    '/api/files/descImagem/': 'descImagem',
+    '/api/files/logoParceiro/': 'logoParceiro',
+    '/api/files/mosaico/': 'mosaico',
+};
+
+Object.entries(imageFolders).forEach(([routePrefix, folder]) => {
+    app.get(`${routePrefix}*`, (req, res) => {
+        const filename = req.params[0];
+        if (!filename || filename.includes('..')) return res.status(400).send('Invalid');
+        const localPath = path.resolve(__dirname, 'public', 'upload', 'img', folder, filename);
+        if (fs.existsSync(localPath)) {
+            return res.sendFile(localPath);
+        }
+        const remoteUrl = `${OLD_SERVER}/api/files/${folder}/${encodeURIComponent(filename)}`;
+        https.get(remoteUrl, (proxyRes) => {
+            if (proxyRes.statusCode === 200) {
+                res.setHeader('Content-Type', proxyRes.headers['content-type'] || 'application/octet-stream');
+                res.setHeader('Cache-Control', 'public, max-age=86400');
+                proxyRes.pipe(res);
+            } else {
+                res.status(404).send('Not found');
+            }
+        }).on('error', () => {
+            res.status(404).send('Not found');
+        });
+    });
+});
+
 // Servir frontend build para produção
 const frontBuildPath = path.join(__dirname, '..', 'front', 'build');
 app.use(express.static(frontBuildPath));
