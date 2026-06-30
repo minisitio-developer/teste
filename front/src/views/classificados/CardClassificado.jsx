@@ -80,15 +80,15 @@ useEffect(() => {
                         <a href={`${masterPath.domain}/perfil/${props.data.codAnuncio}`}>
                             <img
                                 src={
-                                    props.fallbackImg
-                                        ? props.fallbackImg
-                                        : (props.data.descImagem && props.data.descImagem !== '0' && props.data.descImagem !== 'undefined')
-                                            ? `${masterPath.url}/files/descImagem/${props.data.descImagem}`
-                                            : '/assets/img/placeholder.png'
+                                    (props.data.descImagem && props.data.descImagem !== '0' && props.data.descImagem !== 'undefined')
+                                        ? `${masterPath.url}/files/descImagem/${props.data.descImagem}`
+                                        : (props.fallbackImg || '/assets/img/placeholder.png')
                                 }
                                 alt={props.data.descAnuncio}
                                 onError={(e) => {
-                                    if (!props.fallbackImg) {
+                                    if (props.fallbackImg) {
+                                        e.target.src = props.fallbackImg;
+                                    } else {
                                         e.target.style.display = 'none';
                                     }
                                 }}
