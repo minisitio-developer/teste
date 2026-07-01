@@ -31,7 +31,8 @@ const capaFallbacks = {
  * Se não houver fallback para a UF, retorna null (sem fallback).
  */
 export function getCapaFallback(uf, index) {
-  const fallbacks = capaFallbacks[uf];
+  if (!uf) return null;
+  const fallbacks = capaFallbacks[uf.toUpperCase()];
   if (!fallbacks || fallbacks.length === 0) return null;
   return fallbacks[index % fallbacks.length];
 }

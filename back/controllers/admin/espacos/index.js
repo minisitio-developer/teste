@@ -470,6 +470,7 @@ module.exports = {
     listarClassificado: async (req, res) => {
 
         try {
+            req.params.uf = req.params.uf.toUpperCase();
             const cadernoParam = decodeURIComponent(req.params.caderno);
 
             let cadernoData = await Caderno.findOne({
@@ -856,6 +857,7 @@ module.exports = {
     },
     listarClassificadoGeral: async (req, res) => {
 
+        req.params.uf = req.params.uf.toUpperCase();
         const page = req.query.page ? parseInt(req.query.page) : 1;
         const limit = 10;
         const offset = Math.max(0, (page - 1) * limit);

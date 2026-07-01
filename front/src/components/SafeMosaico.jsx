@@ -16,7 +16,9 @@ function SafeMosaico({ src, alt, fallback }) {
         />
       )}
 
-      {/* Se não carregar, mostra o fallback */}
+      {error && fallback && (
+        <img src={fallback} alt="fallback" style={{ display: "block" }} />
+      )}
 
     </>
   );
@@ -24,8 +26,3 @@ function SafeMosaico({ src, alt, fallback }) {
 
 
 export default SafeMosaico;
-
-
-/*       {error && fallback && (
-        <img src={fallback} alt="fallback" />
-      )} */

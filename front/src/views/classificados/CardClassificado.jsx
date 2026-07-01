@@ -61,7 +61,7 @@ useEffect(() => {
                                     {[{ img: parceiros.descImagem, link: parceiros.descLink },
                                     { img: parceiros.descImagem2, link: parceiros.descLink2 },
                                     { img: parceiros.descImagem3, link: parceiros.descLink3 }]
-                                        .filter(item => item.img) // Filtra itens com imagem válida
+                                        .filter(item => item.img)
                                         .map((item, index) => (
                                             <a
                                                 key={index}
@@ -98,27 +98,19 @@ useEffect(() => {
 
                     <div className="links">
                         <ul className="list-inline">
-                      {/*       <li className="pull-left">
-                                <a href={`${masterPath.domain}/perfil/${props.data.codAnuncio}`} data-toggle="tooltip" title="Detalhes" >
-                                    <img alt="" src="/assets/img/miniwebcard/link_detalhe.png" />
-                                </a>
-                            </li>
-                            <li className="pull-right">
-                                <a href="#" data-toggle="tooltip" title="SAC - Fale Comigo">
-                                    <img alt="" src="/assets/img/miniwebcard/link_email.png" />
-                                </a>
-                            </li> */}
                         </ul>
                     </div>
 
-
+                </li>
+            ) : props.fallbackImg ? (
+                <li className="cartao mb-4">
+                    <div className="conteudo">
+                        <img src={props.fallbackImg} alt={props.title} />
+                    </div>
                 </li>
             ) : (
                 <li className="cartao d-flex justify-content-center align-items-center">
-
                     <span>NÃO INFORMADO</span>
-
-
                 </li>
             )}
 

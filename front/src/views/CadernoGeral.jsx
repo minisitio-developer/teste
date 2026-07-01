@@ -224,11 +224,11 @@ function Caderno(props) {
               // e.target.src = "/images/fallback.png";
             }}
           /> */}
-          {mosaicoImg.length > 0 && (
+          {mosaicoImg && mosaicoImg.length > 0 && (
             <SafeImage
               src={`${masterPath.url}/files/mosaico/${mosaicoImg}`}
               alt="mosaico"
-              fallback="/images/fallback.png"
+              fallback="/assets/img/placeholder.png"
             />
           )}
 
