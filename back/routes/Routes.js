@@ -167,7 +167,7 @@ module.exports = (io, loginLimiter) => {
                         total: 0, basico: 0, completo: 0, ativos: 0, inativos: 0,
                         semEmail: null, semTelefone: null, semEmailETelefone: null,
                         expirados: 0, expiraEm30Dias: 0,
-                        porUf: [], porMes: [], cadernosPorUf: [],
+                        porUf: [], porMes: [], cadernosPorUf: [], porAtividade: [],
                         lastUpdated: null
                     }
                 });
@@ -187,6 +187,7 @@ module.exports = (io, loginLimiter) => {
                 porUf: JSON.parse(cache.porUf_json || '[]'),
                 porMes: JSON.parse(cache.porMes_json || '[]'),
                 cadernosPorUf: JSON.parse(cache.cadernosPorUf_json || '[]'),
+                porAtividade: JSON.parse(cache.porAtividade_json || '[]'),
                 lastUpdated: cache.lastUpdated
             };
             
@@ -210,16 +211,16 @@ module.exports = (io, loginLimiter) => {
                     total INT DEFAULT 0, basico INT DEFAULT 0, completo INT DEFAULT 0,
                     ativos INT DEFAULT 0, inativos INT DEFAULT 0,
                     expirados INT DEFAULT 0, expiraEm30Dias INT DEFAULT 0,
-                    semEmail INT DEFAULT NULL, semTelefone INT DEFAULT NULL, semEmailETelefone INT DEFAULT NULL,
+                   semEmail INT DEFAULT NULL, semTelefone INT DEFAULT NULL, semEmailETelefone INT DEFAULT NULL,
                     porUf_json LONGTEXT, porMes_json LONGTEXT, cadernosPorUf_json LONGTEXT,
-                    contatos_json LONGTEXT, lastUpdated DATETIME,
+                    porAtividade_json LONGTEXT, contatos_json LONGTEXT, lastUpdated DATETIME,
                     UNIQUE KEY idx_dashboard_cache_id (id)
                 )`
             );
             const [stats] = await database.query(
                 `SELECT
                     COUNT(*) as total,
-                    SUM(CASE WHEN codTipoAnuncio = '1' THEN 1 ELSE 0 END) as basico,
+                    SUM(CASE WHEN codTipoAnuncio IN ('1','2') THEN 1 ELSE 0 END) as basico,
                     SUM(CASE WHEN codTipoAnuncio = '3' THEN 1 ELSE 0 END) as completo,
                     SUM(CASE WHEN activate = 1 THEN 1 ELSE 0 END) as ativos,
                     SUM(CASE WHEN activate = 0 THEN 1 ELSE 0 END) as inativos,
@@ -231,7 +232,7 @@ module.exports = (io, loginLimiter) => {
 
             const porUf = await database.query(
                 `SELECT codUf, COUNT(*) as total,
-                 SUM(CASE WHEN codTipoAnuncio = '1' THEN 1 ELSE 0 END) as basico,
+                 SUM(CASE WHEN codTipoAnuncio IN ('1','2') THEN 1 ELSE 0 END) as basico,
                  SUM(CASE WHEN codTipoAnuncio = '3' THEN 1 ELSE 0 END) as completo
                  FROM anuncio WHERE activate = 1
                  GROUP BY codUf ORDER BY total DESC`,
@@ -240,11 +241,23 @@ module.exports = (io, loginLimiter) => {
 
             const porMes = await database.query(
                 `SELECT DATE_FORMAT(createdAt, '%Y-%m') as mes, COUNT(*) as total,
-                 SUM(CASE WHEN codTipoAnuncio = '1' THEN 1 ELSE 0 END) as basico,
+                 SUM(CASE WHEN codTipoAnuncio IN ('1','2') THEN 1 ELSE 0 END) as basico,
                  SUM(CASE WHEN codTipoAnuncio = '3' THEN 1 ELSE 0 END) as completo
                  FROM anuncio
                  WHERE createdAt >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
                  GROUP BY mes ORDER BY mes ASC`,
+                { type: database.QueryTypes.SELECT }
+            );
+
+            const porAtividade = await database.query(
+                `SELECT atv.nomeAmigavel as atividade, COUNT(*) as total,
+                 SUM(CASE WHEN a.codTipoAnuncio IN ('1','2') THEN 1 ELSE 0 END) as basico,
+                 SUM(CASE WHEN a.codTipoAnuncio = '3' THEN 1 ELSE 0 END) as completo
+                 FROM anuncio a
+                 JOIN atividade atv ON a.codAtividade = atv.atividade
+                 WHERE a.activate = 1
+                 GROUP BY atv.nomeAmigavel
+                 ORDER BY total DESC`,
                 { type: database.QueryTypes.SELECT }
             );
 
@@ -260,21 +273,23 @@ module.exports = (io, loginLimiter) => {
             );
 
             await database.query(
-                `INSERT INTO dashboard_cache (id, total, basico, completo, ativos, inativos, expirados, expiraEm30Dias, semEmail, semTelefone, semEmailETelefone, porUf_json, porMes_json, cadernosPorUf_json, contatos_json, lastUpdated)
-                 VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                `INSERT INTO dashboard_cache (id, total, basico, completo, ativos, inativos, expirados, expiraEm30Dias, semEmail, semTelefone, semEmailETelefone, porUf_json, porMes_json, cadernosPorUf_json, porAtividade_json, contatos_json, lastUpdated)
+                 VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
                  ON DUPLICATE KEY UPDATE
                     total=VALUES(total), basico=VALUES(basico), completo=VALUES(completo),
                     ativos=VALUES(ativos), inativos=VALUES(inativos),
                     expirados=VALUES(expirados), expiraEm30Dias=VALUES(expiraEm30Dias),
                     semEmail=VALUES(semEmail), semTelefone=VALUES(semTelefone), semEmailETelefone=VALUES(semEmailETelefone),
                     porUf_json=VALUES(porUf_json), porMes_json=VALUES(porMes_json),
-                    cadernosPorUf_json=VALUES(cadernosPorUf_json), contatos_json=VALUES(contatos_json), lastUpdated=NOW()`,
+                    cadernosPorUf_json=VALUES(cadernosPorUf_json), porAtividade_json=VALUES(porAtividade_json),
+                    contatos_json=VALUES(contatos_json), lastUpdated=NOW()`,
                 {
                     replacements: [
                         stats.total, stats.basico, stats.completo, stats.ativos, stats.inativos,
                         stats.expirados, stats.expiraEm30Dias,
                         contatos.semEmail, contatos.semTelefone, contatos.semEmailETelefone,
-                        JSON.stringify(porUf), JSON.stringify(porMes), JSON.stringify(cadernosPorUf), JSON.stringify(contatos)
+                        JSON.stringify(porUf), JSON.stringify(porMes), JSON.stringify(cadernosPorUf),
+                        JSON.stringify(porAtividade), JSON.stringify(contatos)
                     ],
                     type: database.QueryTypes.INSERT
                 }
@@ -294,6 +309,7 @@ module.exports = (io, loginLimiter) => {
                 porUf: porUf,
                 porMes: porMes,
                 cadernosPorUf: cadernosPorUf,
+                porAtividade: porAtividade,
                 lastUpdated: new Date()
             };
             

@@ -401,6 +401,41 @@ function Dashboard() {
                     </div>
                 )}
 
+                {/* Perfis por Atividade */}
+                {data.porAtividade && data.porAtividade.length > 0 && (
+                    <div className="row mb-4">
+                        <div className="col-md-12">
+                            <div className="card">
+                                <div className="card-header bg-dark text-white">
+                                    <h5 className="mb-0"><i className="fa fa-bar-chart"></i> Perfis por Atividade (Brasil)</h5>
+                                </div>
+                                <div className="card-body" style={{ maxHeight: '500px', overflowY: 'auto' }}>
+                                    <table className="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Atividade</th>
+                                                <th className="text-end">Básicos</th>
+                                                <th className="text-end">Completos</th>
+                                                <th className="text-end">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {data.porAtividade.map(item => (
+                                                <tr key={item.atividade}>
+                                                    <td><strong>{item.atividade}</strong></td>
+                                                    <td className="text-end">{formatNumber(item.basico)}</td>
+                                                    <td className="text-end">{formatNumber(item.completo)}</td>
+                                                    <td className="text-end"><strong>{formatNumber(item.total)}</strong></td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Capa do Caderno - Lazy Load */}
                 <div className="row mb-4">
                     <div className="col-md-12">
