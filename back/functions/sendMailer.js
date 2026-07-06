@@ -251,13 +251,36 @@ async function forgotPasswordEmail(email, resetLink) {
 };
 
 
+async function renovacaoLembrete(anuncio) {
+    try {
+        const { descEmailAutorizante, descNomeAutorizante, descAnuncio, codAnuncio, dueDate } = anuncio;
+        const dataVencimento = new Date(dueDate).toLocaleDateString('pt-BR');
+        await transporter.sendMail({
+            from: `Minisitio <dev@ziiz.com.br>`,
+            to: ['dev@ziiz.com.br', 'contatobr@mycardcity.net', descEmailAutorizante],
+            subject: `Renovação - ${descAnuncio}`,
+            html: `
+        <p>Olá <strong>${descNomeAutorizante || 'Cliente'}</strong>,</p>
+        <p>O anúncio <strong>${descAnuncio}</strong> (código ${codAnuncio}) vencerá em <strong>${dataVencimento}</strong>.</p>
+        <p>Acesse o link abaixo para renovar:</p>
+        <p><a href="${config.domain}/perfil/${codAnuncio}" target="_blank">${config.domain}/perfil/${codAnuncio}</a></p>
+        <hr>
+        <p>Equipe Minisitio</p>
+            `
+        });
+    } catch (error) {
+        console.error('Erro ao enviar lembrete de renovação:', error.message);
+    }
+};
+
 module.exports = {
     sendMailError,
     faleComDono,
     faleComDonoCliente,
     contato,
     novoUsuario,
-    forgotPasswordEmail
+    forgotPasswordEmail,
+    renovacaoLembrete
 };
 
 

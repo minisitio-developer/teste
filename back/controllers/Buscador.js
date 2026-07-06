@@ -48,11 +48,13 @@ module.exports = {
         a.activate = 1
         AND a.codUf = :uf
         AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
-        AND (a.codTipoAnuncio != 4 OR a.moderacao = 'autorizado')
+        AND (a.moderacao = 'autorizado' OR a.moderacao IS NULL)
         AND (
             a.descAnuncio LIKE :termo
             OR atv.atividade LIKE :termo
             OR atv.nomeAmigavel LIKE :termo
+            OR a.descTelefone LIKE :termo
+            OR a.descCPFCNPJ LIKE :termo
             OR EXISTS (
                 SELECT 1 FROM tags t
                 WHERE t.codAnuncio = a.codAnuncio
@@ -80,11 +82,13 @@ module.exports = {
         a.activate = 1
         AND a.codUf = :uf
         AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
-        AND (a.codTipoAnuncio != 4 OR a.moderacao = 'autorizado')
+        AND (a.moderacao = 'autorizado' OR a.moderacao IS NULL)
         AND (
             a.descAnuncio LIKE :termo
             OR atv.atividade LIKE :termo
             OR atv.nomeAmigavel LIKE :termo
+            OR a.descTelefone LIKE :termo
+            OR a.descCPFCNPJ LIKE :termo
         )
     ORDER BY a.codAtividade ASC, a.codTipoAnuncio DESC, a.createdAt ASC, a.descAnuncio ASC
     LIMIT :limit OFFSET :offset;`, {
@@ -118,9 +122,11 @@ module.exports = {
       a.activate = 1
       AND a.codUf = :uf
       AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
-      AND (a.codTipoAnuncio != 4 OR a.moderacao = 'autorizado')
+      AND (a.moderacao = 'autorizado' OR a.moderacao IS NULL)
       AND (
         a.descAnuncio LIKE :termo
+        OR a.descTelefone LIKE :termo
+        OR a.descCPFCNPJ LIKE :termo
         OR EXISTS (
           SELECT 1 FROM atividade atv
           WHERE atv.atividade = a.codAtividade
@@ -149,9 +155,11 @@ module.exports = {
       a.activate = 1
       AND a.codUf = :uf
       AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
-      AND (a.codTipoAnuncio != 4 OR a.moderacao = 'autorizado')
+      AND (a.moderacao = 'autorizado' OR a.moderacao IS NULL)
       AND (
         a.descAnuncio LIKE :termo
+        OR a.descTelefone LIKE :termo
+        OR a.descCPFCNPJ LIKE :termo
         OR EXISTS (
           SELECT 1 FROM atividade atv
           WHERE atv.atividade = a.codAtividade
@@ -282,8 +290,8 @@ module.exports = {
                 where: {
                     codCaderno: codigoCaderno,
                     [Op.or]: [
-                        { codTipoAnuncio: { [Op.ne]: 4 } },
-                        { moderacao: 'autorizado' }
+                        { moderacao: 'autorizado' },
+                        { moderacao: null }
                     ]
                 },
                 limit: porPagina,
@@ -426,7 +434,7 @@ module.exports = {
         const { uf, bairro, profissao } = req.query;
 
         try {
-            let whereConditions = ['a.activate = 1', '(a.codTipoAnuncio != 4 OR a.moderacao = \'autorizado\')'];
+            let whereConditions = ['a.activate = 1', '(a.moderacao = \'autorizado\' OR a.moderacao IS NULL)'];
             let replacements = {};
 
             if (uf) {

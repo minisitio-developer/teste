@@ -664,8 +664,8 @@ function ComprarAnuncio() {
                                 <i className="fa fa-youtube"></i>
                                 <input
                                     type="text"
-                                    name="descVideo"
-                                    id="descVideo"
+                                    name="descYouTube"
+                                    id="descYouTube"
                                     className="form-control"
                                     placeholder="Digite o vídeo"
                                 />

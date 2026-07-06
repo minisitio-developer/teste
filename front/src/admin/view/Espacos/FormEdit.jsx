@@ -538,12 +538,12 @@ const FormEdit = () => {
                         </div>
 
                         <div className="form-group d-flex flex-column align-items-center py-3">
-                            <label htmlFor="descVideo" className="w-50 px-1">Youtube:</label>
+                            <label htmlFor="descYouTube" className="w-50 px-1">Youtube:</label>
                             <input type="text"
                                 className="form-control h-25 w-50"
                                 id="urlYoutube"
-                                name="descVideo"
-                                value={ids.descVideo}
+                                name="descYouTube"
+                                value={ids.descYouTube}
                                 onChange={handleChange}
                                 placeholder='Digite uma url válida'
                             />

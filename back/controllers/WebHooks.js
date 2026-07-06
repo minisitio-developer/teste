@@ -187,13 +187,19 @@ async function novoRegistrarPagamento(data) {
                     raw: true
                 })
 
-                const perfilActivate = await Anuncio.update({
+                const updateData = {
                     "codDesconto": idCampanha.id_promocional,
                     "activate": 1,
                     "codTipoAnuncio": "3",
                     "dtCadastro2": Date.now(),
                     "dueDate": moment(Date.now()).add(1, 'year').toISOString()
-                }, {
+                };
+
+                if (perfil.codTipoAnuncio != "3") {
+                    updateData.createdAt = new Date();
+                }
+
+                const perfilActivate = await Anuncio.update(updateData, {
                     where: {
                         codAnuncio: codigoReferenciaMp
                     }
@@ -261,13 +267,19 @@ async function novoRegistrarPagamento(data) {
                             raw: true
                         })
 
-                        const perfilActivate = await Anuncio.update({
+                        const updateData = {
                             "codDesconto": idCampanha.id_promocional,
                             "activate": 1,
                             "codTipoAnuncio": "3",
                             "dtCadastro2": Date.now(),
                             "dueDate": moment(Date.now()).add(1, 'year').toISOString()
-                        }, {
+                        };
+
+                        if (perfil.codTipoAnuncio != "3") {
+                            updateData.createdAt = new Date();
+                        }
+
+                        const perfilActivate = await Anuncio.update(updateData, {
                             where: {
                                 codAnuncio: codigoReferenciaMp
                             }
@@ -337,13 +349,19 @@ async function novoRegistrarPagamento(data) {
                             raw: true
                         })
 
-                        const perfilActivate = await Anuncio.update({
+                        const updateData = {
                             "codDesconto": idCampanha.id_promocional,
                             "activate": 1,
                             "codTipoAnuncio": "3",
                             "dtCadastro2": Date.now(),
                             "dueDate": moment(Date.now()).add(1, 'year').toISOString()
-                        }, {
+                        };
+
+                        if (perfil.codTipoAnuncio != "3") {
+                            updateData.createdAt = new Date();
+                        }
+
+                        const perfilActivate = await Anuncio.update(updateData, {
                             where: {
                                 codAnuncio: codigoReferenciaMp
                             }
@@ -448,6 +466,10 @@ async function registrarPagamento(data, res) {
                             "dueDate": moment(Date.now()).add(1, 'year').toISOString()
                         };
 
+                        if (perfil.codTipoAnuncio != "3") {
+                            objUpdated.createdAt = new Date();
+                        }
+
                         console.log("idCampanha", idCampanha);
 
                         //enviar email para novo perfil pago
@@ -541,13 +563,19 @@ async function registrarPagamento(data, res) {
 
                         console.log("idCampanha", idDesconto, idCampanha, await getDescontoPorHash(idCampanha.idPromocional));
 
-                        const perfilActivate = await Anuncio.update({
+                        const updateData = {
                             "codDesconto": await getDescontoPorHash(idCampanha.idPromocional),
                             "activate": 1,
                             "codTipoAnuncio": "3",
                             "dtCadastro2": Date.now(),
                             "dueDate": moment(Date.now()).add(1, 'year').toISOString()
-                        }, {
+                        };
+
+                        if (perfil.codTipoAnuncio != "3") {
+                            updateData.createdAt = new Date();
+                        }
+
+                        const perfilActivate = await Anuncio.update(updateData, {
                             where: {
                                 codAnuncio: codigoReferenciaMp
                             }
@@ -568,7 +596,6 @@ async function registrarPagamento(data, res) {
 
                     }
 
-
                 } catch (err) {
                     console.log(err)
                 }
@@ -576,8 +603,6 @@ async function registrarPagamento(data, res) {
 
 
             })
-
-
 
     }
 };

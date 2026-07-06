@@ -509,7 +509,7 @@ module.exports = {
                     ]
                 },
                 attributes: ['codAnuncio', 'codAtividade', 'descAnuncio', 'descEndereco', 'descImagem', 'codCaderno', 'codUf'],
-                order: [['codAtividade', 'ASC'], ['descAnuncio', 'ASC']]
+                order: [['codAtividade', 'ASC'], ['codTipoAnuncio', 'DESC'], ['createdAt', 'ASC'], ['descAnuncio', 'ASC']]
             });
 
             const anuncioTeste = await Anuncio.findAndCountAll({
@@ -526,7 +526,7 @@ module.exports = {
                 attributes: ['codAnuncio', 'codAtividade', 'descAnuncio', 'descEndereco', 'descImagem', 'codCaderno', 'codUf'],
                 limit: porPagina,
                 offset: offset,
-                order: [['codAtividade', 'ASC'], ['descAnuncio', 'ASC']]
+                order: [['codAtividade', 'ASC'], ['codTipoAnuncio', 'DESC'], ['createdAt', 'ASC'], ['descAnuncio', 'ASC']]
             });
 
             res.json({
@@ -962,7 +962,7 @@ module.exports = {
                     [Op.notIn]: ['ADMINISTRAÇÃO REGIONAL / PREFEITURA', "EMERGÊNCIA", "UTILIDADE PÚBLICA", "HOSPITAIS PÚBLICOS", "CÂMARA DE VEREADORES - CÂMARA DISTRITAL", "SECRETARIA DE TURISMO", "INFORMAÇÕES", "EVENTOS NA CIDADE"]  // Ignorar esse valor
                 },
             },
-            order: [['codAtividade', 'ASC'], ['createdAt', 'DESC']],
+            order: [['codAtividade', 'ASC'], ['codTipoAnuncio', 'DESC'], ['createdAt', 'ASC'], ['descAnuncio', 'ASC']],
             limit: limit,
             offset: offset,
             attributes: ['codAnuncio', 'codAtividade', 'descAnuncio', 'descTelefone', 'descImagem', 'codDesconto', 'page'],
@@ -3211,7 +3211,7 @@ module.exports = {
             "descPatrocinadorLink": 0,
             "qntVisualizacoes": 0,
             "activate": 1,
-            "moderacao": "autorizar",
+            "moderacao": "pendente",
             //"dtCadastro": dataNow(),
             "dtCadastro2": dtCadastro2,
             "dtAlteracao": Date.now(),
@@ -3273,6 +3273,13 @@ module.exports = {
                         nomeCaderno: dadosAnuncio.codCaderno
                     }
                 });
+            } else if (codTipoAnuncio == 2) {
+                await Caderno.increment('basico', {
+                    where: {
+                        UF: dadosAnuncio.codUf,
+                        nomeCaderno: dadosAnuncio.codCaderno
+                    }
+                });
             } else if (codTipoAnuncio == 3) {
                 await Caderno.increment('completo', {
                     where: {
@@ -3297,7 +3304,7 @@ module.exports = {
                 const query = `UPDATE anuncio
                         JOIN (
                             SELECT codAnuncio, 
-                                CEIL(ROW_NUMBER() OVER (ORDER BY codAtividade ASC, createdAt DESC) / 10) AS 'page_number'
+                                CEIL(ROW_NUMBER() OVER (ORDER BY codAtividade ASC, codTipoAnuncio DESC, createdAt ASC, descAnuncio ASC) / 10) AS 'page_number'
                             FROM anuncio
                             WHERE codUf = :estado AND codCaderno = :caderno
                         ) AS temp
@@ -3790,6 +3797,13 @@ module.exports = {
                         nomeCaderno: caderno
                     }
                 });
+            } else if (tipoAnuncio == 2) {
+                await Caderno.decrement('basico', {
+                    where: {
+                        UF: uf,
+                        nomeCaderno: caderno
+                    }
+                });
             } else if (tipoAnuncio == 3) {
                 await Caderno.decrement('completo', {
                     where: {
@@ -3823,7 +3837,7 @@ module.exports = {
             const query = `UPDATE anuncio
                         JOIN (
                             SELECT codAnuncio, 
-                                CEIL(ROW_NUMBER() OVER (ORDER BY codAtividade ASC, createdAt DESC) / 10) AS 'page_number'
+                                CEIL(ROW_NUMBER() OVER (ORDER BY codAtividade ASC, codTipoAnuncio DESC, createdAt ASC, descAnuncio ASC) / 10) AS 'page_number'
                             FROM anuncio
                             WHERE codUf = :estado AND codCaderno = :caderno
                         ) AS temp
@@ -6132,7 +6146,7 @@ module.exports = {
                     const query = `UPDATE anuncio
                         JOIN (
                             SELECT codAnuncio, 
-                                CEIL(ROW_NUMBER() OVER (ORDER BY codAtividade ASC, createdAt DESC) / 10) AS 'page_number'
+                                CEIL(ROW_NUMBER() OVER (ORDER BY codAtividade ASC, codTipoAnuncio DESC, createdAt ASC, descAnuncio ASC) / 10) AS 'page_number'
                             FROM anuncio
                             WHERE codUf = :estado AND codCaderno = :caderno
                         ) AS temp

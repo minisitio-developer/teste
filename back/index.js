@@ -46,6 +46,7 @@ const { Server } = require('socket.io');
 const cron = require('node-cron');
 const { deletarPromocoesExpiradas } = require('./crons/promocao');
 const { inativarCampanhasExpiradas, downgradePerfil } = require('./crons/campanha');
+const { renovacaoLembrete } = require('./functions/sendMailer');
 
 
 // ========== CONFIGURAÇÃO SEGURA DE CERTIFICADOS ==========
@@ -286,6 +287,33 @@ cron.schedule('0 2 * * *', () => {
         }
         console.log(`✓ Backup concluído: ${filepath}`);
     });
+});
+
+cron.schedule('0 7 * * *', async () => {
+    console.log('Verificando anúncios próximos do vencimento...');
+    try {
+        const hoje = new Date();
+        const daqui30Dias = new Date();
+        daqui30Dias.setDate(hoje.getDate() + 30);
+
+        const anuncios = await database.query(
+            `SELECT * FROM anuncio
+             WHERE activate = 1
+               AND dueDate IS NOT NULL
+               AND dueDate BETWEEN :hoje AND :daqui30Dias`,
+            {
+                replacements: { hoje, daqui30Dias },
+                type: database.QueryTypes.SELECT
+            }
+        );
+
+        for (const anuncio of anuncios) {
+            await renovacaoLembrete(anuncio);
+        }
+        console.log(`Lembretes de renovação enviados para ${anuncios.length} anúncio(s)`);
+    } catch (error) {
+        console.error('Erro no cron de lembrete de renovação:', error.message);
+    }
 });
 
 

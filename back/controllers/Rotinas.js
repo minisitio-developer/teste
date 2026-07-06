@@ -9,7 +9,7 @@ module.exports = {
                             JOIN (
                                 SELECT
                                     a.codAnuncio,
-                                    CEIL(ROW_NUMBER() OVER (PARTITION BY a.codUf, a.codCaderno ORDER BY a.codAtividade ASC, a.createdAt DESC) / 10) AS page_number
+                                    CEIL(ROW_NUMBER() OVER (PARTITION BY a.codUf, a.codCaderno ORDER BY a.codAtividade ASC, a.codTipoAnuncio DESC, a.createdAt ASC, a.descAnuncio ASC) / 10) AS page_number
                                 FROM anuncio a
                                 JOIN caderno c ON CAST(a.codUf AS CHAR) = c.UF AND a.codCaderno = c.nomeCaderno
                             ) AS temp ON anuncio.codAnuncio = temp.codAnuncio

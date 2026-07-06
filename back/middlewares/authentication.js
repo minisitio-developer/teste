@@ -1,6 +1,13 @@
 const key = require('../config/config.js');
 const jwt = require('jsonwebtoken');
 
+const ROLES = {
+    ADMIN: 1,
+    MASTER: 2,
+    ANUNCIANTE: 3,
+    ANUNCIANTE_5: 5
+};
+
 function auth(req, res, next) {
   const secretKey = key.apiSecret;
     const authToken = req.headers['authorization'];
@@ -16,7 +23,11 @@ function auth(req, res, next) {
                 res.json({ success: false, message: "Token inválido" });
             } else {
                 req.token = token;
-                req.user = { id: data.id, nome: data.nome };
+                req.user = {
+                    id: data.uuid || data.id,
+                    role: data.role || null,
+                    doc: data.doc || null
+                };
 
                 next();
             }
@@ -25,7 +36,19 @@ function auth(req, res, next) {
     } else {
         res.status(401);
         res.json({ success: false, message: "Token Inválido" });
-    } 
+    }
 };
 
-module.exports = auth;
+function checkRole(...allowedRoles) {
+    return (req, res, next) => {
+        if (!req.user || !req.user.role) {
+            return res.status(403).json({ success: false, message: "Acesso negado" });
+        }
+        if (!allowedRoles.includes(req.user.role)) {
+            return res.status(403).json({ success: false, message: "Permissão insuficiente" });
+        }
+        next();
+    };
+};
+
+module.exports = { auth, checkRole, ROLES };

@@ -879,12 +879,12 @@ Para 100000 linhas: 312500ms
                                                     <td>{item.codUf}</td>
                                                     {/*  <td>{item.activate ? "Ativado" : "Desativado"}</td> */}
                                                     <td className='d-flex gap-1'><BtnActivate data={item.activate} idd={item.codAnuncio} modulo={"anuncio"} />
-                                                        {item.moderacao === "autorizar" && (
+                                                        {item.moderacao === "pendente" && (
                                                             <span title={`Moderação: aguardando`}>
                                                                 <OctagonAlert className='text-danger' onClick={() => moderacao(item.codAnuncio)} />
                                                             </span>
                                                         )}
-                                                        {(item.moderacao === "autorizado" || item.moderacao === "autorizarado") && (
+                                                        {(item.moderacao === "autorizado") && (
                                                             <span title={`Moderação: ${item.moderacao}`}>
                                                                 <CircleCheckBig className='text-success' />
                                                             </span>

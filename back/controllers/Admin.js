@@ -1081,7 +1081,7 @@ module.exports = {
 UPDATE anuncio
 JOIN (
     SELECT a.codAnuncio, 
-           CEIL(ROW_NUMBER() OVER (ORDER BY b.nomeAmigavel ASC, a.createdAt DESC) / 10) AS page_number
+           CEIL(ROW_NUMBER() OVER (ORDER BY b.nomeAmigavel ASC, a.codTipoAnuncio DESC, a.createdAt ASC, a.descAnuncio ASC) / 10) AS page_number
     FROM anuncio a
     JOIN atividade b ON a.codAtividade = b.atividade
     WHERE a.codUf = :estado AND a.codCaderno = :caderno
@@ -1135,7 +1135,7 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
         UPDATE anuncio
         JOIN (
             SELECT a.codAnuncio, 
-                   CEIL(ROW_NUMBER() OVER (ORDER BY b.nomeAmigavel ASC, a.createdAt DESC) / 10) AS page_number
+           CEIL(ROW_NUMBER() OVER (ORDER BY b.nomeAmigavel ASC, a.codTipoAnuncio DESC, a.createdAt ASC, a.descAnuncio ASC) / 10) AS page_number
             FROM anuncio a
             JOIN atividade b ON a.codAtividade = b.atividade
             WHERE a.codUf = :estado AND a.codCaderno = :caderno

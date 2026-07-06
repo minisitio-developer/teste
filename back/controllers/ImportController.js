@@ -137,6 +137,10 @@ async function processRow(row, index, io, socketId, filePath, totalLinhasCsv, qt
             qtdaCounters.qtdaBasico += 1;
         }
 
+        if (dataObj.codTipoAnuncio === 2) {
+            qtdaCounters.qtdaBasico += 1;
+        }
+
         if (dataObj.codTipoAnuncio === 3) {
             qtdaCounters.qtdaCompleto += 1;
         }
@@ -239,6 +243,12 @@ async function importarPerfis(io, socketId, res) {
             await cadernos.save();
         }
 
+        if (qtdaCounters.dataObjGeral.codTipoAnuncio == 2) {
+            cadernos.basico = cadernos.basico + qtdaCounters.qtdaBasico;
+            cadernos.total = cadernos.total + (qtdaCounters.qtdaBasico + qtdaCounters.qtdaCompleto);
+            await cadernos.save();
+        }
+
         if (qtdaCounters.dataObjGeral.codTipoAnuncio == 3) {
             cadernos.completo = cadernos.completo + qtdaCounters.qtdaCompleto;
             cadernos.total = cadernos.total + (qtdaCounters.qtdaBasico + qtdaCounters.qtdaCompleto);
@@ -250,7 +260,7 @@ async function importarPerfis(io, socketId, res) {
         const query = `UPDATE importStage
             JOIN (
                 SELECT codAnuncio, 
-                    CEIL(ROW_NUMBER() OVER (ORDER BY codAtividade ASC, createdAt DESC) / 10) AS 'page_number'
+                    CEIL(ROW_NUMBER() OVER (ORDER BY codAtividade ASC, codTipoAnuncio DESC, createdAt ASC, descAnuncio ASC) / 10) AS 'page_number'
                 FROM importStage
                 WHERE codUf = :estado AND codCaderno = :caderno
             ) AS temp

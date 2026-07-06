@@ -100,6 +100,42 @@ function UploadImage(props) {
             alert("A imagem deve ter exatamente 150x58 pixels.");
           }
         });
+    } else if (props.origin === 'logoPromocao') {
+      const file = acceptedFiles[0];
+      if (!file) return;
+
+      validarDimensaoImagem(file, 1860, 2060)
+        .then((aproved) => {
+          if (aproved) {
+            enviarImg();
+          } else {
+            alert("A imagem deve ter no máximo 1860x2060 pixels.");
+          }
+        });
+    } else if (props.origin === 'certificado_logo') {
+      const file = acceptedFiles[0];
+      if (!file) return;
+
+      validarDimensaoImagem(file, 150, 58)
+        .then((aproved) => {
+          if (aproved) {
+            enviarImg();
+          } else {
+            alert("A imagem deve ter no máximo 150x58 pixels.");
+          }
+        });
+    } else if (props.origin === 'certificado_imagem') {
+      const file = acceptedFiles[0];
+      if (!file) return;
+
+      validarDimensaoImagem(file, 816, 1056)
+        .then((aproved) => {
+          if (aproved) {
+            enviarImg();
+          } else {
+            alert("A imagem deve ter no máximo 816x1056 pixels.");
+          }
+        });
     } else {
       enviarImg();
     }
