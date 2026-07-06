@@ -168,9 +168,9 @@ async function novoRegistrarPagamento(data) {
                 where: {
                     id_mp: data.data.id,
                 }
-
             })
             console.log(atualizarPagamento)
+            if (atualizarPagamento[0] === 0) return;
 
             if (data.payments.status == "approved") {
                 const perfil = await Anuncio.findOne({
@@ -330,9 +330,9 @@ async function novoRegistrarPagamento(data) {
                         where: {
                             id_mp: data.data.id,
                         }
-
                     })
                     console.log(atualizarPagamento)
+                    if (atualizarPagamento[0] === 0) return;
 
                     if (res.status == "approved") {
                         const perfil = await Anuncio.findOne({
@@ -408,202 +408,191 @@ async function novoRegistrarPagamento(data) {
 async function registrarPagamento(data, res) {
 
     if (data.action === 'payment.created') {
-        fetch(`https://api.mercadopago.com/v1/payments/${data.data.id}`, {
+        const existing = await Pagamento.findOne({ where: { id_mp: data.data.id }, raw: true });
+        if (existing) {
+            return res.status(200).send("OK");
+        }
+
+        const mpRes = await fetch(`https://api.mercadopago.com/v1/payments/${data.data.id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                //'Authorization': `Bearer ${config.MP_ACCESS_TOKEN_SANDBOX}`
                 'Authorization': `Bearer ${config.mp_prod.AccessToken}`
             }
-        })
-            .then(x => x.json())
-            .then(async res => {
+        });
+        const paymentData = await mpRes.json();
 
-                console.log(res)
-                if (res.message === 'Payment not found') return;
+        console.log(paymentData)
+        if (paymentData.message === 'Payment not found') return;
 
-                try {
-                    let codigoReferenciaMp = res.external_reference;
+        try {
+            let codigoReferenciaMp = paymentData.external_reference;
 
-                    const perfilMinisitio = await Anuncio.findOne({ where: { codAnuncio: codigoReferenciaMp }, raw: true, attributes: ['codAnuncio', 'descAnuncio'] });
+            const perfilMinisitio = await Anuncio.findOne({ where: { codAnuncio: codigoReferenciaMp }, raw: true, attributes: ['codAnuncio', 'descAnuncio'] });
 
-                    const pagamento = await Pagamento.create({
-                        cliente: perfilMinisitio.descAnuncio,
-                        valor: res.transaction_amount,
-                        data: res.date_created,
-                        status: definirStatus(res.status),
-                        id_mp: data.data.id,
-                        ref_mp_codAnuncio: codigoReferenciaMp
-                    })
+            const pagamento = await Pagamento.create({
+                cliente: perfilMinisitio.descAnuncio,
+                valor: paymentData.transaction_amount,
+                data: paymentData.date_created,
+                status: definirStatus(paymentData.status),
+                id_mp: data.data.id,
+                ref_mp_codAnuncio: codigoReferenciaMp
+            })
 
 
-                    if (res.status == "approved") {
-                        const perfil = await Anuncio.findOne({
-                            where: {
-                                codAnuncio: codigoReferenciaMp
-                            },
-                            raw: true
-                        });
+            if (paymentData.status == "approved") {
+                const perfil = await Anuncio.findOne({
+                    where: {
+                        codAnuncio: codigoReferenciaMp
+                    },
+                    raw: true
+                });
 
-                        const idDesconto = await Desconto.findOne({
-                            where: {
-                                hash: perfil.codDesconto
-                            },
-                            raw: true
-                        })
+                const idDesconto = await Desconto.findOne({
+                    where: {
+                        hash: perfil.codDesconto
+                    },
+                    raw: true
+                })
 
-                        const idCampanha = await Campanha.findOne({
-                            where: {
-                                id_origem: idDesconto.idDesconto
-                            },
-                            raw: true
-                        })
+                const idCampanha = await Campanha.findOne({
+                    where: {
+                        id_origem: idDesconto.idDesconto
+                    },
+                    raw: true
+                })
 
-                        const objUpdated = {
-                            "activate": 1,
-                            "codTipoAnuncio": "3",
-                            "dtCadastro2": Date.now(),
-                            "dueDate": moment(Date.now()).add(1, 'year').toISOString()
-                        };
+                const objUpdated = {
+                    "activate": 1,
+                    "codTipoAnuncio": "3",
+                    "dtCadastro2": Date.now(),
+                    "dueDate": moment(Date.now()).add(1, 'year').toISOString()
+                };
 
-                        if (perfil.codTipoAnuncio != "3") {
-                            objUpdated.createdAt = new Date();
-                        }
-
-                        console.log("idCampanha", idCampanha);
-
-                        //enviar email para novo perfil pago
-                        novoUsuario(perfil.descEmailAutorizante, perfil.descNomeAutorizante, perfil.descCPFCNPJ, perfil.codAnuncio);
-
-                        //atualizar status do pagamento na tabela tokens_promoção
-                        await TokensPromocao.update({
-                            statusPagamento: "pago"
-                        }, {
-                            where: {
-                                codAnuncio: codigoReferenciaMp
-                            }
-                        });
-
-                        //atualizar o codDesconto apenas se existir a campanha
-                        if (idCampanha) {
-                            objUpdated.codDesconto = await getDescontoPorHash(idCampanha.idPromocional);
-                        }
-
-                        const perfilActivate = await Anuncio.update(objUpdated, {
-                            where: {
-                                codAnuncio: codigoReferenciaMp
-                            }
-                        });
-
-                        res.status(200).send("OK");
-                    }
-
-                } catch (err) {
-                    console.log(err)
+                if (perfil.codTipoAnuncio != "3") {
+                    objUpdated.createdAt = new Date();
                 }
 
+                console.log("idCampanha", idCampanha);
 
+                //enviar email para novo perfil pago
+                novoUsuario(perfil.descEmailAutorizante, perfil.descNomeAutorizante, perfil.descCPFCNPJ, perfil.codAnuncio);
 
-            })
+                //atualizar status do pagamento na tabela tokens_promoção
+                await TokensPromocao.update({
+                    statusPagamento: "pago"
+                }, {
+                    where: {
+                        codAnuncio: codigoReferenciaMp
+                    }
+                });
+
+                //atualizar o codDesconto apenas se existir a campanha
+                if (idCampanha) {
+                    objUpdated.codDesconto = await getDescontoPorHash(idCampanha.idPromocional);
+                }
+
+                const perfilActivate = await Anuncio.update(objUpdated, {
+                    where: {
+                        codAnuncio: codigoReferenciaMp
+                    }
+                });
+
+                res.status(200).send("OK");
+            }
+
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     if (data.action === 'payment.updated') {
-
-        fetch(`https://api.mercadopago.com/v1/payments/${data.data.id}`, {
+        const mpRes = await fetch(`https://api.mercadopago.com/v1/payments/${data.data.id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                //'Authorization': `Bearer ${config.MP_ACCESS_TOKEN_SANDBOX}`
                 'Authorization': `Bearer ${config.mp_prod.AccessToken}`
             }
-        })
-            .then(x => x.json())
-            .then(async res => {
+        });
+        const paymentData = await mpRes.json();
 
-                console.log(res)
-                if (res.message === 'Payment not found') return;
+        console.log(paymentData)
+        if (paymentData.message === 'Payment not found') return;
 
-                let codigoReferenciaMp = res.external_reference;
+        let codigoReferenciaMp = paymentData.external_reference;
 
-                const perfilMinisitio = await Anuncio.findOne({ where: { codAnuncio: codigoReferenciaMp }, raw: true, attributes: ['codAnuncio', 'descAnuncio'] });
+        const perfilMinisitio = await Anuncio.findOne({ where: { codAnuncio: codigoReferenciaMp }, raw: true, attributes: ['codAnuncio', 'descAnuncio'] });
 
-                try {
-                    const atualizarPagamento = await Pagamento.update({
-                        status: definirStatus(res.status),
-                        data: Date.now()
-                    }, {
-                        where: {
-                            id_mp: data.data.id,
-                        }
+        try {
+            const atualizarPagamento = await Pagamento.update({
+                status: definirStatus(paymentData.status),
+                data: Date.now()
+            }, {
+                where: {
+                    id_mp: data.data.id,
+                }
+            });
+            console.log(atualizarPagamento);
+            if (atualizarPagamento[0] === 0) return;
 
-                    })
-                    console.log(atualizarPagamento)
+            if (paymentData.status == "approved") {
+                const perfil = await Anuncio.findOne({
+                    where: {
+                        codAnuncio: codigoReferenciaMp
+                    },
+                    raw: true
+                });
 
-                    if (res.status == "approved") {
-                        const perfil = await Anuncio.findOne({
-                            where: {
-                                codAnuncio: codigoReferenciaMp
-                            },
-                            raw: true
-                        });
+                const idDesconto = await Desconto.findOne({
+                    where: {
+                        hash: perfil.codDesconto
+                    },
+                    raw: true
+                })
 
-                        const idDesconto = await Desconto.findOne({
-                            where: {
-                                hash: perfil.codDesconto
-                            },
-                            raw: true
-                        })
+                const idCampanha = await Campanha.findOne({
+                    where: {
+                        id_origem: idDesconto.idDesconto
+                    },
+                    raw: true
+                })
 
-                        const idCampanha = await Campanha.findOne({
-                            where: {
-                                id_origem: idDesconto.idDesconto
-                            },
-                            raw: true
-                        })
+                console.log("idCampanha", idDesconto, idCampanha, await getDescontoPorHash(idCampanha.idPromocional));
 
-                        console.log("idCampanha", idDesconto, idCampanha, await getDescontoPorHash(idCampanha.idPromocional));
+                const updateData = {
+                    "codDesconto": await getDescontoPorHash(idCampanha.idPromocional),
+                    "activate": 1,
+                    "codTipoAnuncio": "3",
+                    "dtCadastro2": Date.now(),
+                    "dueDate": moment(Date.now()).add(1, 'year').toISOString()
+                };
 
-                        const updateData = {
-                            "codDesconto": await getDescontoPorHash(idCampanha.idPromocional),
-                            "activate": 1,
-                            "codTipoAnuncio": "3",
-                            "dtCadastro2": Date.now(),
-                            "dueDate": moment(Date.now()).add(1, 'year').toISOString()
-                        };
-
-                        if (perfil.codTipoAnuncio != "3") {
-                            updateData.createdAt = new Date();
-                        }
-
-                        const perfilActivate = await Anuncio.update(updateData, {
-                            where: {
-                                codAnuncio: codigoReferenciaMp
-                            }
-                        });
-
-                        //enviar email para novo perfil pago
-                        novoUsuario(perfil.descEmailAutorizante, perfil.descNomeAutorizante, perfil.descCPFCNPJ, perfil.codAnuncio);
-
-                        //atualizar status do pagamento na tabela tokens_promoção
-                        await TokensPromocao.update({
-                            statusPagamento: "pago"
-                        }, {
-                            where: {
-                                codAnuncio: codigoReferenciaMp
-                            }
-                        });
-
-
-                    }
-
-                } catch (err) {
-                    console.log(err)
+                if (perfil.codTipoAnuncio != "3") {
+                    updateData.createdAt = new Date();
                 }
 
+                const perfilActivate = await Anuncio.update(updateData, {
+                    where: {
+                        codAnuncio: codigoReferenciaMp
+                    }
+                });
 
+                //enviar email para novo perfil pago
+                novoUsuario(perfil.descEmailAutorizante, perfil.descNomeAutorizante, perfil.descCPFCNPJ, perfil.codAnuncio);
 
-            })
+                //atualizar status do pagamento na tabela tokens_promoção
+                await TokensPromocao.update({
+                    statusPagamento: "pago"
+                }, {
+                    where: {
+                        codAnuncio: codigoReferenciaMp
+                    }
+                });
+            }
 
+        } catch (err) {
+            console.log(err)
+        }
     }
 };
 

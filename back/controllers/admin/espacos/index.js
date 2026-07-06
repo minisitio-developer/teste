@@ -3169,7 +3169,7 @@ module.exports = {
 
         const dadosAnuncio = {
             //"codAnuncio": 88888,
-            "codUsuario": 88,//codigoUsuario[0].codUsuario,
+            "codUsuario": codUsuario || 88,//codigoUsuario[0].codUsuario,
             "codTipoAnuncio": codTipoAnuncio,
             "codAtividade": codAtividade,
             "codPA": 0,
@@ -3228,15 +3228,13 @@ module.exports = {
             "descYouTube": descYouTube,
         };
 
-        function registarTags(id) {
-            JSON.parse(tags).map(async item => {
-                console.log(item)
-                const createTags = await Tags.create({
-                    codAnuncio: id,
-                    tagValue: item
-                })
-
-            })
+        async function registarTags(id) {
+            if (tags) {
+                const parsedTags = JSON.parse(tags);
+                await Tags.bulkCreate(
+                    parsedTags.map(tagValue => ({ codAnuncio: id, tagValue }))
+                );
+            }
         };
 
         try {
@@ -3250,7 +3248,7 @@ module.exports = {
                 console.log(error)
             }
 
-            registarTags(listaAnuncios.dataValues.codAnuncio)
+            await registarTags(listaAnuncios.dataValues.codAnuncio)
 
             console.log(`Reorganização concluída para o estado:`, { estado: dadosAnuncio.codUf, caderno: dadosAnuncio.codCaderno });
             if (codTipoAnuncio == 3) {
@@ -3313,7 +3311,7 @@ module.exports = {
                         WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno
                     `;
 
-                database.query(query, {
+                await database.query(query, {
                     replacements: { estado: dadosAnuncio.codUf, caderno: dadosAnuncio.codCaderno },
                     type: Sequelize.QueryTypes.UPDATE,
                 });
@@ -3846,10 +3844,10 @@ module.exports = {
                         WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno
                     `;
 
-            database.query(query, {
-                replacements: { estado: uf, caderno: caderno },
-                type: Sequelize.QueryTypes.UPDATE,
-            });
+                const queryResult = await database.query(query, {
+                    replacements: { estado: dadosAnuncio.codUf, caderno: dadosAnuncio.codCaderno },
+                    type: Sequelize.QueryTypes.UPDATE,
+                });
 
             console.log(`Reorganização concluída para o estado:`, uf);
 

@@ -44,13 +44,12 @@ function updateJsonName(filePath, endProccess, progress) {
     }
 }
 
-async function processRow(row, index, io, socketId, filePath, totalLinhasCsv, qtdaCounters) {
+async function processRow(row, index, io, socketId, filePath, totalLinhasCsv, qtdaCounters, codigoDeDesconto) {
     try {
         if (index === 1) updateJsonName(filePath, false, 0);
 
         const idImport = row['idImport'];
         const codTipoAnuncio = row['TIPO'];
-        const idDesconto = row['ID'];
         const nomeAnuncio = row['NOME'];
         const telefone = row['TELEFONE'];
         const cep = row['CEP'];
@@ -100,8 +99,6 @@ async function processRow(row, index, io, socketId, filePath, totalLinhasCsv, qt
             codUser = novoUsuario.dataValues.codUsuario;
         }
 
-        let codigoDeDesconto = await Descontos.findOne({ where: { hash: idDesconto } });
-
         const dataObj = {
             codUsuario: codUser,
             idImport: idImport,
@@ -133,34 +130,33 @@ async function processRow(row, index, io, socketId, filePath, totalLinhasCsv, qt
 
         qtdaCounters.dataObjGeral = dataObj;
 
-        if (dataObj.codTipoAnuncio === 1) {
+        if (dataObj.codTipoAnuncio == 1) {
             qtdaCounters.qtdaBasico += 1;
         }
-
-        if (dataObj.codTipoAnuncio === 2) {
+        if (dataObj.codTipoAnuncio == 2) {
             qtdaCounters.qtdaBasico += 1;
         }
-
-        if (dataObj.codTipoAnuncio === 3) {
+        if (dataObj.codTipoAnuncio == 3) {
             qtdaCounters.qtdaCompleto += 1;
         }
 
-        await ImportStage.create(dataObj);
         updateJsonName(filePath, false, index);
         console.log(`Linha ${index} importada com sucesso.`);
 
         const progress = Math.round((index / totalLinhasCsv) * 100);
         io.to(socketId).emit('download-progress', { progress });
 
+        return dataObj;
     } catch (error) {
         console.error(`Erro ao importar linha ${index}:`, error);
+        return null;
     }
 }
 
 async function importarPerfis(io, socketId, res) {
     const filePath = path.join(__dirname, '../public/importLog.json');
     const arquivoImportado = path.join(__dirname, '../public/import/uploadedfile.csv');
-    const DELAY_MS = 1000;
+    const BATCH_SIZE = 500;
     const qtdaCounters = { qtdaBasico: 0, qtdaCompleto: 0, dataObjGeral: null };
 
     const fileStream = fs.createReadStream(arquivoImportado);
@@ -193,11 +189,18 @@ async function importarPerfis(io, socketId, res) {
         quote: '"',
     }));
 
+    const batch = [];
+
     for await (const row of stream) {
         if (importError) break;
 
         if (index > MAX_IMPORT_RECORDS) {
             console.log(`Limite de ${MAX_IMPORT_RECORDS} registros atingido.`);
+            if (batch.length > 0) {
+                await ImportStage.bulkCreate(batch);
+            }
+            const logInicial = { progress: 0, endProccess: true };
+            fs.writeFileSync(filePath, JSON.stringify(logInicial, null, 2), 'utf8');
             if (!res.headersSent) {
                 return res.json({ success: true, message: `Importação limitada a ${MAX_IMPORT_RECORDS} registros.` });
             }
@@ -209,24 +212,41 @@ async function importarPerfis(io, socketId, res) {
         if (!codigoDeDesconto) {
             console.log(`ID não encontrado: ${row['ID']}`);
             importError = true;
+            const logInicial = { progress: 0, endProccess: true };
+            fs.writeFileSync(filePath, JSON.stringify(logInicial, null, 2), 'utf8');
             if (!res.headersSent) {
                 return res.status(404).json({ success: false, message: "O codigo de ID não foi encontrado." });
             }
             break;
         }
-        await processRow(row, index, io, socketId, filePath, totalLinhasCsv, qtdaCounters);
-        await new Promise(resolve => setTimeout(resolve, DELAY_MS));
+
+        const dataObj = await processRow(row, index, io, socketId, filePath, totalLinhasCsv, qtdaCounters, codigoDeDesconto);
+
+        if (dataObj) {
+            batch.push(dataObj);
+        }
+
+        if (batch.length >= BATCH_SIZE) {
+            await ImportStage.bulkCreate(batch);
+            batch.length = 0;
+        }
+
         index++;
+    }
+
+    if (batch.length > 0) {
+        await ImportStage.bulkCreate(batch);
     }
 
     if (importError) return;
 
     console.log("Arquivo lido com sucesso!");
-    res.json({ success: true, message: "Importação" });
-    updateJsonName(filePath, false, index - 1);
 
     const logInicial = { progress: 0, endProccess: true };
     fs.writeFileSync(filePath, JSON.stringify(logInicial, null, 2), 'utf8');
+
+    res.json({ success: true, message: "Importação" });
+    updateJsonName(filePath, false, index - 1);
 
     try {
         const cadernos = await Caderno.findOne({
@@ -237,23 +257,10 @@ async function importarPerfis(io, socketId, res) {
             attributes: ['codCaderno', 'basico', 'completo', 'total']
         });
 
-        if (qtdaCounters.dataObjGeral.codTipoAnuncio == 1) {
-            cadernos.basico = cadernos.basico + qtdaCounters.qtdaBasico;
-            cadernos.total = cadernos.total + (qtdaCounters.qtdaBasico + qtdaCounters.qtdaCompleto);
-            await cadernos.save();
-        }
-
-        if (qtdaCounters.dataObjGeral.codTipoAnuncio == 2) {
-            cadernos.basico = cadernos.basico + qtdaCounters.qtdaBasico;
-            cadernos.total = cadernos.total + (qtdaCounters.qtdaBasico + qtdaCounters.qtdaCompleto);
-            await cadernos.save();
-        }
-
-        if (qtdaCounters.dataObjGeral.codTipoAnuncio == 3) {
-            cadernos.completo = cadernos.completo + qtdaCounters.qtdaCompleto;
-            cadernos.total = cadernos.total + (qtdaCounters.qtdaBasico + qtdaCounters.qtdaCompleto);
-            await cadernos.save();
-        }
+        cadernos.basico = cadernos.basico + qtdaCounters.qtdaBasico;
+        cadernos.completo = cadernos.completo + qtdaCounters.qtdaCompleto;
+        cadernos.total = cadernos.total + (qtdaCounters.qtdaBasico + qtdaCounters.qtdaCompleto);
+        await cadernos.save();
 
         io.to(socketId).emit('download-complete');
 
@@ -269,7 +276,7 @@ async function importarPerfis(io, socketId, res) {
             WHERE importStage.codUf = :estado AND importStage.codCaderno = :caderno
         `;
 
-        database.query(query, {
+        await database.query(query, {
             replacements: { estado: qtdaCounters.dataObjGeral.codUf, caderno: qtdaCounters.dataObjGeral.codCaderno },
             type: Sequelize.QueryTypes.UPDATE,
         });

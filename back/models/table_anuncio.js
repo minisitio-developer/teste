@@ -571,6 +571,18 @@ const Anuncio = database.define('anuncio', {
                 name: 'idx_codUsuario',
                 fields: ['codUsuario'],
             },
+            {
+                name: 'idx_descCPFCNPJ',
+                fields: ['descCPFCNPJ'],
+            },
+            {
+                name: 'idx_codAtividade',
+                fields: ['codAtividade'],
+            },
+            {
+                name: 'idx_moderacao',
+                fields: ['moderacao'],
+            },
         ]
     });
 

@@ -10,6 +10,7 @@ const fs = require('fs');
 
 const Sequelize = require('sequelize');
 const Pagamento = require('../models/table_pagamentos');
+const redisClient = require('../config/redis');
 const { Op } = Sequelize;
 
 /* (
@@ -26,8 +27,17 @@ module.exports = {
         const porPagina = 10;
         const offset = (paginaAtual - 1) * porPagina;
 
-
         const { uf, cidade, atividade, name, telefone, nu_documento, codigoCaderno } = req.body;
+
+        const cacheKey = `busca:${uf}:${codigoCaderno}:${atividade}:${paginaAtual}`;
+        try {
+            if (redisClient && redisClient.isReady) {
+                const cached = await redisClient.get(cacheKey);
+                if (cached) {
+                    return res.json(JSON.parse(cached));
+                }
+            }
+        } catch (e) { /* Redis falhou, prossegue sem cache */ }
 
         try {
             const cadernoParam = decodeURIComponent(codigoCaderno || '');
@@ -102,12 +112,14 @@ module.exports = {
 
 
             if (req.query.totalPages > 0) {
-                return res.json({
+                const response = {
                     success: true, data: anuncios,
                     paginaAtual: req.query.paginaAtual,
                     totalPaginas: req.query.totalPaginas,
                     totalItem: req.query.totalItens
-                });
+                };
+                try { if (redisClient && redisClient.isReady) await redisClient.set(cacheKey, JSON.stringify(response), { EX: 60 }); } catch (e) { /* ignore */ }
+                return res.json(response);
             } else {
                 let resultAnuncioCount;
                 try {
@@ -171,13 +183,14 @@ module.exports = {
                 const totalItens = resultAnuncioCount.total;
                 const totalPaginas = Math.ceil(totalItens / porPagina);
 
-
-                res.json({
+                const response = {
                     success: true, data: anuncios,
                     paginaAtual: paginaAtual,
                     totalPaginas: totalPaginas,
-                    totalItem: totalItens, teste: ""
-                });
+                    totalItem: totalItens
+                };
+                try { if (redisClient && redisClient.isReady) await redisClient.set(cacheKey, JSON.stringify(response), { EX: 60 }); } catch (e) { /* ignore */ }
+                res.json(response);
             }
         } catch (error) {
             console.error('Erro na busca:', error);
@@ -329,6 +342,14 @@ module.exports = {
                     model: Pagamento,
                     as: 'dataPagamento',
                     attributes: ['data']
+                },
+                {
+                    model: Caderno,
+                    attributes: ['codCaderno', 'nomeCaderno', 'UF']
+                },
+                {
+                    model: Atividade,
+                    attributes: ['atividade', 'nomeAmigavel']
                 }]
             });
 
@@ -336,20 +357,13 @@ module.exports = {
                 return res.status(404).json({ success: false, message: 'Anúncio não encontrado' });
             }
 
-            const cader = await resultAnuncio[0].getCaderno();
-            const atividades = await resultAnuncio[0].getAtividade();
             const descontoHash = await resultAnuncio[0].getDesconto();
 
-            const atividadeAmigavel = await Atividade.findOne({
-                where: {
-                    atividade: resultAnuncio[0].codAtividade
-                },
-                raw: true,
-                attributes: ["nomeAmigavel"]
-            });
+            const caderno = resultAnuncio[0].Caderno || resultAnuncio[0].getDataValue('Caderno');
+            const atividade = resultAnuncio[0].Atividade || resultAnuncio[0].getDataValue('Atividade');
 
-            resultAnuncio[0].setDataValue('nomeCaderno', resultAnuncio[0].codCaderno);
-            resultAnuncio[0].setDataValue('nomeAtividade', atividadeAmigavel ? atividadeAmigavel.nomeAmigavel : resultAnuncio[0].codAtividade);
+            resultAnuncio[0].setDataValue('nomeCaderno', caderno ? caderno.nomeCaderno : resultAnuncio[0].codCaderno);
+            resultAnuncio[0].setDataValue('nomeAtividade', atividade ? atividade.nomeAmigavel : resultAnuncio[0].codAtividade);
             resultAnuncio[0].setDataValue('hash', resultAnuncio[0].codDesconto);
 
             res.json(resultAnuncio);

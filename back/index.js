@@ -280,18 +280,37 @@ cron.schedule('0 3 * * *', () => {
 // Backup diário do banco às 2h da manhã
 cron.schedule('0 2 * * *', () => {
     console.log('Iniciando backup do banco de dados...');
-    const { exec } = require('child_process');
+    const { spawn } = require('child_process');
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
     const filepath = `./backups/backup_${timestamp}.sql.gz`;
-    
-    exec(`mkdir -p ./backups && mysqldump -h ${process.env.DB_HOST || 'db'} -P ${process.env.DB_PORT || 3306} -u ${process.env.DB_USER || 'root'} -p${process.env.DB_PASSWORD || 'root'} ${process.env.DB_NAME || 'minisitio_local'} | gzip > "${filepath}"`, 
-    (error, stdout, stderr) => {
-        if (error) {
-            console.error(`✗ Erro no backup: ${error.message}`);
-            return;
-        }
+
+    const backupDir = path.resolve(__dirname, '..', 'backups');
+    if (!fs.existsSync(backupDir)) fs.mkdirSync(backupDir, { recursive: true });
+
+    const mysqldump = spawn('mysqldump', [
+        '-h', process.env.DB_HOST || 'db',
+        '-P', String(process.env.DB_PORT || 3306),
+        '-u', process.env.DB_USER || 'root',
+        `-p${process.env.DB_PASSWORD || 'root'}`,
+        '--single-transaction',
+        '--quick',
+        '--no-tablespaces',
+        process.env.DB_NAME || 'minisitio_local'
+    ]);
+    const gzip = spawn('gzip');
+    const outFile = fs.createWriteStream(filepath);
+
+    mysqldump.stdout.pipe(gzip.stdin);
+    gzip.stdout.pipe(outFile);
+
+    const backupTimeout = setTimeout(() => { mysqldump.kill(); gzip.kill(); }, 300000);
+
+    outFile.on('close', () => {
+        clearTimeout(backupTimeout);
         console.log(`✓ Backup concluído: ${filepath}`);
     });
+    mysqldump.on('error', (err) => console.error(`✗ Erro no backup: ${err.message}`));
+    gzip.on('error', (err) => console.error(`✗ Erro no gzip: ${err.message}`));
 });
 
 cron.schedule('0 7 * * *', async () => {

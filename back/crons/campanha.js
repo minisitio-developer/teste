@@ -3,13 +3,13 @@ const TokensPromocao = require('../models/tokens_promocao');
 const Anuncio = require('../models/table_anuncio');
 const Sequelize = require('sequelize');
 const { Op } = Sequelize;
-const moment = require('moment');
+const database = require('../config/db');
 
 async function inativarCampanhasExpiradas() {
   console.log('Iniciando inativação de campanhas expiradas...');
 
   try {
-    const hoje = moment().format('YYYY-MM-DD');
+    const hoje = new Date();
 
     const [updated] = await Campanha.update({
       status: 'expired'
@@ -32,8 +32,10 @@ async function inativarCampanhasExpiradas() {
 async function downgradePerfil() {
   console.log('Iniciando downgrade de perfil...');
 
+  const t = await database.transaction();
+
   try {
-    const hoje = moment().format('YYYY-MM-DD');
+    const hoje = new Date();
 
     const tokensExpirados = await TokensPromocao.findAll({
       where: {
@@ -42,11 +44,13 @@ async function downgradePerfil() {
           statusPromocao: { [Op.ne]: 'vencido' }
         }
       },
-      raw: true
+      raw: true,
+      transaction: t
     });
 
     if (!tokensExpirados.length) {
       console.log('Nenhum perfil expirado encontrado no momento.');
+      await t.commit();
       return;
     }
 
@@ -58,32 +62,41 @@ async function downgradePerfil() {
         id: {
           [Op.in]: tokenIds
         }
-      }
+      },
+      transaction: t
     });
 
     const campanhaIds = [...new Set(tokensExpirados.map(token => token.campanhaId).filter(Boolean))];
     const campanhas = await Campanha.findAll({
       where: { id: { [Op.in]: campanhaIds } },
       attributes: ['id', 'idRetorno'],
-      raw: true
+      raw: true,
+      transaction: t
     });
     const retornoMap = Object.fromEntries(campanhas.map(campanha => [campanha.id, campanha.idRetorno]));
 
-    for (const token of tokensExpirados) {
-      const codDesconto = retornoMap[token.campanhaId] ?? token.idRetorno;
-      await Anuncio.update({
+    const perfisExpirados = tokensExpirados.map(token => ({
+      codAnuncio: token.codAnuncio,
+      codDesconto: retornoMap[token.campanhaId] ?? token.idRetorno
+    }));
+
+    await Promise.all(perfisExpirados.map(perfil =>
+      Anuncio.update({
         codTipoAnuncio: 1,
-        codDesconto
+        codDesconto: perfil.codDesconto
       }, {
         where: {
-          codAnuncio: token.codAnuncio
-        }
-      });
-      console.log(`Anúncio ${token.codAnuncio} rebaixado com sucesso.`);
-    }
+          codAnuncio: perfil.codAnuncio
+        },
+        transaction: t
+      })
+    ));
+
+    await t.commit();
 
     console.log(`downgrades em ${tokensExpirados.length} de perfis expirados.`, hoje);
   } catch (error) {
+    await t.rollback();
     console.error('Erro ao atualizar perfil expirados:', error);
     return;
   }

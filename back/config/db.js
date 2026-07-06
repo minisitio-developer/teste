@@ -2,7 +2,6 @@ const path = require('path');
 const Sequelize = require('sequelize');
 require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 
-// Railway fornece DATABASE_URL ou MYSQL_URL no formato: mysql://user:pass@host:port/dbname
 let dbConfig;
 
 if (process.env.DATABASE_URL || process.env.MYSQL_URL) {
@@ -15,12 +14,20 @@ if (process.env.DATABASE_URL || process.env.MYSQL_URL) {
         password: url.password,
     };
 } else {
+    const missing = [];
+    if (!process.env.DB_HOST) missing.push('DB_HOST');
+    if (!process.env.DB_USER) missing.push('DB_USER');
+    if (!process.env.DB_PASSWORD) missing.push('DB_PASSWORD');
+    if (!process.env.DB_NAME) missing.push('DB_NAME');
+    if (missing.length > 0) {
+        throw new Error(`Missing required env vars: ${missing.join(', ')}`);
+    }
     dbConfig = {
-        host: process.env.DB_HOST || 'db',
+        host: process.env.DB_HOST,
         port: parseInt(process.env.DB_PORT) || 3306,
-        database: process.env.DB_NAME || 'minisitio_local',
-        username: process.env.DB_USER || 'root',
-        password: process.env.DB_PASSWORD || 'root',
+        database: process.env.DB_NAME,
+        username: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
     };
 }
 
@@ -34,12 +41,18 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.p
     logging: false,
     dialectOptions: {
         charset: 'utf8mb4',
+        ssl: isProduction ? { require: true, rejectUnauthorized: false } : false,
     },
     pool: {
         max: 20,
         min: 2,
-        acquire: 120000,
-        idle: 30000,
+        acquire: 30000,
+        idle: 10000,
+        evict: 10000,
+    },
+    retry: {
+        max: 5,
+        match: [/ETIMEDOUT/, /ECONNREFUSED/, /ER_LOCK_DEADLOCK/, /SequelizeConnectionError/],
     },
 });
 
