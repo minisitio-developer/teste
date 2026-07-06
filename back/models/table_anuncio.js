@@ -583,6 +583,10 @@ const Anuncio = database.define('anuncio', {
                 name: 'idx_moderacao',
                 fields: ['moderacao'],
             },
+            {
+                name: 'idx_search',
+                fields: ['codUf', 'codCaderno', 'activate', 'codTipoAnuncio', 'codAtividade', 'createdAt', 'descAnuncio'],
+            },
         ]
     });
 

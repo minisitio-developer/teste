@@ -49,6 +49,9 @@ module.exports = {
             const nomeCadernoReal = (cadernoInfo && cadernoInfo.nomeCaderno) ? cadernoInfo.nomeCaderno : cadernoParam;
             const codCadernoId = cadernoInfo ? String(cadernoInfo.codCaderno) : '';
 
+            const termo = `%${atividade}%`;
+            const ftTermo = atividade.replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length >= 1).map(w => `+${w}*`).join(' ') || `+${atividade.replace(/[^\w]/g, '')}*`;
+
             let anuncios;
             try {
                 anuncios = await database.query(`SELECT a.*, atv.nomeAmigavel AS nomeAtividade
@@ -60,7 +63,7 @@ module.exports = {
         AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
         AND (a.codTipoAnuncio != 4 OR a.moderacao = 'autorizado')
         AND (
-            a.descAnuncio LIKE :termo
+            MATCH(a.descAnuncio) AGAINST(:ftTermo IN BOOLEAN MODE)
             OR atv.atividade LIKE :termo
             OR atv.nomeAmigavel LIKE :termo
             OR EXISTS (
@@ -72,17 +75,14 @@ module.exports = {
     ORDER BY a.codAtividade ASC, a.codTipoAnuncio DESC, a.createdAt ASC, a.descAnuncio ASC
     LIMIT :limit OFFSET :offset;`, {
                     replacements: {
-                        termo: `%${atividade}%`,
-                        uf: uf,
-                        caderno: nomeCadernoReal,
-                        cadernoId: codCadernoId,
-                        limit: porPagina,
-                        offset: offset
+                        termo, ftTermo,
+                        uf, caderno: nomeCadernoReal, cadernoId: codCadernoId,
+                        limit: porPagina, offset
                     },
                     type: database.QueryTypes.SELECT,
                 });
             } catch (queryErr) {
-                console.warn('Query com tabela tags falhou, tentando sem tags:', queryErr.message);
+                console.warn('Query com tags falhou, tentando sem FULLTEXT + tags:', queryErr.message);
                 anuncios = await database.query(`SELECT a.*, atv.nomeAmigavel AS nomeAtividade
     FROM anuncio a
     LEFT JOIN atividade atv ON atv.atividade = a.codAtividade
@@ -99,12 +99,9 @@ module.exports = {
     ORDER BY a.codAtividade ASC, a.codTipoAnuncio DESC, a.createdAt ASC, a.descAnuncio ASC
     LIMIT :limit OFFSET :offset;`, {
                     replacements: {
-                        termo: `%${atividade}%`,
-                        uf: uf,
-                        caderno: nomeCadernoReal,
-                        cadernoId: codCadernoId,
-                        limit: porPagina,
-                        offset: offset
+                        termo,
+                        uf, caderno: nomeCadernoReal, cadernoId: codCadernoId,
+                        limit: porPagina, offset
                     },
                     type: database.QueryTypes.SELECT,
                 });
@@ -132,7 +129,7 @@ module.exports = {
       AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
       AND (a.codTipoAnuncio != 4 OR a.moderacao = 'autorizado')
       AND (
-        a.descAnuncio LIKE :termo
+        MATCH(a.descAnuncio) AGAINST(:ftTermo IN BOOLEAN MODE)
         OR EXISTS (
           SELECT 1 FROM atividade atv
           WHERE atv.atividade = a.codAtividade
@@ -145,15 +142,13 @@ module.exports = {
         )
       )`, {
                         replacements: {
-                            termo: `%${atividade}%`,
-                            uf: uf,
-                            caderno: nomeCadernoReal,
-                            cadernoId: codCadernoId
+                            termo, ftTermo,
+                            uf, caderno: nomeCadernoReal, cadernoId: codCadernoId
                         },
                         type: database.QueryTypes.SELECT
                     });
                 } catch (countErr) {
-                    console.warn('Count com tabela tags falhou, tentando sem tags:', countErr.message);
+                    console.warn('Count com FULLTEXT/tags falhou, tentando sem:', countErr.message);
                     [resultAnuncioCount] = await database.query(
                         `SELECT COUNT(*) AS total
     FROM anuncio a
@@ -171,10 +166,8 @@ module.exports = {
         )
       )`, {
                         replacements: {
-                            termo: `%${atividade}%`,
-                            uf: uf,
-                            caderno: nomeCadernoReal,
-                            cadernoId: codCadernoId
+                            termo,
+                            uf, caderno: nomeCadernoReal, cadernoId: codCadernoId
                         },
                         type: database.QueryTypes.SELECT
                     });

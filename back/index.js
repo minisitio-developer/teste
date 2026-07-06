@@ -463,14 +463,20 @@ server.listen(port, async () => {
 });
 
 async function criarIndicesBusca() {
-    try {
-        const [rows] = await database.query(`SHOW INDEX FROM anuncio WHERE Key_name = 'ft_descAnuncio'`);
-        if (rows.length === 0) {
-            await database.query(`ALTER TABLE anuncio ADD FULLTEXT INDEX ft_descAnuncio (descAnuncio)`);
-            console.log('FIX: FULLTEXT index ft_descAnuncio criado');
+    const ftIndexes = [
+        { table: 'anuncio', name: 'ft_descAnuncio', columns: 'descAnuncio' },
+        { table: 'atividade', name: 'ft_atividade', columns: 'atividade, nomeAmigavel' },
+    ];
+    for (const idx of ftIndexes) {
+        try {
+            const [rows] = await database.query(`SHOW INDEX FROM ${idx.table} WHERE Key_name = '${idx.name}'`);
+            if (rows.length === 0) {
+                await database.query(`ALTER TABLE ${idx.table} ADD FULLTEXT INDEX ${idx.name} (${idx.columns})`);
+                console.log(`FIX: FULLTEXT ${idx.name} criado em ${idx.table}`);
+            }
+        } catch (err) {
+            console.warn(`FIX FULLTEXT ${idx.name} ignorado:`, err.message);
         }
-    } catch (err) {
-        console.warn('FIX FULLTEXT ignorado:', err.message);
     }
 }
 
