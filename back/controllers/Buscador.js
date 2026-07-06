@@ -48,7 +48,7 @@ module.exports = {
         a.activate = 1
         AND a.codUf = :uf
         AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
-        AND (a.moderacao IS NULL OR a.moderacao IN ('autorizado', 'autorizar'))
+        AND (a.codTipoAnuncio != 4 OR a.moderacao = 'autorizado')
         AND (
             a.descAnuncio LIKE :termo
             OR atv.atividade LIKE :termo
@@ -80,7 +80,7 @@ module.exports = {
         a.activate = 1
         AND a.codUf = :uf
         AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
-        AND (a.moderacao IS NULL OR a.moderacao IN ('autorizado', 'autorizar'))
+        AND (a.codTipoAnuncio != 4 OR a.moderacao = 'autorizado')
         AND (
             a.descAnuncio LIKE :termo
             OR atv.atividade LIKE :termo
@@ -118,7 +118,7 @@ module.exports = {
       a.activate = 1
       AND a.codUf = :uf
       AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
-      AND (a.moderacao IS NULL OR a.moderacao IN ('autorizado', 'autorizar'))
+      AND (a.codTipoAnuncio != 4 OR a.moderacao = 'autorizado')
       AND (
         a.descAnuncio LIKE :termo
         OR EXISTS (
@@ -149,7 +149,7 @@ module.exports = {
       a.activate = 1
       AND a.codUf = :uf
       AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
-      AND (a.moderacao IS NULL OR a.moderacao IN ('autorizado', 'autorizar'))
+      AND (a.codTipoAnuncio != 4 OR a.moderacao = 'autorizado')
       AND (
         a.descAnuncio LIKE :termo
         OR EXISTS (
@@ -282,9 +282,8 @@ module.exports = {
                 where: {
                     codCaderno: codigoCaderno,
                     [Op.or]: [
-                        { moderacao: 'autorizado' },
-                        { moderacao: 'autorizar' },
-                        { moderacao: null }
+                        { codTipoAnuncio: { [Op.ne]: 4 } },
+                        { moderacao: 'autorizado' }
                     ]
                 },
                 limit: porPagina,
@@ -427,7 +426,7 @@ module.exports = {
         const { uf, bairro, profissao } = req.query;
 
         try {
-            let whereConditions = ['a.activate = 1', '(a.moderacao IS NULL OR a.moderacao IN (\'autorizado\', \'autorizar\'))'];
+            let whereConditions = ['a.activate = 1', '(a.codTipoAnuncio != 4 OR a.moderacao = \'autorizado\')'];
             let replacements = {};
 
             if (uf) {

@@ -3211,7 +3211,7 @@ module.exports = {
             "descPatrocinadorLink": 0,
             "qntVisualizacoes": 0,
             "activate": 1,
-            "moderacao": "pendente",
+            "moderacao": "autorizar",
             //"dtCadastro": dataNow(),
             "dtCadastro2": dtCadastro2,
             "dtAlteracao": Date.now(),
