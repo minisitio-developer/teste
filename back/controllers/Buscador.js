@@ -53,8 +53,6 @@ module.exports = {
             a.descAnuncio LIKE :termo
             OR atv.atividade LIKE :termo
             OR atv.nomeAmigavel LIKE :termo
-            OR a.descTelefone LIKE :termo
-            OR a.descCPFCNPJ LIKE :termo
             OR EXISTS (
                 SELECT 1 FROM tags t
                 WHERE t.codAnuncio = a.codAnuncio
@@ -87,8 +85,6 @@ module.exports = {
             a.descAnuncio LIKE :termo
             OR atv.atividade LIKE :termo
             OR atv.nomeAmigavel LIKE :termo
-            OR a.descTelefone LIKE :termo
-            OR a.descCPFCNPJ LIKE :termo
         )
     ORDER BY a.codAtividade ASC, a.codTipoAnuncio DESC, a.createdAt ASC, a.descAnuncio ASC
     LIMIT :limit OFFSET :offset;`, {
@@ -125,8 +121,6 @@ module.exports = {
       AND (a.moderacao IS NULL OR a.moderacao IN ('autorizado', 'autorizar'))
       AND (
         a.descAnuncio LIKE :termo
-        OR a.descTelefone LIKE :termo
-        OR a.descCPFCNPJ LIKE :termo
         OR EXISTS (
           SELECT 1 FROM atividade atv
           WHERE atv.atividade = a.codAtividade
@@ -158,8 +152,6 @@ module.exports = {
       AND (a.moderacao IS NULL OR a.moderacao IN ('autorizado', 'autorizar'))
       AND (
         a.descAnuncio LIKE :termo
-        OR a.descTelefone LIKE :termo
-        OR a.descCPFCNPJ LIKE :termo
         OR EXISTS (
           SELECT 1 FROM atividade atv
           WHERE atv.atividade = a.codAtividade
