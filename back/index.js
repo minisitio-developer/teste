@@ -459,7 +459,20 @@ server.listen(port, async () => {
     }
     await seedAdmin();
     await seedPin();
+    await criarIndicesBusca();
 });
+
+async function criarIndicesBusca() {
+    try {
+        const [rows] = await database.query(`SHOW INDEX FROM anuncio WHERE Key_name = 'ft_descAnuncio'`);
+        if (rows.length === 0) {
+            await database.query(`ALTER TABLE anuncio ADD FULLTEXT INDEX ft_descAnuncio (descAnuncio)`);
+            console.log('FIX: FULLTEXT index ft_descAnuncio criado');
+        }
+    } catch (err) {
+        console.warn('FIX FULLTEXT ignorado:', err.message);
+    }
+}
 
 // Graceful shutdown
 const shutdown = async (signal) => {
