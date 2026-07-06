@@ -51,4 +51,6 @@ function checkRole(...allowedRoles) {
     };
 };
 
-module.exports = { auth, checkRole, ROLES };
+module.exports = auth;
+module.exports.checkRole = checkRole;
+module.exports.ROLES = ROLES;

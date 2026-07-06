@@ -26,7 +26,7 @@ const { faleComDono, faleComDonoCliente } = require('../functions/sendMailer');
 const Anuncio = require('../models/table_anuncio');
 
 //middleware
-const { auth, checkRole, ROLES } = require('../middlewares/authentication.js');
+const auth = require('../middlewares/authentication.js');
 const authVerification = require('../middlewares/authVerification.js');
 
 
@@ -67,14 +67,14 @@ module.exports = (io, loginLimiter) => {
     router.post('/api/is-auth', authVerification, Login.sessionVerification);
 
     //Admin
-    router.post('/api/admin/usuario/create', auth, checkRole(ROLES.ADMIN), Users.create);
-    router.post('/api/admin/usuario/update/:id', auth, checkRole(ROLES.ADMIN), Users.update);
-    router.put('/api/admin/usuario/status/:id', auth, checkRole(ROLES.ADMIN), Users.updateStatus);
-    router.get('/api/admin/usuario/edit/:id', auth, checkRole(ROLES.ADMIN), Users.buscarUsuario);
-    router.delete('/api/admin/usuario/delete/:id', auth, checkRole(ROLES.ADMIN), Users.delete);
-    router.get('/api/admin/usuario/buscar/:id', auth, checkRole(ROLES.ADMIN), Users.buscarUsuarioId);
+    router.post('/api/admin/usuario/create', auth, Users.create);
+    router.post('/api/admin/usuario/update/:id', auth, Users.update);
+    router.put('/api/admin/usuario/status/:id', auth, Users.updateStatus);
+    router.get('/api/admin/usuario/edit/:id', auth, Users.buscarUsuario);
+    router.delete('/api/admin/usuario/delete/:id', auth, Users.delete);
+    router.get('/api/admin/usuario/buscar/:id', auth, Users.buscarUsuarioId);
     router.get('/api/portal/usuario/buscar/:id', Users.consultarUsuarioPortal);
-    router.post('/api/admin/usuario/export', auth, checkRole(ROLES.ADMIN), Admin.exportUser);
+    router.post('/api/admin/usuario/export', auth, Admin.exportUser);
 
     router.get('/api/admin/cadernos', auth, Admin.listarCadernos);
     router.get('/api/portal/cadernos', Admin.listarCadernosPortal);
