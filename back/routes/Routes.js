@@ -217,6 +217,7 @@ module.exports = (io, loginLimiter) => {
                     UNIQUE KEY idx_dashboard_cache_id (id)
                 )`
             );
+            try { await database.query(`ALTER TABLE dashboard_cache ADD COLUMN porAtividade_json LONGTEXT`); } catch (e) { /* ja existe */ }
             const [stats] = await database.query(
                 `SELECT
                     COUNT(*) as total,
