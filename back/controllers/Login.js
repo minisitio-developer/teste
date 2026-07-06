@@ -46,23 +46,28 @@ module.exports = {
             return res.status(401).json({ success: false, message: "Credenciais inválidas" });
         }
 
+        const token = jwt.sign({ id: user.id, role: user.codTipoUsuario, uuid: user.codUsuario, doc: user.descCPFCNPJ }, secretKey, { expiresIn: "1h" });
+
+        res.cookie('userTokenAccess', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 3600000 // 1h
+        });
+
         const { senha: _, ...safeUser } = user;
+        safeUser.success = true;
 
         if (user.ativo && user.codTipoUsuario == 1) {
-            const token = jwt.sign({ id: user.id, role: user.codTipoUsuario, uuid: user.codUsuario, doc: user.descCPFCNPJ }, secretKey, { expiresIn: "1h" });
-
-            res.cookie('userTokenAccess', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
-                maxAge: 3600000 // 1h
-            });
-
             res.json({ success: true, message: "Usuario encontrado", data: safeUser, type: 1, accessToken: token })
-        } else if (user.ativo && (user.codTipoUsuario == 2 || user.codTipoUsuario == 3 || user.codTipoUsuario == 5)) {
-            res.status(403).json({ success: false, message: "Acesso não permitido para este tipo de usuário", type: user.codTipoUsuario })
+        } else if (user.ativo && user.codTipoUsuario == 2) {
+            res.json({ success: true, message: "Não é possível entrar com acesso MASTER", data: safeUser, type: 2, accessToken: token })
+        } else if (user.ativo && user.codTipoUsuario == 3) {
+            res.json({ success: true, message: "Não é possível entrar com acesso ANUNCIANTE", data: safeUser, type: 3, accessToken: token })
+        } else if (user.ativo && user.codTipoUsuario == 5) {
+            res.json({ success: true, message: "Não é possível entrar com acesso ANUNCIANTE", data: safeUser, type: 5, accessToken: token })
         } else {
-            res.status(403).json({ success: false, message: "O usuário não está ativo, por favor fale com o suporte." })
+            res.json({ success: false, message: "O usuário não está ativo, por favor fale com o suporte." })
         }
 
     },
