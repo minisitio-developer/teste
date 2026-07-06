@@ -151,6 +151,7 @@ module.exports = (io, loginLimiter) => {
             // Fallback para MySQL
             let cache;
             try {
+                try { await database.query(`ALTER TABLE dashboard_cache ADD COLUMN porAtividade_json LONGTEXT`); } catch (e) { /* ja existe */ }
                 const result = await database.query(
                     `SELECT * FROM dashboard_cache WHERE id = 1`,
                     { type: database.QueryTypes.SELECT }
