@@ -439,6 +439,17 @@ async function runCleanup() {
     return require('./migrations/runCleanup')();
 }
 
+// Health check
+app.get('/api/health', async (req, res) => {
+    const database = require('./config/db');
+    try {
+        await database.authenticate();
+        res.json({ status: 'ok', db: 'connected', uptime: process.uptime() });
+    } catch (e) {
+        res.status(503).json({ status: 'error', db: 'disconnected' });
+    }
+});
+
 server.listen(port, async () => {
     console.log("rodando na porta: ", port);
     await fixAutoIncrement();
@@ -448,4 +459,20 @@ server.listen(port, async () => {
     }
     await seedAdmin();
     await seedPin();
+});
+
+// Graceful shutdown
+const shutdown = async (signal) => {
+    console.log(`\n${signal} recebido. Encerrando graciosamente...`);
+    server.close(() => console.log('HTTP server fechado'));
+    try { await database.close(); console.log('DB desconectado'); } catch (e) { /* ignore */ }
+    try { if (redisClient && redisClient.isOpen) await redisClient.quit(); console.log('Redis desconectado'); } catch (e) { /* ignore */ }
+    try { io.close(); console.log('Socket.IO fechado'); } catch (e) { /* ignore */ }
+    process.exit(0);
+};
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('unhandledRejection', (reason) => {
+    console.error('Unhandled Rejection:', reason && reason.message ? reason.message : reason);
+    process.exit(1);
 });

@@ -12,31 +12,30 @@ function auth(req, res, next) {
   const secretKey = key.apiSecret;
     const authToken = req.headers['authorization'];
 
-    if (authToken != undefined) {
-
-        const bearer = authToken.split(' ');
-        let token = bearer[1];
-
-        jwt.verify(token, secretKey, (err, data) => {
-            if (err) {
-                res.status(401);
-                res.json({ success: false, message: "Token inválido" });
-            } else {
-                req.token = token;
-                req.user = {
-                    id: data.uuid || data.id,
-                    role: data.role || null,
-                    doc: data.doc || null
-                };
-
-                next();
-            }
-        });
-
-    } else {
-        res.status(401);
-        res.json({ success: false, message: "Token Inválido" });
+    if (!authToken) {
+        res.setHeader('WWW-Authenticate', 'Bearer');
+        return res.status(401).json({ success: false, message: "Token não fornecido" });
     }
+
+    const bearer = authToken.split(' ');
+    if (bearer.length !== 2 || bearer[0] !== 'Bearer') {
+        return res.status(401).json({ success: false, message: "Formato de token inválido" });
+    }
+    const token = bearer[1];
+
+    jwt.verify(token, secretKey, (err, data) => {
+        if (err) {
+            console.warn('Falha na verificação JWT:', err.name);
+            res.setHeader('WWW-Authenticate', 'Bearer');
+            return res.status(401).json({ success: false, message: "Token inválido ou expirado" });
+        }
+        req.user = {
+            id: data.uuid || data.id,
+            role: data.role || null,
+        };
+        next();
+    });
+
 };
 
 function checkRole(...allowedRoles) {

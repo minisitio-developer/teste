@@ -1,11 +1,12 @@
 require('dotenv').config();
 
-const required = ['API_SECRET', 'SECRET_KEY_WEBHOOK', 'MP_ACCESS_TOKEN'];
-if (process.env.NODE_ENV === 'production') {
-    required.push('MP_PUBLIC_KEY_PROD');
-}
+const required = ['API_SECRET'];
 required.forEach(key => {
     if (!process.env[key]) throw new Error(`Missing required env var: ${key}`);
+});
+
+['SECRET_KEY_WEBHOOK', 'MP_ACCESS_TOKEN', 'MP_PUBLIC_KEY_PROD'].forEach(key => {
+    if (!process.env[key]) console.warn(`AVISO: Env var ${key} não configurada - funcionalidade relacionada pode não operar.`);
 });
 
 module.exports = {

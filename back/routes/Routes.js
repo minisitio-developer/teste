@@ -98,7 +98,7 @@ module.exports = (io, loginLimiter) => {
     router.post('/api/admin/desconto/create', auth, Admin.criarIds);
     router.delete('/api/admin/desconto/delete/:id', auth, Admin.deleteIds);
     router.get('/api/admin/desconto/buscar/:id', auth, Admin.buscarId);
-    router.get('/api/admin/desconto/aplicar/:id', Admin.aplicarDesconto);
+    router.get('/api/admin/desconto/aplicar/:id', auth, Admin.aplicarDesconto);
     router.get('/api/admin/desconto/read/all', auth, Admin.buscarAllId);
     router.get('/api/admin/desconto/usuario/buscar/:id', auth, Admin.buscarUsuarioId);
     router.get('/api/admin/desconto/ddd/:id', auth, Admin.buscarDDD);

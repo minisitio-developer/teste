@@ -54,3 +54,9 @@ back/backups/
 # Railway IaC / agentes
 .railway/
 .agents/
+
+# Documentos locais
+*.doc
+*.docx
+*.pdf
+!railway.json
