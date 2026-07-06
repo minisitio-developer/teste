@@ -48,7 +48,7 @@ module.exports = {
         a.activate = 1
         AND a.codUf = :uf
         AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
-        AND (a.moderacao = 'autorizado' OR a.moderacao IS NULL)
+        AND (a.moderacao IS NULL OR a.moderacao IN ('autorizado', 'autorizar'))
         AND (
             a.descAnuncio LIKE :termo
             OR atv.atividade LIKE :termo
@@ -82,7 +82,7 @@ module.exports = {
         a.activate = 1
         AND a.codUf = :uf
         AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
-        AND (a.moderacao = 'autorizado' OR a.moderacao IS NULL)
+        AND (a.moderacao IS NULL OR a.moderacao IN ('autorizado', 'autorizar'))
         AND (
             a.descAnuncio LIKE :termo
             OR atv.atividade LIKE :termo
@@ -122,7 +122,7 @@ module.exports = {
       a.activate = 1
       AND a.codUf = :uf
       AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
-      AND (a.moderacao = 'autorizado' OR a.moderacao IS NULL)
+      AND (a.moderacao IS NULL OR a.moderacao IN ('autorizado', 'autorizar'))
       AND (
         a.descAnuncio LIKE :termo
         OR a.descTelefone LIKE :termo
@@ -155,7 +155,7 @@ module.exports = {
       a.activate = 1
       AND a.codUf = :uf
       AND (a.codCaderno = :caderno OR a.codCaderno = :cadernoId)
-      AND (a.moderacao = 'autorizado' OR a.moderacao IS NULL)
+      AND (a.moderacao IS NULL OR a.moderacao IN ('autorizado', 'autorizar'))
       AND (
         a.descAnuncio LIKE :termo
         OR a.descTelefone LIKE :termo
@@ -291,6 +291,7 @@ module.exports = {
                     codCaderno: codigoCaderno,
                     [Op.or]: [
                         { moderacao: 'autorizado' },
+                        { moderacao: 'autorizar' },
                         { moderacao: null }
                     ]
                 },
@@ -434,7 +435,7 @@ module.exports = {
         const { uf, bairro, profissao } = req.query;
 
         try {
-            let whereConditions = ['a.activate = 1', '(a.moderacao = \'autorizado\' OR a.moderacao IS NULL)'];
+            let whereConditions = ['a.activate = 1', '(a.moderacao IS NULL OR a.moderacao IN (\'autorizado\', \'autorizar\'))'];
             let replacements = {};
 
             if (uf) {
