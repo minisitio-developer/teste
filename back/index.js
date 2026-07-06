@@ -151,61 +151,66 @@ app.use(route);
 app.use('/api', express.static('public'));
 app.use('/imgdefault', express.static('public'));
 
-app.use('/api/files', express.static(path.resolve(__dirname, "public", "upload", "img")));
-app.use('/api/files/mosaicos', express.static(path.resolve(__dirname, "public", "upload", "img", "mosaico")));
-app.use('/api/files/2', express.static(path.resolve(__dirname, "public", "upload", "img", "promocao")));
-app.use('/api/files/3', express.static(path.resolve(__dirname, "public", "cartaoDigital")));
-app.use('/api/files/institucional', express.static(path.resolve(__dirname, "public", "upload", "img", "adminInstitucional")));
-app.use('/api/files/og', express.static(path.resolve(__dirname, "public", "OG")));
-app.use('/api/files/campanha', express.static(path.resolve(__dirname, "public", "upload", "campanha")));
-
-const OLD_SERVER = 'https://minisitio.com.br';
 const https = require('https');
-const imageFolders = {
-    '/api/files/descImagem/': 'descImagem',
-    '/api/files/logoParceiro/': 'logoParceiro',
-    '/api/files/mosaico/': 'mosaico',
-    '/api/files/promocao/': 'promocao',
-};
+const OLD_SERVER = 'https://minisitio.com.br';
+const IMG_BASE = path.resolve(__dirname, 'public', 'upload', 'img');
 
-Object.entries(imageFolders).forEach(([routePrefix, folder]) => {
-    app.get(`${routePrefix}*`, (req, res) => {
-        const filename = req.params[0];
-        if (!filename) return res.status(400).send('Invalid');
-        
-        const baseDir = path.resolve(__dirname, 'public', 'upload', 'img', folder);
-        const localPath = path.resolve(baseDir, filename);
-        
-        // Proteção contra Path Traversal (LFI)
-        if (!localPath.startsWith(baseDir)) {
-            return res.status(403).send('Acesso Negado');
-        }
+const proxyFolders = ['descImagem', 'logoParceiro', 'mosaico', 'promocao'];
 
-        if (fs.existsSync(localPath)) {
-            return res.sendFile(localPath);
+app.use('/api/files/mosaicos', express.static(path.resolve(IMG_BASE, 'mosaico')));
+app.use('/api/files/2', express.static(path.resolve(IMG_BASE, 'promocao')));
+app.use('/api/files/3', express.static(path.resolve(__dirname, 'public', 'cartaoDigital')));
+app.use('/api/files/institucional', express.static(path.resolve(IMG_BASE, 'adminInstitucional')));
+app.use('/api/files/og', express.static(path.resolve(__dirname, 'public', 'OG')));
+app.use('/api/files/campanha', express.static(path.resolve(__dirname, 'public', 'upload', 'campanha')));
+
+app.use('/api/files/:folder/:filename', (req, res) => {
+    const { folder, filename } = req.params;
+    if (!filename) return res.status(400).end();
+
+    const baseDir = path.resolve(IMG_BASE, folder);
+    const localPath = path.resolve(baseDir, filename);
+
+    if (!localPath.startsWith(baseDir)) {
+        return res.status(403).end();
+    }
+
+    if (fs.existsSync(localPath)) {
+        return res.sendFile(localPath);
+    }
+
+    if (!proxyFolders.includes(folder)) {
+        return res.status(404).end();
+    }
+
+    const remoteUrl = `${OLD_SERVER}/api/files/${folder}/${encodeURIComponent(filename)}`;
+    console.log(`[IMG-PROXY] Buscando do servidor antigo: ${remoteUrl}`);
+
+    https.get(remoteUrl, (proxyRes) => {
+        if (proxyRes.statusCode !== 200) {
+            proxyRes.resume();
+            return res.status(404).end();
         }
-        const remoteUrl = `${OLD_SERVER}/api/files/${folder}/${encodeURIComponent(filename)}`;
-        https.get(remoteUrl, (proxyRes) => {
-            if (proxyRes.statusCode === 200) {
-                res.setHeader('Content-Type', proxyRes.headers['content-type'] || 'application/octet-stream');
-                res.setHeader('Cache-Control', 'public, max-age=86400');
-                const chunks = [];
-                proxyRes.on('data', (chunk) => chunks.push(chunk));
-                proxyRes.on('end', () => {
-                    const buffer = Buffer.concat(chunks);
-                    res.end(buffer);
-                    const dir = path.dirname(localPath);
-                    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-                    fs.writeFile(localPath, buffer, (err) => {
-                        if (err) console.error(`Erro ao salvar imagem ${filename}:`, err.message);
-                    });
-                });
-            } else {
-                res.status(404).send('Not found');
-            }
-        }).on('error', () => {
-            res.status(404).send('Not found');
+        res.setHeader('Content-Type', proxyRes.headers['content-type'] || 'image/jpeg');
+        res.setHeader('Cache-Control', 'public, max-age=86400');
+        const chunks = [];
+        proxyRes.on('data', (chunk) => chunks.push(chunk));
+        proxyRes.on('end', () => {
+            const buffer = Buffer.concat(chunks);
+            res.end(buffer);
+            const dir = path.dirname(localPath);
+            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+            fs.writeFile(localPath, buffer, (err) => {
+                if (err) console.error(`[IMG-PROXY] Erro ao salvar ${filename}:`, err.message);
+            });
         });
+        proxyRes.on('error', (err) => {
+            console.error(`[IMG-PROXY] Erro no stream:`, err.message);
+            if (!res.headersSent) res.status(500).end();
+        });
+    }).on('error', (err) => {
+        console.error(`[IMG-PROXY] Erro ao buscar ${remoteUrl}:`, err.message);
+        if (!res.headersSent) res.status(404).end();
     });
 });
 
