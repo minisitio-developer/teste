@@ -69,7 +69,7 @@ module.exports = {
             OR EXISTS (
                 SELECT 1 FROM tags t
                 WHERE t.codAnuncio = a.codAnuncio
-                  AND t.tagValue LIKE :termo
+                  AND MATCH(t.tagValue) AGAINST(:ftTermo IN BOOLEAN MODE)
             )
         )
     ORDER BY a.codAtividade ASC, a.codTipoAnuncio DESC, a.createdAt ASC, a.descAnuncio ASC
@@ -138,7 +138,7 @@ module.exports = {
         OR EXISTS (
           SELECT 1 FROM tags t
           WHERE t.codAnuncio = a.codAnuncio
-            AND t.tagValue LIKE :termo
+            AND MATCH(t.tagValue) AGAINST(:ftTermo IN BOOLEAN MODE)
         )
       )`, {
                         replacements: {

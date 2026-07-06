@@ -24,6 +24,16 @@ const Tags = database.define('tags', {
     {
         freezeTableName: true,
         timestamps: false,
+        indexes: [
+            {
+                name: 'idx_tags_codAnuncio',
+                fields: ['codAnuncio'],
+            },
+            {
+                name: 'idx_tags_tagValue',
+                fields: ['tagValue'],
+            },
+        ]
     });
 
 module.exports = Tags;

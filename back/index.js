@@ -466,6 +466,7 @@ async function criarIndicesBusca() {
     const ftIndexes = [
         { table: 'anuncio', name: 'ft_descAnuncio', columns: 'descAnuncio' },
         { table: 'atividade', name: 'ft_atividade', columns: 'atividade, nomeAmigavel' },
+        { table: 'tags', name: 'ft_tags_tagValue', columns: 'tagValue' },
     ];
     for (const idx of ftIndexes) {
         try {
