@@ -318,9 +318,13 @@ function Dashboard() {
                                         <tr>
                                             <th>UF</th>
                                             <th className="text-end">Total</th>
-                                            <th className="text-end">Basicos</th>
+                                            <th className="text-end">Básicos</th>
                                             <th className="text-end">Completos</th>
-                                            <th className="text-end">% Completo</th>
+                                            <th className="text-end">Capa</th>
+                                            <th className="text-end">Campanhas</th>
+                                            <th className="text-end">IDs</th>
+                                            <th className="text-end">Tel.</th>
+                                            <th className="text-end">E-mail</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -330,7 +334,11 @@ function Dashboard() {
                                                 <td className="text-end">{formatNumber(uf.total)}</td>
                                                 <td className="text-end">{formatNumber(uf.basico)}</td>
                                                 <td className="text-end">{formatNumber(uf.completo)}</td>
-                                                <td className="text-end">{uf.total > 0 ? ((uf.completo / uf.total) * 100).toFixed(1) : 0}%</td>
+                                                <td className="text-end">{uf.capa > 0 ? formatNumber(uf.capa) : '-'}</td>
+                                                <td className="text-end">{uf.campanhas > 0 ? <span className="badge bg-warning text-dark">{uf.campanhas}</span> : '-'}</td>
+                                                <td className="text-end">{uf.totalId > 0 ? formatNumber(uf.totalId) : '-'}</td>
+                                                <td className="text-end">{uf.telAtualizar > 0 ? <span className="text-danger">{formatNumber(uf.telAtualizar)}</span> : '-'}</td>
+                                                <td className="text-end">{uf.emailAtualizar > 0 ? <span className="text-danger">{formatNumber(uf.emailAtualizar)}</span> : '-'}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -343,24 +351,32 @@ function Dashboard() {
                 {/* Cadernos por UF + Resumo */}
                 {data.cadernosPorUf && data.cadernosPorUf.length > 0 && (
                     <div className="row mb-4">
-                        <div className="col-md-6">
+                        <div className="col-md-8">
                             <div className="card">
                                 <div className="card-header bg-dark text-white">
-                                    <h5 className="mb-0"><i className="fa fa-book"></i> Cadernos por Estado</h5>
+                                    <h5 className="mb-0"><i className="fa fa-book"></i> Perfis por Caderno (Brasil)</h5>
                                 </div>
-                                <div className="card-body" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                                <div className="card-body" style={{ maxHeight: '400px', overflowY: 'auto', overflowX: 'auto' }}>
                                     <table className="table table-striped table-sm">
                                         <thead>
                                             <tr>
                                                 <th>UF</th>
-                                                <th className="text-end">Cadernos</th>
+                                                <th>Caderno</th>
+                                                <th className="text-end">Total</th>
+                                                <th className="text-end">Bás.</th>
+                                                <th className="text-end">Com.</th>
+                                                <th className="text-end">Capa</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {data.cadernosPorUf.map(item => (
-                                                <tr key={item.UF}>
+                                            {data.cadernosPorUf.slice(0, 200).map(item => (
+                                                <tr key={`${item.UF}-${item.Caderno}`}>
                                                     <td><strong>{item.UF}</strong></td>
+                                                    <td>{item.Caderno}</td>
                                                     <td className="text-end">{formatNumber(item.total)}</td>
+                                                    <td className="text-end">{formatNumber(item.basico)}</td>
+                                                    <td className="text-end">{formatNumber(item.completo)}</td>
+                                                    <td className="text-end">{item.capa > 0 ? formatNumber(item.capa) : '-'}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -368,7 +384,7 @@ function Dashboard() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-4">
                             <div className="card">
                                 <div className="card-header bg-dark text-white">
                                     <h5 className="mb-0"><i className="fa fa-pie-chart"></i> Resumo Geral</h5>
@@ -434,6 +450,49 @@ function Dashboard() {
                                                     <td className="text-end">{item.telAtualizar > 0 ? <span className="text-danger">{formatNumber(item.telAtualizar)}</span> : '-'}</td>
                                                     <td className="text-end">{item.emailAtualizar > 0 ? <span className="text-danger">{formatNumber(item.emailAtualizar)}</span> : '-'}</td>
                                                     <td className="text-end"><strong>{formatNumber(item.total)}</strong></td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Relatório de IDs */}
+                {data.porId && data.porId.length > 0 && (
+                    <div className="row mb-4">
+                        <div className="col-md-12">
+                            <div className="card">
+                                <div className="card-header bg-dark text-white">
+                                    <h5 className="mb-0"><i className="fa fa-ticket"></i> Perfis por ID de Desconto</h5>
+                                </div>
+                                <div className="card-body" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                                    <table className="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Descrição</th>
+                                                <th className="text-end">Total</th>
+                                                <th className="text-end">Básicos</th>
+                                                <th className="text-end">Completos</th>
+                                                <th className="text-end">Capa</th>
+                                                <th className="text-end">Tel.</th>
+                                                <th className="text-end">E-mail</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {data.porId.filter(item => item.id && item.id !== '00.000.0000' && item.id !== '00.000.0001').slice(0, 50).map(item => (
+                                                <tr key={item.id}>
+                                                    <td><code>{item.id}</code></td>
+                                                    <td>{item.descricao || '-'}</td>
+                                                    <td className="text-end"><strong>{formatNumber(item.total)}</strong></td>
+                                                    <td className="text-end">{formatNumber(item.basico)}</td>
+                                                    <td className="text-end">{formatNumber(item.completo)}</td>
+                                                    <td className="text-end">{item.capa > 0 ? formatNumber(item.capa) : '-'}</td>
+                                                    <td className="text-end">{item.telAtualizar > 0 ? <span className="text-danger">{formatNumber(item.telAtualizar)}</span> : '-'}</td>
+                                                    <td className="text-end">{item.emailAtualizar > 0 ? <span className="text-danger">{formatNumber(item.emailAtualizar)}</span> : '-'}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
