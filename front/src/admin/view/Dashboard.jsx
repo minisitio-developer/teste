@@ -1,6 +1,17 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { masterPath } from '../../config/config';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+class ErrorBoundary extends React.Component {
+    constructor(props) { super(props); this.state = { hasError: false, error: null }; }
+    static getDerivedStateFromError(error) { return { hasError: true, error }; }
+    render() {
+        if (this.state.hasError) {
+            return <div className="alert alert-danger m-3">Erro ao carregar componente: {this.state.error?.message}</div>;
+        }
+        return this.props.children;
+    }
+}
 
 const CampanhaTab = lazy(() => import('./Campanha/Campanha'));
 const CalhauTab = lazy(() => import('./Calhau/Calhau'));
@@ -137,9 +148,9 @@ function Dashboard() {
     const renderTabContent = () => {
         switch (activeTab) {
             case 'campanha':
-                return <Suspense fallback={<div className="text-center py-4"><i className="fa fa-spinner fa-spin"></i> Carregando...</div>}>
+                return <ErrorBoundary><Suspense fallback={<div className="text-center py-4"><i className="fa fa-spinner fa-spin"></i> Carregando...</div>}>
                     <CampanhaTab />
-                </Suspense>;
+                </Suspense></ErrorBoundary>;
             case 'calhau':
                 return <Suspense fallback={<div className="text-center py-4"><i className="fa fa-spinner fa-spin"></i> Carregando...</div>}>
                     <CalhauTab />

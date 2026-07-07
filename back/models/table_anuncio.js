@@ -584,6 +584,26 @@ const Anuncio = database.define('anuncio', {
                 fields: ['moderacao'],
             },
             {
+                name: 'idx_descTelefone',
+                fields: ['descTelefone'],
+            },
+            {
+                name: 'idx_descCelular',
+                fields: ['descCelular'],
+            },
+            {
+                name: 'idx_descEmailComercial',
+                fields: ['descEmailComercial'],
+            },
+            {
+                name: 'idx_descEmailRetorno',
+                fields: ['descEmailRetorno'],
+            },
+            {
+                name: 'idx_descEmailAutorizante',
+                fields: ['descEmailAutorizante'],
+            },
+            {
                 name: 'idx_search',
                 fields: ['codUf', 'codCaderno', 'activate', 'codTipoAnuncio', 'codAtividade', 'createdAt', 'descAnuncio'],
             },

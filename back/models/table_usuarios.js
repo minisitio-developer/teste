@@ -210,6 +210,14 @@ const Usuario = database.define('usuario', {
             {
                 name: 'idx_usuario_codUf',
                 fields: ['codUf']
+            },
+            {
+                name: 'idx_usuario_descEmail',
+                fields: ['descEmail']
+            },
+            {
+                name: 'idx_usuario_descTelefone',
+                fields: ['descTelefone']
             }
         ]
     }
