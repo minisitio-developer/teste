@@ -164,7 +164,7 @@ app.use('/api/files/institucional', express.static(path.resolve(IMG_BASE, 'admin
 app.use('/api/files/og', express.static(path.resolve(__dirname, 'public', 'OG')));
 app.use('/api/files/campanha', express.static(path.resolve(__dirname, 'public', 'upload', 'campanha')));
 
-app.use('/api/files/:folder/:filename', (req, res) => {
+app.get('/api/files/:folder/:filename', (req, res) => {
     const { folder, filename } = req.params;
     if (!filename) return res.status(400).end();
 
