@@ -310,7 +310,7 @@ module.exports = (io, loginLimiter) => {
                     SUM(CASE WHEN descEmailComercial IS NULL OR descEmailComercial = '' OR descEmailComercial = 'atualizar' OR descEmailComercial = '0' THEN 1 ELSE 0 END) as semEmail,
                     SUM(CASE WHEN descTelefone IS NULL OR descTelefone = '' OR descTelefone = 'atualizar' THEN 1 ELSE 0 END) as semTelefone,
                     SUM(CASE WHEN (descEmailComercial IS NULL OR descEmailComercial = '' OR descEmailComercial = 'atualizar' OR descEmailComercial = '0') AND (descTelefone IS NULL OR descTelefone = '' OR descTelefone = 'atualizar') THEN 1 ELSE 0 END) as semEmailETelefone
-                 FROM anuncio WHERE activate = 1`,
+                 FROM anuncio WHERE activate = '1'`,
                 { type: database.QueryTypes.SELECT }
             );
 

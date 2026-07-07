@@ -26,7 +26,7 @@ const items = [
         icon: ChartNoAxesCombined,
     },
     {
-        title: "Buscar Profissionais",
+        title: "Buscar Atividades",
         url: "/admin/buscar-profissionais",
         icon: Search,
     },

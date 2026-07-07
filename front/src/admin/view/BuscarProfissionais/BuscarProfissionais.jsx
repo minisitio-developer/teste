@@ -78,7 +78,7 @@ export default function BuscarProfissionais() {
                 <div className="col-12">
                     <h4 className="mb-4">
                         <Search className="me-2" size={24} />
-                        Buscar Profissionais
+                        Buscar Atividades
                     </h4>
                 </div>
             </div>
@@ -176,7 +176,7 @@ export default function BuscarProfissionais() {
                         <div className="card">
                             <div className="card-header d-flex justify-content-between align-items-center">
                                 <span>
-                                    <strong>{paginacao.totalItem}</strong> profissionais encontrados
+                                    <strong>{paginacao.totalItem}</strong> resultados encontrados
                                 </span>
                                 <span className="text-muted">
                                     Página {paginacao.paginaAtual} de {paginacao.totalPaginas}
