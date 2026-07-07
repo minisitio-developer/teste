@@ -150,8 +150,8 @@ export default function TableListCampanha({ campanhas, setShowSpinner, fetchCamp
                   <td>{campanha.id}</td>
                   <td>{campanha?.desconto?.usuario?.descNome || '—'}</td>
                     <td>{campanha.idOrigem}</td>
-                    <td>{campanha.desconto.hash}</td>
-                    <td>{campanha.retorno?.hash || '—'}</td>
+                    <td>{campanha?.desconto?.hash || '—'}</td>
+                    <td>{campanha?.retorno?.hash || '—'}</td>
                   <td>{campanha.bloco_registers_number}</td>
                   <td>{campanha.total_registros}</td>
                   <td>{campanha.uf}</td>
