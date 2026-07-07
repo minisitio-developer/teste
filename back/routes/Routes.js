@@ -253,11 +253,11 @@ module.exports = (io, loginLimiter) => {
             );
 
             const porMes = await database.query(
-                `SELECT DATE_FORMAT(createdAt, '%Y-%m') as mes, COUNT(*) as total,
+                `SELECT DATE_FORMAT(dtAlteracao, '%Y-%m') as mes, COUNT(*) as total,
                  SUM(CASE WHEN codTipoAnuncio IN ('1','2') THEN 1 ELSE 0 END) as basico,
                  SUM(CASE WHEN codTipoAnuncio = '3' THEN 1 ELSE 0 END) as completo
                  FROM anuncio
-                 WHERE createdAt >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+                 WHERE dtAlteracao IS NOT NULL AND dtAlteracao >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
                  GROUP BY mes ORDER BY mes ASC`,
                 { type: database.QueryTypes.SELECT }
             );
