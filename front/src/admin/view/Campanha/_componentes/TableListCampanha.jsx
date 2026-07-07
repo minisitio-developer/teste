@@ -50,7 +50,7 @@ export default function TableListCampanha({ campanhas, setShowSpinner, fetchCamp
   function cancelarCampanha(campanha) {
     Swal.fire({
       title: 'Tem certeza?',
-      text: `Você está prestes a cancelar a campanha do usuário ${campanha.desconto.usuario.descNome}. Esta ação não pode ser desfeita.`,
+      text: `Você está prestes a cancelar a campanha do usuário ${campanha?.desconto?.usuario?.descNome || 'N/A'}. Esta ação não pode ser desfeita.`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -148,7 +148,7 @@ export default function TableListCampanha({ campanhas, setShowSpinner, fetchCamp
               {campanhas.map((campanha, index) => (
                 <tr key={campanha.id}>
                   <td>{campanha.id}</td>
-                  <td>{campanha.desconto.usuario.descNome}</td>
+                  <td>{campanha?.desconto?.usuario?.descNome || '—'}</td>
                     <td>{campanha.idOrigem}</td>
                     <td>{campanha.desconto.hash}</td>
                     <td>{campanha.retorno?.hash || '—'}</td>
