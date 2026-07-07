@@ -254,7 +254,11 @@ module.exports = (io, loginLimiter) => {
             const porAtividade = await database.query(
                 `SELECT atv.nomeAmigavel as atividade, COUNT(*) as total,
                  SUM(CASE WHEN a.codTipoAnuncio IN ('1','2') THEN 1 ELSE 0 END) as basico,
-                 SUM(CASE WHEN a.codTipoAnuncio = '3' THEN 1 ELSE 0 END) as completo
+                 SUM(CASE WHEN a.codTipoAnuncio = '3' THEN 1 ELSE 0 END) as completo,
+                 SUM(CASE WHEN a.codTipoAnuncio = '4' THEN 1 ELSE 0 END) as capa,
+                 SUM(CASE WHEN a.codDesconto IS NOT NULL AND a.codDesconto != '' AND a.codDesconto != '00.000.0000' AND a.codDesconto != '00.000.0001' THEN 1 ELSE 0 END) as campanhas,
+                 SUM(CASE WHEN a.descTelefone IS NULL OR a.descTelefone = '' OR a.descTelefone = 'atualizar' OR a.descTelefone = '0' THEN 1 ELSE 0 END) as telAtualizar,
+                 SUM(CASE WHEN a.descEmailComercial IS NULL OR a.descEmailComercial = '' OR a.descEmailComercial = 'atualizar' OR a.descEmailComercial = '0' THEN 1 ELSE 0 END) as emailAtualizar
                  FROM anuncio a
                  JOIN atividade atv ON a.codAtividade = atv.atividade
                  WHERE a.activate = 1

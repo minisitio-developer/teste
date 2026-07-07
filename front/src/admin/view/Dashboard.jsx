@@ -416,6 +416,10 @@ function Dashboard() {
                                                 <th>Atividade</th>
                                                 <th className="text-end">Básicos</th>
                                                 <th className="text-end">Completos</th>
+                                                <th className="text-end">Capa</th>
+                                                <th className="text-end">Campanhas</th>
+                                                <th className="text-end">Tel. atualizar</th>
+                                                <th className="text-end">E-mail atualizar</th>
                                                 <th className="text-end">Total</th>
                                             </tr>
                                         </thead>
@@ -425,6 +429,10 @@ function Dashboard() {
                                                     <td><strong>{item.atividade}</strong></td>
                                                     <td className="text-end">{formatNumber(item.basico)}</td>
                                                     <td className="text-end">{formatNumber(item.completo)}</td>
+                                                    <td className="text-end">{item.capa > 0 ? formatNumber(item.capa) : '-'}</td>
+                                                    <td className="text-end">{item.campanhas > 0 ? <span className="badge bg-warning text-dark">{item.campanhas}</span> : '-'}</td>
+                                                    <td className="text-end">{item.telAtualizar > 0 ? <span className="text-danger">{formatNumber(item.telAtualizar)}</span> : '-'}</td>
+                                                    <td className="text-end">{item.emailAtualizar > 0 ? <span className="text-danger">{formatNumber(item.emailAtualizar)}</span> : '-'}</td>
                                                     <td className="text-end"><strong>{formatNumber(item.total)}</strong></td>
                                                 </tr>
                                             ))}
