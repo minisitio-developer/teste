@@ -166,7 +166,7 @@ module.exports = (io, loginLimiter) => {
                 return res.json({
                     success: true,
                     data: {
-                        total: 0, basico: 0, completo: 0, ativos: 0, inativos: 0,
+                        total: 0, basico: 0, completo: 0, capa: 0, ativos: 0, inativos: 0,
                         semEmail: null, semTelefone: null, semEmailETelefone: null,
                         expirados: 0, expiraEm30Dias: 0,
                         porUf: [], porMes: [], cadernosPorUf: [], porAtividade: [], porId: [],
@@ -179,6 +179,7 @@ module.exports = (io, loginLimiter) => {
                 total: cache.total,
                 basico: cache.basico,
                 completo: cache.completo,
+                capa: cache.capa || 0,
                 ativos: cache.ativos,
                 inativos: cache.inativos,
                 semEmail: null,
@@ -222,15 +223,17 @@ module.exports = (io, loginLimiter) => {
             );
             try { await database.query(`ALTER TABLE dashboard_cache ADD COLUMN porAtividade_json LONGTEXT`); } catch (e) { /* ja existe */ }
             try { await database.query(`ALTER TABLE dashboard_cache ADD COLUMN porId_json LONGTEXT`); } catch (e) { /* ja existe */ }
+            try { await database.query(`ALTER TABLE dashboard_cache ADD COLUMN capa INT DEFAULT 0`); } catch (e) { /* ja existe */ }
             const [stats] = await database.query(
                 `SELECT
                     COUNT(*) as total,
                     SUM(CASE WHEN codTipoAnuncio IN ('1','2') THEN 1 ELSE 0 END) as basico,
                     SUM(CASE WHEN codTipoAnuncio = '3' THEN 1 ELSE 0 END) as completo,
-                    SUM(CASE WHEN activate = 1 THEN 1 ELSE 0 END) as ativos,
-                    SUM(CASE WHEN activate = 0 THEN 1 ELSE 0 END) as inativos,
-                    SUM(CASE WHEN activate = 1 AND dueDate IS NOT NULL AND dueDate < NOW() THEN 1 ELSE 0 END) as expirados,
-                    SUM(CASE WHEN activate = 1 AND dueDate IS NOT NULL AND dueDate BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) as expiraEm30Dias
+                    SUM(CASE WHEN codTipoAnuncio = '4' THEN 1 ELSE 0 END) as capa,
+                    SUM(CASE WHEN activate = '1' THEN 1 ELSE 0 END) as ativos,
+                    SUM(CASE WHEN activate != '1' OR activate IS NULL THEN 1 ELSE 0 END) as inativos,
+                    SUM(CASE WHEN activate = '1' AND dueDate IS NOT NULL AND dueDate < NOW() THEN 1 ELSE 0 END) as expirados,
+                    SUM(CASE WHEN activate = '1' AND dueDate IS NOT NULL AND dueDate BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) as expiraEm30Dias
                  FROM anuncio`,
                 { type: database.QueryTypes.SELECT }
             );
@@ -244,7 +247,7 @@ module.exports = (io, loginLimiter) => {
                  SUM(CASE WHEN descTelefone IS NULL OR descTelefone = '' OR descTelefone = 'atualizar' OR descTelefone = '0' THEN 1 ELSE 0 END) as telAtualizar,
                  SUM(CASE WHEN descEmailComercial IS NULL OR descEmailComercial = '' OR descEmailComercial = 'atualizar' OR descEmailComercial = '0' THEN 1 ELSE 0 END) as emailAtualizar,
                  COUNT(DISTINCT CASE WHEN codDesconto NOT IN ('00.000.0000','00.000.0001','') THEN codDesconto END) as totalId
-                 FROM anuncio WHERE activate = 1
+                 FROM anuncio WHERE activate = '1'
                  GROUP BY codUf ORDER BY total DESC`,
                 { type: database.QueryTypes.SELECT }
             );
@@ -263,13 +266,12 @@ module.exports = (io, loginLimiter) => {
                 `SELECT atv.nomeAmigavel as atividade, COUNT(*) as total,
                  SUM(CASE WHEN a.codTipoAnuncio IN ('1','2') THEN 1 ELSE 0 END) as basico,
                  SUM(CASE WHEN a.codTipoAnuncio = '3' THEN 1 ELSE 0 END) as completo,
-                 SUM(CASE WHEN a.codTipoAnuncio = '4' THEN 1 ELSE 0 END) as capa,
                  SUM(CASE WHEN a.codDesconto IS NOT NULL AND a.codDesconto != '' AND a.codDesconto != '00.000.0000' AND a.codDesconto != '00.000.0001' THEN 1 ELSE 0 END) as campanhas,
                  SUM(CASE WHEN a.descTelefone IS NULL OR a.descTelefone = '' OR a.descTelefone = 'atualizar' OR a.descTelefone = '0' THEN 1 ELSE 0 END) as telAtualizar,
                  SUM(CASE WHEN a.descEmailComercial IS NULL OR a.descEmailComercial = '' OR a.descEmailComercial = 'atualizar' OR a.descEmailComercial = '0' THEN 1 ELSE 0 END) as emailAtualizar
                  FROM anuncio a
                  JOIN atividade atv ON a.codAtividade = atv.atividade
-                 WHERE a.activate = 1
+                 WHERE a.activate = '1'
                  GROUP BY atv.nomeAmigavel
                  ORDER BY total DESC`,
                 { type: database.QueryTypes.SELECT }
@@ -279,11 +281,10 @@ module.exports = (io, loginLimiter) => {
                 `SELECT codUf as UF, codCaderno as Caderno, COUNT(*) as total,
                  SUM(CASE WHEN codTipoAnuncio IN ('1','2') THEN 1 ELSE 0 END) as basico,
                  SUM(CASE WHEN codTipoAnuncio = '3' THEN 1 ELSE 0 END) as completo,
-                 SUM(CASE WHEN codTipoAnuncio = '4' THEN 1 ELSE 0 END) as capa,
                  SUM(CASE WHEN codDesconto IS NOT NULL AND codDesconto != '' AND codDesconto != '00.000.0000' AND codDesconto != '00.000.0001' THEN 1 ELSE 0 END) as campanhas,
                  SUM(CASE WHEN descTelefone IS NULL OR descTelefone = '' OR descTelefone = 'atualizar' OR descTelefone = '0' THEN 1 ELSE 0 END) as telAtualizar,
                  SUM(CASE WHEN descEmailComercial IS NULL OR descEmailComercial = '' OR descEmailComercial = 'atualizar' OR descEmailComercial = '0' THEN 1 ELSE 0 END) as emailAtualizar
-                 FROM anuncio WHERE activate = 1
+                 FROM anuncio WHERE activate = '1'
                  GROUP BY codUf, codCaderno ORDER BY codUf ASC, total DESC`,
                 { type: database.QueryTypes.SELECT }
             );
@@ -298,7 +299,7 @@ module.exports = (io, loginLimiter) => {
                  SUM(CASE WHEN a.descEmailComercial IS NULL OR a.descEmailComercial = '' OR a.descEmailComercial = 'atualizar' OR a.descEmailComercial = '0' THEN 1 ELSE 0 END) as emailAtualizar
                  FROM anuncio a
                  LEFT JOIN desconto d ON a.codDesconto = d.hash
-                 WHERE a.activate = 1
+                 WHERE a.activate = '1'
                  GROUP BY a.codDesconto, d.descricao
                  ORDER BY total DESC`,
                 { type: database.QueryTypes.SELECT }
@@ -314,10 +315,10 @@ module.exports = (io, loginLimiter) => {
             );
 
             await database.query(
-                `INSERT INTO dashboard_cache (id, total, basico, completo, ativos, inativos, expirados, expiraEm30Dias, semEmail, semTelefone, semEmailETelefone, porUf_json, porMes_json, cadernosPorUf_json, porAtividade_json, porId_json, contatos_json, lastUpdated)
-                 VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                `INSERT INTO dashboard_cache (id, total, basico, completo, capa, ativos, inativos, expirados, expiraEm30Dias, semEmail, semTelefone, semEmailETelefone, porUf_json, porMes_json, cadernosPorUf_json, porAtividade_json, porId_json, contatos_json, lastUpdated)
+                 VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
                  ON DUPLICATE KEY UPDATE
-                    total=VALUES(total), basico=VALUES(basico), completo=VALUES(completo),
+                    total=VALUES(total), basico=VALUES(basico), completo=VALUES(completo), capa=VALUES(capa),
                     ativos=VALUES(ativos), inativos=VALUES(inativos),
                     expirados=VALUES(expirados), expiraEm30Dias=VALUES(expiraEm30Dias),
                     semEmail=VALUES(semEmail), semTelefone=VALUES(semTelefone), semEmailETelefone=VALUES(semEmailETelefone),
@@ -327,7 +328,7 @@ module.exports = (io, loginLimiter) => {
                     contatos_json=VALUES(contatos_json), lastUpdated=NOW()`,
                 {
                     replacements: [
-                        stats.total, stats.basico, stats.completo, stats.ativos, stats.inativos,
+                        stats.total, stats.basico, stats.completo, stats.capa || 0, stats.ativos, stats.inativos,
                         stats.expirados, stats.expiraEm30Dias,
                         contatos.semEmail, contatos.semTelefone, contatos.semEmailETelefone,
                         JSON.stringify(porUf), JSON.stringify(porMes), JSON.stringify(cadernosPorUf),
@@ -341,6 +342,7 @@ module.exports = (io, loginLimiter) => {
                 total: stats.total,
                 basico: stats.basico,
                 completo: stats.completo,
+                capa: stats.capa || 0,
                 ativos: stats.ativos,
                 inativos: stats.inativos,
                 semEmail: contatos.semEmail,
@@ -375,7 +377,7 @@ module.exports = (io, loginLimiter) => {
                     SUM(CASE WHEN descEmailComercial IS NULL OR descEmailComercial = '' OR descEmailComercial = 'atualizar' OR descEmailComercial = '0' THEN 1 ELSE 0 END) as semEmail,
                     SUM(CASE WHEN descTelefone IS NULL OR descTelefone = '' OR descTelefone = 'atualizar' THEN 1 ELSE 0 END) as semTelefone,
                     SUM(CASE WHEN (descEmailComercial IS NULL OR descEmailComercial = '' OR descEmailComercial = 'atualizar' OR descEmailComercial = '0') AND (descTelefone IS NULL OR descTelefone = '' OR descTelefone = 'atualizar') THEN 1 ELSE 0 END) as semEmailETelefone
-                 FROM anuncio WHERE activate = 1`,
+                 FROM anuncio WHERE activate = '1'`,
                 { type: database.QueryTypes.SELECT }
             );
 

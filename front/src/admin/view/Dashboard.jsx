@@ -365,7 +365,6 @@ function Dashboard() {
                                                 <th className="text-end">Total</th>
                                                 <th className="text-end">Bás.</th>
                                                 <th className="text-end">Com.</th>
-                                                <th className="text-end">Capa</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -376,7 +375,6 @@ function Dashboard() {
                                                     <td className="text-end">{formatNumber(item.total)}</td>
                                                     <td className="text-end">{formatNumber(item.basico)}</td>
                                                     <td className="text-end">{formatNumber(item.completo)}</td>
-                                                    <td className="text-end">{item.capa > 0 ? formatNumber(item.capa) : '-'}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -397,6 +395,7 @@ function Dashboard() {
                                             <tr><td>Inativos</td><td className="text-end">{formatNumber(data.inativos)}</td></tr>
                                             <tr className="table-info"><td><strong>Basicos</strong></td><td className="text-end">{formatNumber(data.basico)}</td></tr>
                                             <tr className="table-success"><td><strong>Completos</strong></td><td className="text-end">{formatNumber(data.completo)}</td></tr>
+                                            <tr className="table-warning"><td><strong>Capa</strong></td><td className="text-end">{formatNumber(data.capa || 0)}</td></tr>
                                             <tr><td>Expirados</td><td className="text-end text-danger">{formatNumber(data.expirados)}</td></tr>
                                             <tr><td>Expiram em 30 dias</td><td className="text-end text-warning">{formatNumber(data.expiraEm30Dias)}</td></tr>
                                             {contatoData && (
@@ -432,7 +431,6 @@ function Dashboard() {
                                                 <th>Atividade</th>
                                                 <th className="text-end">Básicos</th>
                                                 <th className="text-end">Completos</th>
-                                                <th className="text-end">Capa</th>
                                                 <th className="text-end">Campanhas</th>
                                                 <th className="text-end">Tel. atualizar</th>
                                                 <th className="text-end">E-mail atualizar</th>
@@ -445,7 +443,6 @@ function Dashboard() {
                                                     <td><strong>{item.atividade}</strong></td>
                                                     <td className="text-end">{formatNumber(item.basico)}</td>
                                                     <td className="text-end">{formatNumber(item.completo)}</td>
-                                                    <td className="text-end">{item.capa > 0 ? formatNumber(item.capa) : '-'}</td>
                                                     <td className="text-end">{item.campanhas > 0 ? <span className="badge bg-warning text-dark">{item.campanhas}</span> : '-'}</td>
                                                     <td className="text-end">{item.telAtualizar > 0 ? <span className="text-danger">{formatNumber(item.telAtualizar)}</span> : '-'}</td>
                                                     <td className="text-end">{item.emailAtualizar > 0 ? <span className="text-danger">{formatNumber(item.emailAtualizar)}</span> : '-'}</td>
