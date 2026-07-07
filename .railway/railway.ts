@@ -1,7 +1,9 @@
-import { defineRailway, github, project, service } from "railway/iac";
+import { defineRailway, github, project, service, redis } from "railway/iac";
 
 export default defineRailway(() => {
-  const web = service("minisitio", {
+  const cache = redis("Redis");
+
+  const web = service("minisitio-v2", {
     source: github("eduardotrindade/minisitio", {
       branch: "master",
     }),
@@ -14,6 +16,9 @@ export default defineRailway(() => {
       startCommand: "node back/index.js",
       restartPolicyType: "ON_FAILURE",
       restartPolicyMaxRetries: 10,
+    },
+    env: {
+      REDIS_URL: cache.env.REDIS_URL,
     },
     volumes: ["/app/back/public"],
   });
@@ -32,6 +37,6 @@ export default defineRailway(() => {
   });
 
   return project("sunny-appreciation", {
-    resources: [web, db],
+    resources: [web, db, cache],
   });
 });
