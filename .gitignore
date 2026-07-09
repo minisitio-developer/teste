@@ -60,3 +60,8 @@ back/backups/
 *.docx
 *.pdf
 !railway.json
+
+# Arquivos grandes (campanhas, zips, versões antigas)
+back/public/upload/campanha/
+back/version/
+*.zip
