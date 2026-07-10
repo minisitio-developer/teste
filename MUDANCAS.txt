@@ -1,3 +1,31 @@
+1. Melhorias de Segurança (🔒)
+- Rate Limiting (express-rate-limit) — proteção contra brute-force
+- Helmet — headers HTTP de segurança
+- JWT + RBAC — autenticação com roles (Admin/User)
+- bcryptjs — hash de senhas mais seguro
+- Validação de input — CPF/CNPJ/Email com validations.js
+- Webhook Signature Verification — validação criptográfica
+- CORS configurado — controle de acesso cross-origin
+- Links com rel=noreferrer — segurança em links externos
+2. Melhorias de Performance (⚡)
+- Redis Cache — cache de buscas (reduz queries repetitivas ao banco)
+- Remoção de database.sync() por requisição — antes rodava sync em toda chamada
+- Paginação em buscas e listagens do admin
+- Migração CRA → Vite — builds mais rápidos, hot-reload eficiente
+- FULLTEXT indexes no MySQL para buscas instantâneas
+- Índices compostos (idx_search) para performance de consultas
+3. Novas Funcionalidades (🆕)
+- Dashboard Administrativo — métricas e visão geral do sistema
+- Busca de Profissionais — busca avançada no painel admin
+- Detecção de Duplicidades — identifica anúncios duplicados
+- Política de Privacidade — nova página institucional
+- Sidebar (shadcn/ui) — navegação moderna e responsiva
+- Lembrete de Renovação — e-mail automático antes do vencimento
+- Modal de Promoção — template para campanhas promocionais
+- Cache de UF/Cidades — melhora UX de busca
+- Nova página de Campanha com null safety
+- **Relatórios enriquecidos
+
 ================================================================================
                     RESUMO DE MUDANÇAS IMPLEMENTADAS
                       Melhorias de Código e Segurança
