@@ -133,10 +133,10 @@ export default function BiTable({
                 <i className="fa fa-file-text-o me-1"></i>CSV
               </button>
               <button className="btn btn-sm btn-outline-primary" onClick={exportExcel} title="Exportar Excel">
-                <i className="fa fa-file-excel-o me-1"></i>Excel
+                <i className="fa fa-table me-1"></i>Excel
               </button>
               <button className="btn btn-sm btn-outline-danger" onClick={exportPDF} title="Exportar PDF">
-                <i className="fa fa-file-pdf-o me-1"></i>PDF
+                <i className="fa fa-file-o me-1"></i>PDF
               </button>
             </div>
           )}
