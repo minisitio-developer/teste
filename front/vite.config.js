@@ -9,11 +9,13 @@ const runtimeFixScript = `
 (function(){
   var b = document.querySelector('meta[name="base-url"]')?.getAttribute('content') || '/';
   if (b === '/' || b === '') return;
+  var bc = b.replace(/\/+$/, '');
   function p(u) {
     if (!u || typeof u !== 'string' || u.indexOf('://') > -1 || u.indexOf('//') === 0 || u.indexOf('data:') === 0 || u.indexOf('#') === 0 || u.indexOf('blob:') === 0) return u;
+    if (u === b || u === bc) return u;
     if (u.indexOf(b) === 0) return u;
-    if (u === '/') return b.replace(/\\/+$/, '');
-    return (u.indexOf('/') === 0) ? b.replace(/\\/+$/, '') + u : b.replace(/\\/+$/, '') + '/' + u;
+    if (u === '/') return bc;
+    return (u.indexOf('/') === 0) ? bc + u : bc + '/' + u;
   }
   var _setAttr = Element.prototype.setAttribute;
   Element.prototype.setAttribute = function(n, v) {
