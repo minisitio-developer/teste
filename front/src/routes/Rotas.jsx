@@ -19,6 +19,7 @@ import ComprarAnuncio from '../views/ComprarAnuncio';
 //admin
 import Administrator from '../admin/Administrator';
 import Dashboard from '../admin/view/Dashboard';
+import BIPage from '../admin/view/BI/BI';
 import OutroComponente from "../admin/view/OutroComponente";
 import Users from "../admin/view/usuarios/Users";
 import Cadernos from "../admin/view/cadernos/Cadernos";
@@ -136,7 +137,11 @@ function Rotas() {
                             <Dashboard />
                         </PrivateRoute>}
                     />
-
+                    <Route path="admin/bi" element={
+                        <PrivateRoute role={1}>
+                            <BIPage />
+                        </PrivateRoute>}
+                    />
                     <Route path="admin/users" element={<PrivateRoute isAdmin={true}><Users /></PrivateRoute>} />
                     <Route path="admin/Cadernos" element={<PrivateRoute isAdmin={true}><Cadernos /></PrivateRoute>} />
                     <Route path="admin/info/Cadernos" element={<PrivateRoute isAdmin={true}><InfoCadernos /></PrivateRoute>} />
