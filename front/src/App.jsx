@@ -30,7 +30,7 @@ function App() {
         if (x.status === 401) {
            alert("Sessão expirada, faça login para continuar.");
            //navigate('/login');
-           window.location.href = '/login';
+            window.location.href = import.meta.env.VITE_BASE_URL ? import.meta.env.VITE_BASE_URL + '/login' : '/login';
            return Promise.reject('Sessão expirada');
          }
          return x.json();
