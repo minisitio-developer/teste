@@ -139,7 +139,7 @@ const ImportStage = database.define('importStage', {
     },
 
     descAnuncio: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(255),
         allowNull: false,
         unique: false,
         validate: {
@@ -173,7 +173,7 @@ const ImportStage = database.define('importStage', {
     },
 
     descTelefone: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(30),
         allowNull: false,
         unique: false,
         validate: {
@@ -261,7 +261,7 @@ const ImportStage = database.define('importStage', {
     },
 
     descCPFCNPJ: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(20),
         allowNull: false,
         unique: false,
         validate: {

@@ -1,0 +1,15 @@
+/node_modules
+/public/upload
+/public/cartaoDigital
+/public/export
+/public/import
+/public/pdf
+/logs
+/backups
+/certificados
+/scripts
+/seed*.*
+/*.sql
+/*.log
+/run-queries*.js
+/current_backend*.log

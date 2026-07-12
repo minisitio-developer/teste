@@ -43,7 +43,7 @@ const Usuario = database.define('usuario', {
     },
 
     descEmail: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(255),
         allowNull: false,
         unique: false,
         validate: {
@@ -77,7 +77,7 @@ const Usuario = database.define('usuario', {
     },
 
     codTipoUsuario: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(10),
         allowNull: false,
         unique: false,
         validate: {
@@ -88,7 +88,7 @@ const Usuario = database.define('usuario', {
     },
 
     descTelefone: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(30),
         allowNull: false,
         unique: false,
         validate: {

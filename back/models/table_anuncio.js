@@ -179,7 +179,7 @@ const Anuncio = database.define('anuncio', {
     },
 
     descCelular: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(30),
         allowNull: true,
         unique: false
     },
@@ -209,13 +209,13 @@ const Anuncio = database.define('anuncio', {
     },
 
     descEmailComercial: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(255),
         allowNull: true,
         unique: false
     },
 
     descEmailRetorno: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(255),
         allowNull: true,
         unique: false
     },
@@ -278,7 +278,7 @@ const Anuncio = database.define('anuncio', {
     },
 
     descEmailAutorizante: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(255),
         allowNull: true,
         unique: false
     },
@@ -412,7 +412,7 @@ const Anuncio = database.define('anuncio', {
     },
 
     moderacao: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING(100),
         allowNull: true
     },
 

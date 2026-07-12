@@ -386,12 +386,12 @@ async function seedAdmin() {
                 descNome: 'Administrador',
                 descEmail: adminEmail,
                 senha: hash,
-                codTipoUsuario: 1,
+                codTipoUsuario: '1',
                 codUf: '27',
                 codCidade: '0',
-                descTelefone: '',
-                descRepresentanteConvenio: '',
-                descEndereco: '',
+                descTelefone: '00000000000',
+                descRepresentanteConvenio: 'Admin',
+                descEndereco: 'Admin',
                 usuarioCod: '0',
                 dtCadastro2: new Date().toISOString().split('T')[0],
                 dtAlteracao: new Date().toISOString().split('T')[0],
@@ -454,6 +454,12 @@ app.get('/api/health', async (req, res) => {
 
 server.listen(port, async () => {
     console.log("rodando na porta: ", port);
+    if (process.env.FORCE_SYNC === 'true') {
+        const database = require('./config/db');
+        console.log('FORCE_SYNC: Sincronizando schema (alter)...');
+        await database.sync({ alter: true });
+        console.log('FORCE_SYNC: Schema sincronizado.');
+    }
     await fixAutoIncrement();
     if (process.env.RUN_CLEANUP === 'true') {
         await runCleanup();
