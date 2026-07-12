@@ -94,7 +94,7 @@ function Header() {
                             <i className="icon-user"></i> {user.descNome} <span className="caret"></span>
                         </a>
                         <ul className="dropdown-menu">
-                            <li><a href="/mdluser/auth/logout">Sair</a></li>
+                            <li><a href={import.meta.env.VITE_BASE_URL + '/mdluser/auth/logout'}>Sair</a></li>
                         </ul>
                     </div>
                 </div>

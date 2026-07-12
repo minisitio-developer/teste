@@ -324,7 +324,7 @@ function UserActions(props) {
 
 
 
-                <a href="/contato" className="btn btn-default margin-bottom-10">
+                <a href={import.meta.env.VITE_BASE_URL + '/contato'} className="btn btn-default margin-bottom-10">
                     <img src="/assets/img/logo.png" alt="Logo Minisitio" />
                     Denúncia
                 </a>

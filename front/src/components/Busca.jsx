@@ -271,7 +271,7 @@ function Busca(props) {
         } else if (caderno === "TODO") {
             alert("escolha uma cidade");
         } else {
-            window.location.href = `/caderno-geral/${caderno}/${uf}`;
+            window.location.href = import.meta.env.VITE_BASE_URL + `/caderno-geral/${caderno}/${uf}`;
         }
     };
 

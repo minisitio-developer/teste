@@ -244,17 +244,17 @@ const ContentChildForm = (props) => {
         //console.log(res)
 
         if (props.descontoAtivado && props.radioCheck === 3) {
-          window.location.href = `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
+          window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
           console.log("1");
         } else if (props.radioCheck === 1) {
-          window.location.href = `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
+          window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
           console.log("2");
         } else {
           window.location.href = `https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=712696516-cad9b026-5622-4fe2-921c-3d2d336a6d82`;
           console.log("3");
         }
 
-        //window.location.href = `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
+        //window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
         //navigate(`/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`);
       });
   }

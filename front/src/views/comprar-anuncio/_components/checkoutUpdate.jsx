@@ -26,7 +26,7 @@ export function checkoutUpdate(radioCheck, descontoAtivado, minisitio, codDescon
                 let valorBruto = precoFixo;
 
                 if (descontoAtivado && radioCheck === 3 && valorBruto <= 0 ) {
-                    // window.location.href = `/ver-anuncios/${limparCPFouCNPJ(minisitio.descCPFCNPJ)}`;
+                    // window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(minisitio.descCPFCNPJ)}`;
                     atualizarMinisitio()
                     console.log("1");
                 } else {
@@ -49,7 +49,7 @@ export function checkoutUpdate(radioCheck, descontoAtivado, minisitio, codDescon
 
                     })
                     .catch(err => console.log(err))
-                //window.location.href = `/ver-anuncios/${limparCPFouCNPJ(minisitio.descCPFCNPJ)}`;
+                //window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(minisitio.descCPFCNPJ)}`;
             }
         })
         .catch(err => {
@@ -95,7 +95,7 @@ export function checkoutUpdate(radioCheck, descontoAtivado, minisitio, codDescon
                         confirmButtonText: 'OK'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = `/ver-anuncios/${limparCPFouCNPJ(minisitio.descCPFCNPJ)}`;
+                            window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(minisitio.descCPFCNPJ)}`;
                         }
                     })
 

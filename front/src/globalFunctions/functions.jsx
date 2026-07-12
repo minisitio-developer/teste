@@ -159,7 +159,7 @@ export const generatePdfold = (props) => {
                 </div>
                 <div className="row pdf-content">
                     <div className="conteudo text-start webcardsimples">
-                        <a href="/local/porto-velho/hotel avenida ii_327591">
+                        <a href={import.meta.env.VITE_BASE_URL + '/local/porto-velho/hotel avenida ii_327591'}>
                             <h2>${"props.data.descAnuncio"}</h2>
                             <p><i className="fa fa-map-marker"></i> ${"props.data.descEndereco"}</p>
                             <p><i className="fa fa-phone"></i> ${"props.data.descTelefone"}</p>

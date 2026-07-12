@@ -508,8 +508,8 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                    confirmButtonText: 'OK'
                  }).then((result) => {
                    if (result.isConfirmed) {
-                     //window.location.href = `/ver-anuncios/${limparCPFouCNPJ(minisitio.descCPFCNPJ)}`;
-                     // window.location.href = `/perfil/${minisitio.codAnuncio}`
+                      //window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(minisitio.descCPFCNPJ)}`;
+                      // window.location.href = import.meta.env.VITE_BASE_URL + `/perfil/${minisitio.codAnuncio}`
                    }
                  }) */
 
@@ -1405,7 +1405,7 @@ function verificaDataPromocao(dataAcesso, periodoPromo) {
                   <i className="fa fa-download"></i>
                 </div>
                 <div className="col-md-11">
-                  <a href="/resources/pdfs/formulario_pa.pdf" target="_blank" rel="noreferrer">
+                  <a href={import.meta.env.VITE_BASE_URL + '/resources/pdfs/formulario_pa.pdf'} target="_blank" rel="noreferrer">
                     <h3>Faça o download do formulário</h3>
                   </a>
                 </div>

@@ -1292,7 +1292,7 @@ function Editar(props) {
                   <i className="fa fa-download"></i>
                 </div>
                 <div className="col-md-11">
-                  <a href="/resources/pdfs/formulario_pa.pdf" target="_blank" rel="noreferrer">
+                  <a href={import.meta.env.VITE_BASE_URL + '/resources/pdfs/formulario_pa.pdf'} target="_blank" rel="noreferrer">
                     <h3>Faça o download do formulário</h3>
                   </a>
                 </div>

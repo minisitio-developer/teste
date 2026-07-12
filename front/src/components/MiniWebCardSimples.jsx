@@ -55,7 +55,7 @@ function MiniWebCardSimples(props) {
                 <div className='row p-0 cartao'>
                     <div className="apoio">
                         <div style={{ float: "right" }}>
-                            <a href="/login">
+                            <a href={import.meta.env.VITE_BASE_URL + '/login'}>
                                 <button type="button" className="btn2 bgbt" data-toggle="modal" data-target="#05562970000102">
                                     INCLUIR <br />IMAGEM CARTÃO
                                 </button>
@@ -76,7 +76,7 @@ function MiniWebCardSimples(props) {
                                     </div>
                                     <div className="modal-footer">
                                         <button type="button" className="btn proximo" data-dismiss="modal">Não</button>
-                                        <a href="/wslogin?descCPFCNPJ=05562970000102&amp;senha=7c4a8d09ca3762af61e59520943dc26494f8941b&amp;codAnuncio=327591">
+                                        <a href={import.meta.env.VITE_BASE_URL + '/wslogin?descCPFCNPJ=05562970000102&amp;senha=7c4a8d09ca3762af61e59520943dc26494f8941b&amp;codAnuncio=327591'}>
                                             <button type="submit" className="btn cinza">Sim</button>
                                         </a>
 
@@ -88,7 +88,7 @@ function MiniWebCardSimples(props) {
 
 
                         <div className="conteudo text-start webcardsimples">
-                            <a href="/local/porto-velho/hotel avenida ii_327591">
+                            <a href={import.meta.env.VITE_BASE_URL + '/local/porto-velho/hotel avenida ii_327591'}>
 
 
                                 <h2>{props.data.descAnuncio}</h2>

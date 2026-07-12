@@ -172,14 +172,14 @@ const ContentChildLogin = (props) => {
         localStorage.removeItem("imgname");
 
         console.log(res);
-        //window.location.href = `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
+        //window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
         //navigate(`/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`);
 
         if(props.descontoAtivado && props.radioCheck === 3) {
-          window.location.href = `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
+          window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
           console.log("1");
         } else if(props.radioCheck === 1) {
-          window.location.href = `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
+          window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
           console.log("2");
         } else {
           window.location.href = `https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=712696516-cad9b026-5622-4fe2-921c-3d2d336a6d82`;
@@ -359,7 +359,7 @@ const ContentChildLogin = (props) => {
           </div>
           {/* <div className="col-md-12 py-4">
             <div className="vantagens margin-bottom-20">
-              <a href="/anuncie">
+              <a href={import.meta.env.VITE_BASE_URL + '/anuncie'}>
                 <i className="fa fa-thumbs-up"></i> <b>Clique aqui</b> e saiba
                 as <b>vantagens</b> de <b>anunciar conosco</b>
               </a>

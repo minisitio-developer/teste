@@ -225,17 +225,17 @@ function PainelAdmin() {
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="/comprar-espaco-minisitio" className="btn cinza btnMenu">
+                                                <a href={import.meta.env.VITE_BASE_URL + '/comprar-espaco-minisitio'} className="btn cinza btnMenu">
                                                     <i className="fa fa-address-card" aria-hidden="true"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="/12178481426/ver-anuncios" className="btn cinza btnMenu" onClick={(e) => selectPage(e, 1)}>
+                                                <a href={import.meta.env.VITE_BASE_URL + '/12178481426/ver-anuncios'} className="btn cinza btnMenu" onClick={(e) => selectPage(e, 1)}>
                                                     <i className="fa fa-th-list" aria-hidden="true"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="/login" className="btn cinza btnMenu" onClick={sair}>
+                                                <a href={import.meta.env.VITE_BASE_URL + '/login'} className="btn cinza btnMenu" onClick={sair}>
                                                     <i className="fa fa-sign-out" aria-hidden="true"></i>
                                                 </a>
                                             </li>
@@ -247,10 +247,10 @@ function PainelAdmin() {
                                                 <li><a href="#" className="btn cinza btnMenu" onClick={(e) => selectPage(e, 5)}>Legenda</a></li>
                                             }
                                             <li><a href="#" className="btn cinza btnMenu" onClick={(e) => selectPage(e, 3)}>Dados pessoais</a></li>
-                                            <li><a href="/comprar-espaco-minisitio" className="btn cinza btnMenu">Criar anúncio</a></li>
-                                            <li><a href="/12178481426/ver-anuncios" id="listar" className="btn cinza btnMenu" onClick={(e) => selectPage(e, 1)}>Listar Espaços</a></li>
-                                            {/*   <li><a href="/resources/img/galeria-area-do-assinante.zip" className="btn cinza btnMenu">Galeria de imagens</a></li> */}
-                                            <li><a href="/login" className="btn cinza btnMenu" onClick={sair}>Sair</a></li>
+                                            <li><a href={import.meta.env.VITE_BASE_URL + '/comprar-espaco-minisitio'} className="btn cinza btnMenu">Criar anúncio</a></li>
+                                            <li><a href={import.meta.env.VITE_BASE_URL + '/12178481426/ver-anuncios'} id="listar" className="btn cinza btnMenu" onClick={(e) => selectPage(e, 1)}>Listar Espaços</a></li>
+                                            {/*   <li><a href={import.meta.env.VITE_BASE_URL + '/resources/img/galeria-area-do-assinante.zip'} className="btn cinza btnMenu">Galeria de imagens</a></li> */}
+                                            <li><a href={import.meta.env.VITE_BASE_URL + '/login'} className="btn cinza btnMenu" onClick={sair}>Sair</a></li>
                                         </ul>
                                     }
 

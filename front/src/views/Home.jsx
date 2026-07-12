@@ -18,7 +18,7 @@ function Home() {
     <div className="App">
       <Mosaico logoTop={false} />
       <div className="d-flex justify-content-center align-items-center" style={{ "padding": "10px 0" }}>
-        <a href="/"><img src="../assets/img/logo.png" alt="Logo Minisitio" style={{ maxWidth: "180px" }} /></a>
+        <a href={import.meta.env.VITE_BASE_URL + '/'}><img src="../assets/img/logo.png" alt="Logo Minisitio" style={{ maxWidth: "180px" }} /></a>
       </div>
 
       <Busca paginaAtual={"home"} />

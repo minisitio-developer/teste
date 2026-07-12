@@ -140,7 +140,7 @@ function Login() {
                                         </div>
                                     </div>
                                     <div className="col-md-6 col-sm-5 senha">
-                                        <a href="/forgot-password" className="btn-forget-password">Esqueci minha senha</a>
+                                        <a href={import.meta.env.VITE_BASE_URL + '/forgot-password'} className="btn-forget-password">Esqueci minha senha</a>
                                     </div>
                                     <div className="col-md-6 col-sm-7 continuar">
                                         <button type="button" className="btn cinza btn-logar" onClick={entrar}><i className="fa fa-arrow-right"></i>Continuar</button>
@@ -179,7 +179,7 @@ function Login() {
                     </div>
                     <div className="col-md-12 py-4">
                         <div className="vantagens margin-bottom-20">
-                            <a href="/anuncie"><i className="fa fa-thumbs-up"></i> <b>Clique aqui</b> e saiba as <b>vantagens</b> de <b>anunciar conosco</b></a>
+                            <a href={import.meta.env.VITE_BASE_URL + '/anuncie'}><i className="fa fa-thumbs-up"></i> <b>Clique aqui</b> e saiba as <b>vantagens</b> de <b>anunciar conosco</b></a>
                         </div>
                     </div>
                 </div>

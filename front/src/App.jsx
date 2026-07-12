@@ -80,7 +80,7 @@ function App() {
         }}
       >
         O Minisitio utiliza cookies para entregar uma melhor experiência durante a navegação.
-        {/*   <a href="/politica-de-privacidade" style={{ color: "#FFD700" }}>
+        {/*   <a href={import.meta.env.VITE_BASE_URL + '/politica-de-privacidade'} style={{ color: "#FFD700" }}>
           Saiba mais
         </a> */}
       </CookieConsent>

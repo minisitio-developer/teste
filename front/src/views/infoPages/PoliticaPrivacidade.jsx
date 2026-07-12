@@ -44,7 +44,7 @@ function PoliticaPrivacidade() {
                                 <p>Esta política pode ser atualizada periodicamente. Recomendamos verificar esta página regularmente.</p>
 
                                 <h4>9. Contato</h4>
-                                <p>Em caso de dúvidas sobre esta política, entre em contato conosco através da nossa <a href="/contato">página de contato</a>.</p>
+                                <p>Em caso de dúvidas sobre esta política, entre em contato conosco através da nossa <a href={import.meta.env.VITE_BASE_URL + '/contato'}>página de contato</a>.</p>
                             </div>
                         </div>
                     </div>

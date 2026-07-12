@@ -21,7 +21,7 @@ async function deleteDuplicacaoEspaco(codOrigem) {
     })
 
     if (!deleteFetch.ok) {
-        window.location.href = '/login';
+        window.location.href = import.meta.env.VITE_BASE_URL + '/login';
         //throw new Error('Erro ao deletar duplicações do espaço.');
     }
 

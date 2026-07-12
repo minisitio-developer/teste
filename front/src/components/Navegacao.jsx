@@ -49,12 +49,12 @@ function Navegacao({anuncio}) {
                 <div className="row px-3  style-navegacao">
                    {/*  <ul className="bar-navigator col-md-6">
                         <li>
-                            <a href="/local/sao-paulo-zona-central_35">
+                            <a href={import.meta.env.VITE_BASE_URL + '/local/sao-paulo-zona-central_35'}>
                             </a>
                             <i className="fa fa-angle-right px-2"></i>
                         </li>
                         <li>
-                            <a href="/local/sao-paulo-zona-central/chaveiro-sniper_504183">
+                            <a href={import.meta.env.VITE_BASE_URL + '/local/sao-paulo-zona-central/chaveiro-sniper_504183'}>
                             </a>
                         </li>
                     </ul> */}

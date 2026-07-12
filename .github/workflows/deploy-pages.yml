@@ -39,7 +39,7 @@ jobs:
       - name: Build de produção
         env:
           VITE_BASE_URL: /teste/
-          VITE_API_URL: https://minisitio-v2-production.up.railway.app/api
+          VITE_API_URL: https://minisitio.com.br/api
           CI: false
         run: npm run build
 

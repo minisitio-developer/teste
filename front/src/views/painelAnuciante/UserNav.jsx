@@ -176,11 +176,11 @@ function PainelAdmin() {
                             <div className="col-md-12 col-xs-12 text-center">
                                 <div className="col-md-12">
                                     <ul className="list-inline pull-right">
-                                        <li><a href="/12178481426/cadastro" className="btn cinza btnMenu">Dados pessoais</a></li>
-                                        <li><a href="/12178481426/criar-anuncio" className="btn cinza btnMenu">Criar anúncio</a></li>
-                                        <li><a href="/12178481426/ver-anuncios" className="btn cinza btnMenu">Listar Espaços</a></li>
-                                        <li><a href="/resources/img/galeria-area-do-assinante.zip" className="btn cinza btnMenu">Galeria de imagens</a></li>
-                                        <li><a href="/login" className="btn cinza btnMenu" onClick={sair}>Sair</a></li>
+                                        <li><a href={import.meta.env.VITE_BASE_URL + '/12178481426/cadastro'} className="btn cinza btnMenu">Dados pessoais</a></li>
+                                        <li><a href={import.meta.env.VITE_BASE_URL + '/12178481426/criar-anuncio'} className="btn cinza btnMenu">Criar anúncio</a></li>
+                                        <li><a href={import.meta.env.VITE_BASE_URL + '/12178481426/ver-anuncios'} className="btn cinza btnMenu">Listar Espaços</a></li>
+                                        <li><a href={import.meta.env.VITE_BASE_URL + '/resources/img/galeria-area-do-assinante.zip'} className="btn cinza btnMenu">Galeria de imagens</a></li>
+                                        <li><a href={import.meta.env.VITE_BASE_URL + '/login'} className="btn cinza btnMenu" onClick={sair}>Sair</a></li>
                                     </ul>
                                 </div>
                             </div>

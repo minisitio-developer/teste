@@ -87,7 +87,7 @@ export function AppSidebar() {
         sessionStorage.removeItem('userLogged');
         sessionStorage.removeItem('userTokenAccess');
 
-        window.location.href = '/login';
+        window.location.href = import.meta.env.VITE_BASE_URL + '/login';
     };
 
     return (

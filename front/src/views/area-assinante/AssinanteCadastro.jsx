@@ -146,7 +146,7 @@ const AssinanteCadastro = (props) => {
           //cadastrarAnuncio(res.message.codUsuario)
           loadingButton.current.style.display = "none";
           //setAlert(true);
-          window.location.href = `/ver-anuncios/${obj.CPFCNPJ}`;
+          window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${obj.CPFCNPJ}`;
         } else {
           loadingButton.current.style.display = "none";
 
@@ -278,7 +278,7 @@ const AssinanteCadastro = (props) => {
         localStorage.removeItem("imgname");
 
         console.log(res);
-        window.location.href = `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
+        window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
         //navigate(`/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`);
       });
   }
