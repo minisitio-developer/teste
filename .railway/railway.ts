@@ -9,10 +9,6 @@ export default defineRailway(() => {
     source: github("eduardotrindade/vendas-mini", { branch: "migration/upgrade-stack" }),
     replicas: 1,
   });
-  const minichina = service("minichina", {
-    source: github("eduardotrindade/minichina", { branch: "master" }),
-    replicas: 1,
-  });
   const MiniChina = service("MiniChina", {
     source: github("eduardotrindade/minisitio", { branch: "master" }),
     replicas: 1,
@@ -24,6 +20,6 @@ export default defineRailway(() => {
   });
 
   return project("sunny-appreciation", {
-    resources: [Redis, MySQL, vendasMini, minichina, MiniChina, mysqlVolume, redisVolume],
+    resources: [Redis, MySQL, vendasMini, MiniChina, mysqlVolume, redisVolume],
   });
 });
