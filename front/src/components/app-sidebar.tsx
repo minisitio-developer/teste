@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react"
 import { AuthContext } from '../context/AuthContext.jsx';
-import { BookOpen, Briefcase, Building2, Calendar, ChartNoAxesCombined, ChevronDown, ChevronUp, Copy, DollarSign, Home, Inbox, Newspaper, Search, Settings, Star, Ticket, Tickets, User2, Users, BarChart3 } from "lucide-react"
+import { BookOpen, Briefcase, Building2, Calendar, ChartNoAxesCombined, ChevronDown, ChevronUp, Copy, DollarSign, Globe, Home, Inbox, Newspaper, Search, Settings, Star, Ticket, Tickets, User2, Users, BarChart3, Hash, BookText, Activity, Megaphone, ContactRound } from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -12,10 +12,13 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubItem,
+    SidebarMenuSubButton,
 } from "./ui/sidebar.tsx"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../components/ui/dropdown-menu.tsx"
 import { Separator } from "../components/ui/separator.tsx"
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Dropdown } from "react-bootstrap";
 
 
@@ -24,11 +27,6 @@ const items = [
         title: "Dashboard",
         url: "/admin/dashboard",
         icon: ChartNoAxesCombined,
-    },
-    {
-        title: "BI",
-        url: "/admin/bi",
-        icon: BarChart3,
     },
     {
         title: "Buscar Atividades",
@@ -77,9 +75,21 @@ const items = [
     },
 ]
 
+const biSubItems = [
+    { title: "Dashboard", url: "/admin/bi", icon: ChartNoAxesCombined },
+    { title: "UFs", url: "/admin/bi/ufs", icon: Globe },
+    { title: "Cadernos", url: "/admin/bi/cadernos", icon: BookText },
+    { title: "Atividades", url: "/admin/bi/atividades", icon: Activity },
+    { title: "ID", url: "/admin/bi/id", icon: Hash },
+    { title: "Campanhas", url: "/admin/bi/campanhas", icon: Megaphone },
+    { title: "Contatos", url: "/admin/bi/contatos", icon: ContactRound },
+];
+
 export function AppSidebar() {
     const { user } = useContext(AuthContext);
     const [userLoggedName, setUserLoggedName] = useState();
+    const location = useLocation();
+    const [biOpen, setBiOpen] = useState(() => location.pathname.startsWith('/admin/bi'));
 
     useEffect(() => {
         if (user) {
@@ -127,8 +137,38 @@ export function AppSidebar() {
                                         </a>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
-
                             ))}
+                            <SidebarMenuItem>
+                                <SidebarMenuButton className="" asChild>
+                                    <button onClick={() => setBiOpen(!biOpen)}
+                                        className="flex items-center gap-2 p-2 rounded-md text-white w-full
+                 hover:bg-sky-700 hover:text-white
+                 transition-colors duration-150 no-underline border-0 bg-transparent"
+                                        style={{ textDecoration: 'none' }}>
+                                        <BarChart3 className="w-5 h-5" />
+                                        <span className="flex-grow-1 text-start">BI</span>
+                                        {biOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                                    </button>
+                                </SidebarMenuButton>
+                                {biOpen && (
+                                    <SidebarMenuSub>
+                                        {biSubItems.map(sub => (
+                                            <SidebarMenuSubItem key={sub.title}>
+                                                <SidebarMenuSubButton asChild>
+                                                    <a href={sub.url}
+                                                        className="flex items-center gap-2 p-1.5 rounded-md text-white/80
+                             hover:bg-sky-700 hover:text-white
+                             transition-colors duration-150 no-underline"
+                                                        style={{ textDecoration: 'none', fontSize: '0.85rem' }}>
+                                                        <sub.icon className="w-4 h-4" />
+                                                        <span>{sub.title}</span>
+                                                    </a>
+                                                </SidebarMenuSubButton>
+                                            </SidebarMenuSubItem>
+                                        ))}
+                                    </SidebarMenuSub>
+                                )}
+                            </SidebarMenuItem>
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
