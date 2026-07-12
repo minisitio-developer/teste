@@ -11,7 +11,8 @@ const runtimeFixScript = `
   function p(u) {
     if (!u || u.indexOf('://') > -1 || u.indexOf('//') === 0 || u.indexOf('data:') === 0 || u.indexOf('#') === 0) return u;
     if (u.indexOf(b) === 0) return u;
-    return (u.indexOf('/') === 0) ? b.replace(/\\/+$/, '') + u : b.replace(/\\/+$/, '') + '/' + u;
+    if (u === '/') return b;
+    return (u.indexOf('/') === 0) ? b.replace(/\/+$/, '') + u : b.replace(/\/+$/, '') + '/' + u;
   }
   function fix(el) {
     if (el.tagName === 'A' && el.getAttribute('href')) el.href = p(el.getAttribute('href'));
