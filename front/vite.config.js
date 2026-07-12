@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import fs from 'fs';
 
 const base = process.env.VITE_BASE_URL || '/';
 
@@ -14,38 +15,43 @@ const runtimeFixScript = `
     if (u === '/') return b.replace(/\\/+$/, '');
     return (u.indexOf('/') === 0) ? b.replace(/\\/+$/, '') + u : b.replace(/\\/+$/, '') + '/' + u;
   }
+  var _setAttr = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function(n, v) {
+    if (typeof v === 'string' && (n === 'src' || n === 'href')) v = p(v);
+    _setAttr.call(this, n, v);
+  };
+  var _gsAttr = Element.prototype.getAttribute;
+  Element.prototype.getAttribute = function(n) {
+    var v = _gsAttr.call(this, n);
+    return v;
+  };
   var srcProp = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
   if (srcProp && srcProp.set) {
     Object.defineProperty(HTMLImageElement.prototype, 'src', {
-      get: srcProp.get,
-      set: function(v) { srcProp.set.call(this, p(v)); },
-      configurable: true
+      get: srcProp.get, set: function(v) { srcProp.set.call(this, p(v)); }, configurable: true
     });
   }
   var hrefProp = Object.getOwnPropertyDescriptor(HTMLAnchorElement.prototype, 'href');
   if (hrefProp && hrefProp.set) {
     Object.defineProperty(HTMLAnchorElement.prototype, 'href', {
-      get: hrefProp.get,
-      set: function(v) { hrefProp.set.call(this, p(v)); },
-      configurable: true
+      get: hrefProp.get, set: function(v) { hrefProp.set.call(this, p(v)); }, configurable: true
     });
   }
   var linkHref = Object.getOwnPropertyDescriptor(HTMLLinkElement.prototype, 'href');
   if (linkHref && linkHref.set) {
     Object.defineProperty(HTMLLinkElement.prototype, 'href', {
-      get: linkHref.get,
-      set: function(v) { linkHref.set.call(this, p(v)); },
-      configurable: true
+      get: linkHref.get, set: function(v) { linkHref.set.call(this, p(v)); }, configurable: true
     });
   }
-  (function scan(n) {
+  function scan(n) {
     if (n.nodeType !== 1) return;
     if (n.tagName === 'A' && n.getAttribute('href')) n.href = n.getAttribute('href');
     if (n.tagName === 'IMG' && n.getAttribute('src')) n.src = n.getAttribute('src');
     if (n.tagName === 'LINK' && n.getAttribute('href')) n.href = n.getAttribute('href');
     var c = n.children;
     for (var i = 0; i < c.length; i++) scan(c[i]);
-  })(document);
+  }
+  scan(document);
   var o = new MutationObserver(function(m) {
     for (var i = 0; i < m.length; i++) {
       if (m[i].type === 'childList') {
@@ -60,6 +66,17 @@ const runtimeFixScript = `
 export default defineConfig({
   plugins: [
     react(),
+    {
+      name: 'gh-pages-spa',
+      closeBundle() {
+        const buildDir = path.resolve(__dirname, 'build');
+        const indexHtml = path.join(buildDir, 'index.html');
+        const notFoundHtml = path.join(buildDir, '404.html');
+        if (fs.existsSync(indexHtml) && !fs.existsSync(notFoundHtml)) {
+          fs.copyFileSync(indexHtml, notFoundHtml);
+        }
+      },
+    },
     {
       name: 'base-path-fix',
       transformIndexHtml() {
