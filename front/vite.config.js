@@ -43,6 +43,12 @@ const runtimeFixScript = `
       get: linkHref.get, set: function(v) { linkHref.set.call(this, p(v)); }, configurable: true
     });
   }
+  var _locHref = Object.getOwnPropertyDescriptor(window.Location.prototype, 'href');
+  if (_locHref && _locHref.set) {
+    Object.defineProperty(window.Location.prototype, 'href', {
+      get: _locHref.get, set: function(v) { _locHref.set.call(this, typeof v === 'string' ? p(v) : v); }, configurable: true
+    });
+  }
   function scan(n) {
     if (n.nodeType !== 1) return;
     if (n.tagName === 'A' && n.getAttribute('href')) n.href = n.getAttribute('href');
