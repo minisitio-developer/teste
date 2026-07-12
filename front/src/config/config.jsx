@@ -1,28 +1,26 @@
-/**
- * config.js — Configuracao dinamica de URLs
- * Detecta automaticamente o ambiente (local, staging, producao)
- * Nenhuma URL hardcoded — tudo via logica de dominio
- */
-
 const hostname = window.location.hostname;
 const apiProtocol = window.location.protocol;
 const port = 3032;
+const envApiUrl = import.meta.env.VITE_API_URL;
+const envDomain = import.meta.env.VITE_DOMAIN;
 
 let apiDomain;
 let portalDomain;
 
-if (hostname === 'localhost' || hostname === '127.0.0.1') {
+if (envApiUrl) {
+  apiDomain = envApiUrl.replace(/^https?:\/\//, '').replace(/\/api\/?$/, '');
+  portalDomain = (envDomain || envApiUrl).replace(/^https?:\/\//, '').replace(/\/api\/?$/, '');
+} else if (hostname === 'localhost' || hostname === '127.0.0.1') {
     apiDomain = `${hostname}:${port}`;
     portalDomain = `${hostname}:3000`;
 } else {
-    // Producao: usa o proprio dominio para API e frontend
     apiDomain = hostname;
     portalDomain = hostname;
 }
 
-const apiUrl = `${apiProtocol}//${apiDomain}/api`;
-const ioUrl  = `${apiProtocol}//${apiDomain}`;
-const domain = `${apiProtocol}//${portalDomain}`;
+const apiUrl = envApiUrl || `${apiProtocol}//${apiDomain}/api`;
+const ioUrl  = envApiUrl || `${apiProtocol}//${apiDomain}`;
+const domain = envDomain || `${apiProtocol}//${portalDomain}`;
 
 export const masterPath = {
     url: apiUrl,

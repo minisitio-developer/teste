@@ -39,6 +39,8 @@ jobs:
       - name: Build de produção
         env:
           VITE_BASE_URL: /teste/
+          VITE_API_URL: https://minisitio.com.br/api
+          VITE_DOMAIN: https://minisitio.com.br
           CI: false
         run: npm run build
 

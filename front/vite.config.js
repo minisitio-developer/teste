@@ -7,34 +7,53 @@ const base = process.env.VITE_BASE_URL || '/';
 const runtimeFixScript = `
 (function(){
   var b = document.querySelector('meta[name="base-url"]')?.getAttribute('content') || '/';
-  if (b === '/') return;
+  if (b === '/' || b === '') return;
   function p(u) {
-    if (!u || u.indexOf('://') > -1 || u.indexOf('//') === 0 || u.indexOf('data:') === 0 || u.indexOf('#') === 0) return u;
+    if (!u || typeof u !== 'string' || u.indexOf('://') > -1 || u.indexOf('//') === 0 || u.indexOf('data:') === 0 || u.indexOf('#') === 0 || u.indexOf('blob:') === 0) return u;
     if (u.indexOf(b) === 0) return u;
-    if (u === '/') return b;
-    return (u.indexOf('/') === 0) ? b.replace(/\/+$/, '') + u : b.replace(/\/+$/, '') + '/' + u;
+    if (u === '/') return b.replace(/\\/+$/, '');
+    return (u.indexOf('/') === 0) ? b.replace(/\\/+$/, '') + u : b.replace(/\\/+$/, '') + '/' + u;
   }
-  function fix(el) {
-    if (el.tagName === 'A' && el.getAttribute('href')) el.href = p(el.getAttribute('href'));
-    if (el.tagName === 'IMG' && el.getAttribute('src')) el.src = p(el.getAttribute('src'));
-    if (el.tagName === 'LINK' && el.getAttribute('href')) el.href = p(el.getAttribute('href'));
-    el.querySelectorAll('a[href], img[src], link[href]').forEach(function(c) {
-      if (c.tagName === 'A' && c.getAttribute('href')) c.href = p(c.getAttribute('href'));
-      if (c.tagName === 'IMG' && c.getAttribute('src')) c.src = p(c.getAttribute('src'));
-      if (c.tagName === 'LINK' && c.getAttribute('href')) c.href = p(c.getAttribute('href'));
+  var srcProp = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+  if (srcProp && srcProp.set) {
+    Object.defineProperty(HTMLImageElement.prototype, 'src', {
+      get: srcProp.get,
+      set: function(v) { srcProp.set.call(this, p(v)); },
+      configurable: true
     });
   }
-  fix(document);
+  var hrefProp = Object.getOwnPropertyDescriptor(HTMLAnchorElement.prototype, 'href');
+  if (hrefProp && hrefProp.set) {
+    Object.defineProperty(HTMLAnchorElement.prototype, 'href', {
+      get: hrefProp.get,
+      set: function(v) { hrefProp.set.call(this, p(v)); },
+      configurable: true
+    });
+  }
+  var linkHref = Object.getOwnPropertyDescriptor(HTMLLinkElement.prototype, 'href');
+  if (linkHref && linkHref.set) {
+    Object.defineProperty(HTMLLinkElement.prototype, 'href', {
+      get: linkHref.get,
+      set: function(v) { linkHref.set.call(this, p(v)); },
+      configurable: true
+    });
+  }
+  (function scan(n) {
+    if (n.nodeType !== 1) return;
+    if (n.tagName === 'A' && n.getAttribute('href')) n.href = n.getAttribute('href');
+    if (n.tagName === 'IMG' && n.getAttribute('src')) n.src = n.getAttribute('src');
+    if (n.tagName === 'LINK' && n.getAttribute('href')) n.href = n.getAttribute('href');
+    var c = n.children;
+    for (var i = 0; i < c.length; i++) scan(c[i]);
+  })(document);
   var o = new MutationObserver(function(m) {
-    m.forEach(function(mut) {
-      if (mut.type === 'attributes') {
-        fix(mut.target);
-      } else if (mut.type === 'childList') {
-        mut.addedNodes.forEach(function(n) { if (n.nodeType === 1) fix(n); });
+    for (var i = 0; i < m.length; i++) {
+      if (m[i].type === 'childList') {
+        for (var j = 0; j < m[i].addedNodes.length; j++) scan(m[i].addedNodes[j]);
       }
-    });
+    }
   });
-  o.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['src', 'href'] });
+  o.observe(document, { childList: true, subtree: true });
 })();
 `;
 
