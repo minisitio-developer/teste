@@ -96,7 +96,9 @@ app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 // ========== APLICAR CORS SEGURO ==========
 const corsMiddleware = (req, res, next) => {
     const origin = req.headers.origin;
-    if (allowedOrigins.includes(origin)) {
+    if (allowedOrigins.includes('*')) {
+        res.setHeader('Access-Control-Allow-Origin', origin || '*');
+    } else if (allowedOrigins.includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
     }
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
