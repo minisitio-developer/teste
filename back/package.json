@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js --ignore ./public/importLog.json"
+    "dev": "nodemon index.js --ignore ./public/importLog.json",
+    "seed": "node seed-all.js"
   },
   "author": "devKledisom",
   "license": "ISC",

@@ -1,5 +1,5 @@
 // components/OutroComponente.js
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../../assets/css/users.css';
 import 'font-awesome/css/font-awesome.min.css';

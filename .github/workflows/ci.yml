@@ -59,10 +59,9 @@ jobs:
 
       - name: Build de produção
         env:
-          REACT_APP_ENV: production
-          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
-          REACT_APP_DOMAIN: ${{ secrets.REACT_APP_DOMAIN }}
-          DISABLE_ESLINT_PLUGIN: true
+          VITE_ENV: production
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_DOMAIN: ${{ secrets.VITE_DOMAIN }}
           CI: false
         run: npm run build
 

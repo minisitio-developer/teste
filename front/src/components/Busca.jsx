@@ -10,7 +10,6 @@ import Card from 'react-bootstrap/Card';
 
 import { masterPath } from '../config/config';
 import { useBusca } from '../context/BuscaContext';
-import { use } from 'react';
 import Swal from 'sweetalert2';
 
 function Busca(props) {

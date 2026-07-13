@@ -65,6 +65,13 @@ var runtimeFixScript = [
 ].join('\n');
 
 export default defineConfig({
+  define: {
+    'import.meta.env.VITE_BASE_URL': JSON.stringify(process.env.VITE_BASE_URL || ''),
+    'import.meta.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || ''),
+    'import.meta.env.VITE_DOMAIN': JSON.stringify(process.env.VITE_DOMAIN || ''),
+    'import.meta.env.VITE_API_SECRET': JSON.stringify(process.env.VITE_API_SECRET || ''),
+    'import.meta.env.VITE_ENV': JSON.stringify(process.env.VITE_ENV || 'development'),
+  },
   plugins: [
     react(),
     {

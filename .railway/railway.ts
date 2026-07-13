@@ -16,6 +16,7 @@ export default defineRailway(() => {
     env: {
       ADMIN_CNPJ: "23707648000199",
       ADMIN_SENHA: "Admin123",
+      VITE_BASE_URL: "/",
     },
   });
 

@@ -1,10 +1,11 @@
 # ========== Stage 1: Build React frontend ==========
 FROM node:20-alpine AS frontend-build
+ARG VITE_BASE_URL=/
 WORKDIR /app/front
 COPY front/package.json front/package-lock.json* ./
 RUN npm install
 COPY front/ .
-RUN npm run build
+RUN VITE_BASE_URL=${VITE_BASE_URL} npm run build
 
 # ========== Stage 2: Backend + Frontend ==========
 FROM node:20-alpine

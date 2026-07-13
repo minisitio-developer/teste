@@ -441,7 +441,7 @@ async function runCleanup() {
     return require('./migrations/runCleanup')();
 }
 
-// Health check
+// Health check (deve vir ANTES do catch-all *)
 app.get('/api/health', async (req, res) => {
     const database = require('./config/db');
     try {
