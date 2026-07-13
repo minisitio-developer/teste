@@ -10,7 +10,7 @@ export default defineRailway(() => {
     replicas: 1,
   });
   const MiniChina = service("MiniChina", {
-    source: github("eduardotrindade/minisitio", { branch: "master" }),
+    source: github("minisitio-developer/teste", { branch: "master" }),
     replicas: 1,
     networking: { privateNetworkEndpoint: "minisitio-v2" },
     env: {

@@ -71,7 +71,7 @@ async function ensureTables(conn) {
     id_uf INT AUTO_INCREMENT PRIMARY KEY,
     sigla_uf VARCHAR(2) NOT NULL,
     nome_uf VARCHAR(150) NOT NULL,
-    id_pais VARCHAR(150) NOT NULL DEFAULT 'BRA'
+    id_pais INT NOT NULL DEFAULT 10
   )`);
 
   await conn.execute(`CREATE TABLE IF NOT EXISTS caderno (
