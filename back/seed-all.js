@@ -94,7 +94,7 @@ async function ensureTables(conn) {
     id INT AUTO_INCREMENT PRIMARY KEY,
     atividade TEXT NOT NULL,
     nomeAmigavel TEXT NOT NULL,
-    corTitulo TEXT DEFAULT '#ffffff',
+    corTitulo VARCHAR(20) DEFAULT '#ffffff',
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   )`);

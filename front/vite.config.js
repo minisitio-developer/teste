@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 
 const base = process.env.VITE_BASE_URL || '/';
+const baseNoSlash = base.replace(/\/+$/, '');
 
 var runtimeFixScript = [
 '(function(){',
@@ -66,7 +67,7 @@ var runtimeFixScript = [
 
 export default defineConfig({
   define: {
-    'import.meta.env.VITE_BASE_URL': JSON.stringify(process.env.VITE_BASE_URL || ''),
+    'import.meta.env.VITE_BASE_URL': JSON.stringify(baseNoSlash),
     'import.meta.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || ''),
     'import.meta.env.VITE_DOMAIN': JSON.stringify(process.env.VITE_DOMAIN || ''),
     'import.meta.env.VITE_API_SECRET': JSON.stringify(process.env.VITE_API_SECRET || ''),
