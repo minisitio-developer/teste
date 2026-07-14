@@ -66,6 +66,7 @@ const BASE_PATH = "/api";
 const defaultOrigins = [
     'http://localhost:3000',
     'http://localhost:3001',
+    'https://minisitio-developer.github.io',
 ];
 if (process.env.ALLOWED_ORIGINS) {
     defaultOrigins.push(...process.env.ALLOWED_ORIGINS.split(','));
