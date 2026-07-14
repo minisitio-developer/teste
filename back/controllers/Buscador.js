@@ -195,21 +195,16 @@ module.exports = {
     buscarCaderno: async (req, res) => {
         const uf = req.query.uf;
 
-        if (!uf || uf === 'undefined' || uf === 'null') {
-            return res.json([]);
-        }
-
         try {
+            const where = (uf && uf !== 'undefined' && uf !== 'null') ? { UF: uf } : {};
             const cadernos = await Caderno.findAll({
-                where: {
-                    UF: uf
-                },
+                where,
                 attributes: ['codCaderno', 'nomeCaderno', 'nomeCadernoFriendly', 'UF', 'isCapital'],
                 order: [
                     ['isCapital', 'ASC'],
                     ['nomeCaderno', 'ASC']
                 ],
-                limit: 500,
+                limit: uf ? 500 : 5000,
             });
             return res.json(cadernos);
         } catch (error) {

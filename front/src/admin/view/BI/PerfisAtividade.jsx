@@ -26,10 +26,16 @@ export default function PerfisAtividade() {
 
   const apiUrl = masterPath.url;
 
+  function extractArray(res) {
+    if (Array.isArray(res)) return res;
+    if (res?.data && Array.isArray(res.data)) return res.data;
+    return [];
+  }
+
   useEffect(() => {
-    fetch(`${apiUrl}/ufs`).then(r => r.json()).then(d => setUfList(d || [])).catch(() => {});
-    fetch(`${apiUrl}/cadernos`).then(r => r.json()).then(d => setCadernoList(d || [])).catch(() => {});
-    fetch(`${apiUrl}/atividades`).then(r => r.json()).then(d => setAtividadeList(d || [])).catch(() => {});
+    fetch(`${apiUrl}/ufs`).then(r => r.json()).then(d => setUfList(extractArray(d))).catch(() => {});
+    fetch(`${apiUrl}/cadernos`).then(r => r.json()).then(d => setCadernoList(extractArray(d))).catch(() => {});
+    fetch(`${apiUrl}/atividades`).then(r => r.json()).then(d => setAtividadeList(extractArray(d))).catch(() => {});
   }, []);
 
   const fetchData = useCallback(async (page) => {
