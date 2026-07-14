@@ -145,20 +145,7 @@ function Rotas() {
                             <Dashboard />
                         </PrivateRoute>}
                     />
-                    <Route path="admin/bi" element={
-                        <PrivateRoute role={1}>
-                            <BILayout />
-                        </PrivateRoute>}
-                    >
-                        <Route index element={<BIDashboard />} />
-                        <Route path="ufs" element={<BiUfs />} />
-                        <Route path="cadernos" element={<BiCadernos />} />
-                        <Route path="id" element={<BiId />} />
-                        <Route path="atividades" element={<BiAtividades />} />
-                        <Route path="perfis-por-atividade" element={<BiPerfisAtividade />} />
-                        <Route path="campanhas" element={<BiCampanhas />} />
-                        <Route path="contatos" element={<BiContatos />} />
-                    </Route>
+
                     <Route path="admin/users" element={<PrivateRoute isAdmin={true}><Users /></PrivateRoute>} />
                     <Route path="admin/Cadernos" element={<PrivateRoute isAdmin={true}><Cadernos /></PrivateRoute>} />
                     <Route path="admin/info/Cadernos" element={<PrivateRoute isAdmin={true}><InfoCadernos /></PrivateRoute>} />
@@ -209,7 +196,21 @@ function Rotas() {
                     <Route path="admin/cadernos/editar" element={<PrivateRoute isAdmin={true}><CadernosEdit /></PrivateRoute>} />
                 </Route>
 
-
+                {/* ROTAS BI (fora do Layout para evitar sidebar duplicada) */}
+                <Route path="admin/bi" element={
+                    <PrivateRoute role={1}>
+                        <BILayout />
+                    </PrivateRoute>}
+                >
+                    <Route index element={<BIDashboard />} />
+                    <Route path="ufs" element={<BiUfs />} />
+                    <Route path="cadernos" element={<BiCadernos />} />
+                    <Route path="id" element={<BiId />} />
+                    <Route path="atividades" element={<BiAtividades />} />
+                    <Route path="perfis-por-atividade" element={<BiPerfisAtividade />} />
+                    <Route path="campanhas" element={<BiCampanhas />} />
+                    <Route path="contatos" element={<BiContatos />} />
+                </Route>
 
                 {/* ROTAS PAINEL ADMIN DO ANUNCIANTE */}
                 <Route path="ver-anuncios/:cpf" element={<PrivateRoute isAdmin={false}><PainelAdmin isPublic={true} /></PrivateRoute>} />
