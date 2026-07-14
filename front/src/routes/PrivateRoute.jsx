@@ -7,20 +7,24 @@ const PrivateRoute = ({ children, role, isAdmin }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        //console.log(loading)
         if (loading === false) {
             setIsLoading(false);
         }
     }, [loading]);
 
-    if(!isLoading) {
-        if (!user) return <Navigate to="/login" />;
-        if (role && Number(user.codTipoUsuario) !== role) return <Navigate to="/forbidden" />;
-
-        if (isAdmin && Number(user.codTipoUsuario) === 3) return <Navigate to="/login" />;
-
-       return children;
+    if (loading === null || isLoading) {
+        return (
+            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+                <button className="buttonload"><i className="fa fa-spinner fa-spin"></i> Carregando...</button>
+            </div>
+        );
     }
+
+    if (!user) return <Navigate to="/login" />;
+    if (role && Number(user.codTipoUsuario) !== role) return <Navigate to="/forbidden" />;
+    if (isAdmin && Number(user.codTipoUsuario) === 3) return <Navigate to="/login" />;
+
+    return children;
 
 
 
