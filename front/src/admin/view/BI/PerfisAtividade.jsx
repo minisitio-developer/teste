@@ -134,7 +134,10 @@ export default function PerfisAtividade() {
       selectedAtividades.forEach(a => params.append('atividade', a));
       params.set('limit', pageSize);
       params.set('page', page || 1);
-      const res = await fetch(`${apiUrl}/admin/bi/perfis-por-atividade?${params}`);
+      const token = sessionStorage.getItem('userTokenAccess');
+      const res = await fetch(`${apiUrl}/admin/bi/perfis-por-atividade?${params}`, {
+        headers: { authorization: 'Bearer ' + token }
+      });
       const json = await res.json();
       if (json.success) {
         setRows(json.rows);
@@ -149,7 +152,7 @@ export default function PerfisAtividade() {
   useEffect(() => {
     fetchData(1);
     setCurrentPage(1);
-  }, [selectedUfs, selectedCadernos, selectedAtividades, pageSize]);
+  }, []);
 
   const filteredUfs = useMemo(() => {
     const s = ufSearch.toLowerCase();
@@ -295,6 +298,12 @@ export default function PerfisAtividade() {
             <option value={200}>200</option>
             <option value={500}>500</option>
           </select>
+        </div>
+        <div style={{ alignSelf: 'flex-end' }}>
+          <button className="btn btn-primary btn-sm" style={{ borderRadius: 6, fontSize: '0.82rem', padding: '5px 20px' }}
+            onClick={() => fetchData(1)} disabled={loading}>
+            {loading ? <><i className="fa fa-spinner fa-spin me-1"></i>Buscando...</> : <><i className="fa fa-search me-1"></i>BUSCAR</>}
+          </button>
         </div>
       </div>
 
