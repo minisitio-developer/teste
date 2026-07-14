@@ -502,12 +502,10 @@ module.exports = (io, loginLimiter) => {
                 params.push(...ufs);
             }
             if (cadernos.length > 0) {
-                joins.push('LEFT JOIN caderno c ON a.codCaderno = c.codCaderno');
                 wheres.push(`c.nomeCaderno IN (${cadernos.map(() => '?').join(',')})`);
                 params.push(...cadernos);
             }
             if (atividades.length > 0) {
-                joins.push('LEFT JOIN atividade atv ON a.codAtividade = atv.atividade');
                 wheres.push(`atv.atividade IN (${atividades.map(() => '?').join(',')})`);
                 params.push(...atividades);
             }
