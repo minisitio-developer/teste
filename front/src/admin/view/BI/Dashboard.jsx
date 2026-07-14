@@ -1,14 +1,13 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import useBiData from './useBiData';
-import BiCard from './BiCard';
+import { useOutletContext } from 'react-router-dom';
 
 function formatNumber(n) {
   return Number(n || 0).toLocaleString('pt-BR');
 }
 
 export default function DashboardPage() {
-  const { data, loading, error, refreshing, refresh, lastUpdated } = useBiData();
+  const { data } = useOutletContext();
 
   const maiorUf = useMemo(() => {
     if (!data?.porUf?.length) return null;
@@ -17,119 +16,64 @@ export default function DashboardPage() {
 
   const totalUfs = data?.porUf?.length || 0;
   const totalIds = data?.porId?.length || 0;
-  const totalCampanhas = data?.porId?.reduce((s, i) => s + (i.total || 0), 0) || 0;
 
-  if (loading) return (
-    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
+  if (!data) return (
+    <div className="d-flex justify-content-center align-items-center p-5">
       <button className="buttonload"><i className="fa fa-spinner fa-spin"></i> Carregando BI...</button>
     </div>
   );
-  if (error) return <div className="alert alert-danger m-3">{error}</div>;
-  if (!data) return null;
+
+  const cards = [
+    { title: 'Perfis por ID', value: totalIds, color: '#0d6efd', icon: 'fa-hashtag', link: '/admin/bi/id',
+      desc: `Total de IDs: ${formatNumber(totalIds)}` },
+    { title: 'Perfis por UF', value: totalUfs, color: '#198754', icon: 'fa-globe', link: '/admin/bi/ufs',
+      desc: maiorUf ? `Maior: ${maiorUf.codUf} (${formatNumber(maiorUf.total)})` : `${totalUfs} UFs` },
+    { title: 'Perfis por Caderno', value: data.cadernosPorUf?.length || 0, color: '#6f42c1', icon: 'fa-book', link: '/admin/bi/cadernos',
+      desc: `${data.cadernosPorUf?.length || 0} grupos UF+Caderno` },
+    { title: 'Perfis por Atividade', value: data.porAtividade?.length || 0, color: '#fd7e14', icon: 'fa-tasks', link: '/admin/bi/atividades',
+      desc: `${data.porAtividade?.length || 0} atividades` },
+    { title: 'Campanhas', value: data.porId?.length || 0, color: '#dc3545', icon: 'fa-bullhorn', link: '/admin/bi/campanhas',
+      desc: `${formatNumber(data.porId?.reduce((s, i) => s + (i.total || 0), 0) || 0)} anúncios` },
+    { title: 'Contatos', value: `${formatNumber(data.semEmail || 0)} emails`, color: '#ffc107', icon: 'fa-address-card', link: '/admin/bi/contatos',
+      desc: `${formatNumber(data.semTelefone || 0)} telefones p/ atualizar` },
+  ];
 
   return (
-    <div className="container-fluid py-3">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h4 className="m-0 fw-bold" style={{ color: '#1a1a2e' }}>Dashboard</h4>
-          <small className="text-muted">Visão geral do BI</small>
-        </div>
-        <div className="d-flex gap-2 align-items-center">
-          <small className="text-muted">
-            {lastUpdated ? <><i className="fa fa-clock-o me-1"></i>{new Date(lastUpdated).toLocaleString('pt-BR')}</> : 'Cache vazio'}
-          </small>
-          <button className="btn btn-sm btn-primary" style={{ borderRadius: 8 }} onClick={refresh} disabled={refreshing}>
-            {refreshing ? <><i className="fa fa-spinner fa-spin"></i> Atualizando...</> : <><i className="fa fa-refresh me-1"></i>Atualizar</>}
-          </button>
-        </div>
-      </div>
+    <div className="p-3">
+      <h5 className="fw-bold mb-3" style={{ color: '#1a1a2e' }}>
+        <i className="fa fa-dashboard me-2" style={{ color: '#0d6efd' }}></i>Dashboard
+      </h5>
 
-      <div className="row g-3 mb-4">
-        <div className="col-lg col-md-6">
-          <BiCard title="Por ID" value={totalIds} color="#0d6efd" link="/admin/bi/id" linkText="Ver relatório"
-            icon={<i className="fa fa-hashtag"></i>}>
-            <small className="text-muted d-block mt-1">Total de IDs cadastrados</small>
-            {lastUpdated && <small className="text-muted d-block" style={{ fontSize: '0.65rem' }}>Cache: {new Date(lastUpdated).toLocaleString('pt-BR')}</small>}
-          </BiCard>
-        </div>
-        <div className="col-lg col-md-6">
-          <BiCard title="Distribuição por UF" value={totalUfs} color="#198754" link="/admin/bi/ufs" linkText="Ver relatório"
-            icon={<i className="fa fa-globe"></i>}>
-            <small className="text-muted d-block mt-1">
-              {maiorUf ? <>Maior volume: <strong>{maiorUf.codUf}</strong> ({formatNumber(maiorUf.total)})</> : '...'}
-            </small>
-          </BiCard>
-        </div>
-        <div className="col-lg col-md-6">
-          <BiCard title="Qualidade de Contatos" color="#ffc107" link="/admin/bi/contatos" linkText="Ver relatório"
-            icon={<i className="fa fa-envelope"></i>}>
-            <div className="mt-1">
-              <div className="d-flex justify-content-between small">
-                <span className="text-muted">E-mails para atualizar</span>
-                <span className="fw-semibold">{formatNumber(data.semEmail)}</span>
-              </div>
-              <div className="d-flex justify-content-between small">
-                <span className="text-muted">Telefones para atualizar</span>
-                <span className="fw-semibold">{formatNumber(data.semTelefone)}</span>
-              </div>
-              <div className="d-flex justify-content-between small fw-bold border-top pt-1 mt-1">
-                <span>Total pendentes</span>
-                <span>{formatNumber((data.semEmail || 0) + (data.semTelefone || 0))}</span>
+      <div className="row g-3">
+        {cards.map((c, i) => (
+          <div key={i} className="col-lg-4 col-md-6">
+            <div className="card border-0 shadow-sm h-100" style={{ borderRadius: 12 }}>
+              <div className="card-body d-flex flex-column">
+                <div className="d-flex justify-content-between align-items-start mb-2">
+                  <div>
+                    <small className="text-muted text-uppercase" style={{ fontSize: '0.7rem', letterSpacing: 0.5 }}>{c.title}</small>
+                    <div className="fw-bold" style={{ fontSize: '1.5rem', color: c.color }}>{typeof c.value === 'number' ? formatNumber(c.value) : c.value}</div>
+                  </div>
+                  <div style={{ width: 40, height: 40, borderRadius: 10, background: `${c.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <i className={`fa ${c.icon}`} style={{ color: c.color, fontSize: '1.1rem' }}></i>
+                  </div>
+                </div>
+                <small className="text-muted mb-2">{c.desc}</small>
+                <div className="mt-auto">
+                  <Link to={c.link} className="btn btn-sm btn-outline-primary w-100" style={{ borderRadius: 8, fontSize: '0.78rem' }}>
+                    <i className="fa fa-search me-1"></i>Ver relatório
+                  </Link>
+                </div>
               </div>
             </div>
-          </BiCard>
-        </div>
-        <div className="col-lg col-md-6">
-          <BiCard title="Por Caderno" value={formatNumber(data.total)} color="#6f42c1" link="/admin/bi/cadernos" linkText="Ver relatório"
-            icon={<i className="fa fa-book"></i>}>
-            <small className="text-muted d-block mt-1">
-              {data.cadernosPorUf?.length || 0} grupos UF+Caderno
-            </small>
-            <small className="text-muted d-block">
-              {data.porUf?.filter(u => !u.codUf || u.codUf === '00').length ? 'Registros sem UF' : 'Todas UFs com caderno'}
-            </small>
-          </BiCard>
-        </div>
-        <div className="col-lg col-md-6">
-          <BiCard title="Campanhas" value={data.porId?.length || 0} color="#dc3545" icon={<i className="fa fa-bullhorn"></i>}>
-            <small className="text-muted d-block mt-1">Total de campanhas ativas</small>
-            <div className="d-flex gap-2 mt-2">
-              <Link to="/admin/campanha" className="btn btn-sm btn-outline-primary" style={{ borderRadius: 6, fontSize: '0.75rem' }}>
-                <i className="fa fa-external-link me-1"></i>Consulta ao vivo
-              </Link>
-              <Link to="/admin/bi/campanhas" className="text-decoration-none align-self-center" style={{ fontSize: '0.8rem', color: '#0d6efd' }}>
-                Ver relatório →
-              </Link>
-            </div>
-          </BiCard>
-        </div>
+          </div>
+        ))}
       </div>
 
-      <div className="mb-4">
-        <h6 className="fw-semibold mb-3" style={{ color: '#1a1a2e' }}>Acesso rápido</h6>
-        <div className="d-flex flex-wrap gap-2">
-          {[
-            { label: 'UFs', icon: 'fa-globe', to: '/admin/bi/ufs', color: '#198754' },
-            { label: 'Cadernos', icon: 'fa-book', to: '/admin/bi/cadernos', color: '#6f42c1' },
-            { label: 'Atividades', icon: 'fa-tasks', to: '/admin/bi/atividades', color: '#fd7e14' },
-            { label: 'ID', icon: 'fa-hashtag', to: '/admin/bi/id', color: '#0d6efd' },
-            { label: 'Campanhas', icon: 'fa-bullhorn', to: '/admin/bi/campanhas', color: '#dc3545' },
-            { label: 'Contatos', icon: 'fa-address-card', to: '/admin/bi/contatos', color: '#ffc107' },
-          ].map(item => (
-            <Link key={item.label} to={item.to}
-              className="btn btn-sm d-flex align-items-center gap-2 border-0 shadow-sm"
-              style={{ background: '#fff', color: item.color, borderRadius: 10, padding: '8px 16px', fontWeight: 500, transition: 'all 0.2s' }}>
-              <i className={`fa ${item.icon}`}></i>
-              {item.label}
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <div className="row g-3 mb-4">
+      <div className="row g-3 mt-3">
         <div className="col-md-8">
           <div className="card border-0 shadow-sm" style={{ borderRadius: 12 }}>
-            <div className="card-header bg-white border-bottom-0 pt-3 pb-0 px-3 d-flex justify-content-between align-items-center">
+            <div className="card-header bg-white border-bottom-0 pt-3 pb-1 px-3">
               <small className="fw-semibold text-muted text-uppercase" style={{ fontSize: '0.7rem', letterSpacing: 0.5 }}>
                 <i className="fa fa-bar-chart me-1" style={{ color: '#0d6efd' }}></i> Top 10 UFs por quantidade
               </small>
@@ -155,7 +99,7 @@ export default function DashboardPage() {
         </div>
         <div className="col-md-4">
           <div className="card border-0 shadow-sm" style={{ borderRadius: 12 }}>
-            <div className="card-header bg-white border-bottom-0 pt-3 pb-0 px-3">
+            <div className="card-header bg-white border-bottom-0 pt-3 pb-1 px-3">
               <small className="fw-semibold text-muted text-uppercase" style={{ fontSize: '0.7rem', letterSpacing: 0.5 }}>
                 <i className="fa fa-pie-chart me-1" style={{ color: '#198754' }}></i> Por tipo de perfil
               </small>

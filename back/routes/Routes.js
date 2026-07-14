@@ -484,6 +484,62 @@ module.exports = (io, loginLimiter) => {
         }
     });
 
+    router.get('/api/admin/bi/perfis-por-atividade', auth, async (req, res) => {
+        try {
+            const ufs = req.query.uf ? (Array.isArray(req.query.uf) ? req.query.uf : [req.query.uf]) : [];
+            const cadernos = req.query.caderno ? (Array.isArray(req.query.caderno) ? req.query.caderno : [req.query.caderno]) : [];
+            const atividades = req.query.atividade ? (Array.isArray(req.query.atividade) ? req.query.atividade : [req.query.atividade]) : [];
+            const limit = Math.min(parseInt(req.query.limit) || 100, 500);
+            const page = Math.max(parseInt(req.query.page) || 1, 1);
+            const offset = (page - 1) * limit;
+
+            const joins = [];
+            const wheres = ['a.activate = 1'];
+            const params = [];
+
+            if (ufs.length > 0) {
+                wheres.push(`a.codUf IN (${ufs.map(() => '?').join(',')})`);
+                params.push(...ufs);
+            }
+            if (cadernos.length > 0) {
+                joins.push('LEFT JOIN caderno c ON a.codCaderno = c.codCaderno');
+                wheres.push(`c.nomeCaderno IN (${cadernos.map(() => '?').join(',')})`);
+                params.push(...cadernos);
+            }
+            if (atividades.length > 0) {
+                joins.push('LEFT JOIN atividade atv ON a.codAtividade = atv.atividade');
+                wheres.push(`atv.atividade IN (${atividades.map(() => '?').join(',')})`);
+                params.push(...atividades);
+            }
+
+            const joinClause = [...new Set(joins)].join(' ');
+            const whereClause = wheres.length ? 'WHERE ' + wheres.join(' AND ') : '';
+
+            const sql = `
+                SELECT a.codUf, c.nomeCaderno, atv.nomeAmigavel, atv.corTitulo,
+                    COUNT(*) as total,
+                    SUM(CASE WHEN a.codTipoAnuncio IN ('1','2') THEN 1 ELSE 0 END) as basico,
+                    SUM(CASE WHEN a.codTipoAnuncio = '3' THEN 1 ELSE 0 END) as completo,
+                    SUM(CASE WHEN a.codTipoAnuncio = '4' THEN 1 ELSE 0 END) as capa
+                FROM anuncio a
+                LEFT JOIN caderno c ON a.codCaderno = c.codCaderno
+                LEFT JOIN atividade atv ON a.codAtividade = atv.atividade
+                ${joinClause}
+                ${whereClause}
+                GROUP BY a.codUf, c.nomeCaderno, atv.nomeAmigavel, atv.corTitulo
+                ORDER BY a.codUf ASC, c.nomeCaderno ASC, total DESC
+                LIMIT ? OFFSET ?
+            `;
+            params.push(limit, offset);
+
+            const [rows] = await database.query(sql, { replacements: params, type: database.QueryTypes.SELECT });
+            res.json({ success: true, rows });
+        } catch (error) {
+            console.error('Erro no perfis-por-atividade:', error);
+            res.status(500).json({ success: false, message: 'Erro ao buscar dados' });
+        }
+    });
+
     //CAMPANHA PROMOÇÃO
     router.get('/api/admin/campanha/promocao/:codAnuncio/:hash', CampanhaController.verificarPromocao);
     router.get('/api/admin/campanha/desconto/read', auth, Admin.CampanhalistarIds);

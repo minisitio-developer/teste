@@ -1,79 +1,134 @@
-import React, { useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import useBiData from './useBiData';
-import BiTable from './BiTable';
-import BiCard from './BiCard';
+import React, { useMemo, useState, useCallback } from 'react';
+import { useOutletContext } from 'react-router-dom';
 
 function formatNumber(n) {
   return Number(n || 0).toLocaleString('pt-BR');
 }
 
 export default function CadernosPage() {
-  const { data, loading, error, refreshing, refresh, lastUpdated } = useBiData();
+  const { data } = useOutletContext();
+  const [selectedUf, setSelectedUf] = useState('');
 
-  const cards = useMemo(() => {
-    if (!data) return [];
-    return [
-      { title: 'Total IDs', value: data.total, color: '#0d6efd', icon: 'fa-hashtag' },
-      { title: 'Total Ativos', value: data.ativos, color: '#198754', icon: 'fa-check-circle' },
-      { title: 'Total Perfis', value: data.total, color: '#6f42c1', icon: 'fa-id-card' },
-      { title: 'Campanhas', value: data.porUf?.reduce((s, u) => s + (u.campanhas || 0), 0) || 0, color: '#fd7e14', icon: 'fa-bullhorn' },
-      { title: 'UFs', value: data.porUf?.length || 0, color: '#dc3545', icon: 'fa-globe' },
-      { title: 'Telefones Atualizados', value: data.porUf?.reduce((s, u) => s + (u.telAtualizar || 0), 0) || 0, color: '#20c997', icon: 'fa-phone' },
-    ];
+  const ufList = useMemo(() => {
+    if (!data?.cadernosPorUf) return [];
+    return [...new Set(data.cadernosPorUf.map(r => r.UF))].sort();
   }, [data]);
 
-  const columns = useMemo(() => [
-    { key: 'UF', label: 'UF', className: 'fw-semibold', render: (v) => <strong>{v || 'Sem UF'}</strong> },
-    { key: 'Caderno', label: 'Caderno', render: (v) => v || '-' },
-    { key: 'total', label: 'Total', className: 'text-end' },
-    { key: 'basico', label: 'Básicos', className: 'text-end' },
-    { key: 'completo', label: 'Completos', className: 'text-end' },
-    { key: 'campanhas', label: 'Campanhas', className: 'text-end' },
-    { key: 'telAtualizar', label: 'Telefones', className: 'text-end' },
-    { key: 'emailAtualizar', label: 'E-mails', className: 'text-end' },
-  ], []);
+  const rows = useMemo(() => {
+    if (!data?.cadernosPorUf) return [];
+    if (!selectedUf) return data.cadernosPorUf;
+    return data.cadernosPorUf.filter(r => r.UF === selectedUf);
+  }, [data, selectedUf]);
 
-  if (loading) return (
-    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
-      <button className="buttonload"><i className="fa fa-spinner fa-spin"></i> Carregando...</button>
-    </div>
-  );
-  if (error) return <div className="alert alert-danger m-3">{error}</div>;
-  if (!data?.cadernosPorUf) return null;
+  const totals = useMemo(() => {
+    if (!rows.length) return null;
+    return {
+      total: rows.reduce((s, r) => s + Number(r.total || 0), 0),
+      basico: rows.reduce((s, r) => s + Number(r.basico || 0), 0),
+      completo: rows.reduce((s, r) => s + Number(r.completo || 0), 0),
+    };
+  }, [rows]);
+
+  const exportar = useCallback((formato) => {
+    const headers = ['UF', 'Caderno', 'Total de Perfis', 'Perfis Básicos', 'Perfis Completos'];
+    const sep = formato === 'csv' ? ';' : '\t';
+    let content = headers.join(sep) + '\n';
+    rows.forEach(r => {
+      content += [r.UF || '-', r.Caderno || '-', r.total || 0, r.basico || 0, r.completo || 0].join(sep) + '\n';
+    });
+    if (totals) {
+      content += ['TOTAL', '', totals.total, totals.basico, totals.completo].join(sep) + '\n';
+    }
+    const blob = new Blob(["\uFEFF" + content], { type: `text/${formato === 'csv' ? 'csv' : 'tab-separated-values'};charset=utf-8` });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `perfis-por-caderno.${formato}`;
+    a.click();
+  }, [rows, totals]);
+
+  const exportPdf = useCallback(async () => {
+    const { default: jsPDF } = await import('jspdf');
+    const { default: autoTable } = await import('jspdf-autotable');
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    doc.text('Perfis por Caderno', 14, 10);
+    autoTable(doc, {
+      startY: 15,
+      head: [['UF', 'Caderno', 'Total de Perfis', 'Perfis Básicos', 'Perfis Completos']],
+      body: rows.map(r => [r.UF || '-', r.Caderno || '-', r.total || 0, r.basico || 0, r.completo || 0]),
+      foot: totals ? [['TOTAL', '', String(totals.total), String(totals.basico), String(totals.completo)]] : [],
+      theme: 'grid', styles: { fontSize: 7 },
+      footStyles: { fillColor: [220, 220, 220], textColor: [0, 0, 0], fontStyle: 'bold' },
+    });
+    doc.save('perfis-por-caderno.pdf');
+  }, [rows, totals]);
+
+  if (!data?.cadernosPorUf) return <div className="p-3 text-muted">Nenhum dado disponível.</div>;
 
   return (
-    <div className="container-fluid py-3">
+    <div className="p-3">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <h4 className="m-0 fw-bold" style={{ color: '#1a1a2e' }}><i className="fa fa-book me-2" style={{ color: '#6f42c1' }}></i>Cadernos</h4>
-          <small className="text-muted">Distribuição por caderno e UF</small>
-        </div>
-        <div className="d-flex gap-2 align-items-center">
-          <Link to="/admin/bi" className="btn btn-sm btn-outline-secondary" style={{ borderRadius: 8 }}><i className="fa fa-arrow-left me-1"></i>Dashboard</Link>
-          <small className="text-muted">{lastUpdated && <><i className="fa fa-clock-o me-1"></i>{new Date(lastUpdated).toLocaleString('pt-BR')}</>}</small>
-          <button className="btn btn-sm btn-primary" style={{ borderRadius: 8 }} onClick={refresh} disabled={refreshing}>
-            {refreshing ? <i className="fa fa-spinner fa-spin"></i> : <i className="fa fa-refresh"></i>}
+        <h5 className="m-0 fw-bold" style={{ color: '#1a1a2e' }}>
+          <i className="fa fa-book me-2" style={{ color: '#6f42c1' }}></i>Perfis por Caderno
+        </h5>
+        <div className="d-flex gap-2">
+          <button className="btn btn-sm btn-outline-success" style={{ borderRadius: 6, fontSize: '0.75rem' }} onClick={() => exportar('csv')}>
+            <i className="fa fa-file-excel-o me-1"></i>CSV
+          </button>
+          <button className="btn btn-sm btn-outline-success" style={{ borderRadius: 6, fontSize: '0.75rem' }} onClick={() => exportar('xlsx')}>
+            <i className="fa fa-file-excel-o me-1"></i>XLSX
+          </button>
+          <button className="btn btn-sm btn-outline-danger" style={{ borderRadius: 6, fontSize: '0.75rem' }} onClick={exportPdf}>
+            <i className="fa fa-file-pdf-o me-1"></i>PDF
           </button>
         </div>
       </div>
 
-      <div className="row g-2 mb-4">
-        {cards.map((c, i) => (
-          <div key={i} className="col-6 col-md-4 col-lg-2">
-            <BiCard title={c.title} value={c.value} color={c.color} icon={<i className={`fa ${c.icon}`}></i>} />
-          </div>
-        ))}
+      <div className="row g-2 mb-3">
+        <div className="col-auto">
+          <select className="form-select form-select-sm" value={selectedUf}
+            onChange={e => setSelectedUf(e.target.value)}
+            style={{ borderRadius: 6, fontSize: '0.82rem', minWidth: 200 }}>
+            <option value="">Todas as UFs</option>
+            {ufList.map(uf => (
+              <option key={uf} value={uf}>{uf}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="card border-0 shadow-sm" style={{ borderRadius: 12 }}>
-        <div className="card-header bg-white border-bottom-0 pt-3 pb-0 px-3">
-          <small className="fw-semibold text-muted text-uppercase" style={{ fontSize: '0.7rem', letterSpacing: 0.5 }}>
-            <i className="fa fa-table me-1" style={{ color: '#6f42c1' }}></i> Tabela por Caderno
-          </small>
-        </div>
-        <div className="card-body p-3">
-          <BiTable columns={columns} data={data.cadernosPorUf} searchPlaceholder="Buscar UF ou caderno..." />
+        <div className="card-body p-0" style={{ overflowX: 'auto' }}>
+          <table className="table table-striped table-hover mb-0" style={{ fontSize: '0.82rem' }}>
+            <thead style={{ background: '#1a1a2e', color: '#fff' }}>
+              <tr>
+                <th className="p-2">UF</th>
+                <th className="p-2">Caderno</th>
+                <th className="p-2 text-end">Total de Perfis</th>
+                <th className="p-2 text-end">Perfis Básicos</th>
+                <th className="p-2 text-end">Perfis Completos</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r, i) => (
+                <tr key={i}>
+                  <td className="p-2 fw-semibold">{r.UF || 'Sem UF'}</td>
+                  <td className="p-2">{r.Caderno || '-'}</td>
+                  <td className="p-2 text-end">{formatNumber(r.total)}</td>
+                  <td className="p-2 text-end">{formatNumber(r.basico)}</td>
+                  <td className="p-2 text-end">{formatNumber(r.completo)}</td>
+                </tr>
+              ))}
+              {totals && (
+                <tr style={{ background: '#e9ecef', fontWeight: 700 }}>
+                  <td className="p-2">TOTAL</td>
+                  <td className="p-2"></td>
+                  <td className="p-2 text-end">{formatNumber(totals.total)}</td>
+                  <td className="p-2 text-end">{formatNumber(totals.basico)}</td>
+                  <td className="p-2 text-end">{formatNumber(totals.completo)}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

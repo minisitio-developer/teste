@@ -19,13 +19,15 @@ import ComprarAnuncio from '../views/ComprarAnuncio';
 //admin
 import Administrator from '../admin/Administrator';
 import Dashboard from '../admin/view/Dashboard';
-import BIPage from '../admin/view/BI/BI';
+import BILayout from '../admin/view/BI/BILayout';
+import BIDashboard from '../admin/view/BI/Dashboard';
 import BiUfs from '../admin/view/BI/Ufs';
 import BiCadernos from '../admin/view/BI/Cadernos';
-import BiAtividades from '../admin/view/BI/Atividades';
 import BiId from '../admin/view/BI/Id';
+import BiAtividades from '../admin/view/BI/Atividades';
 import BiCampanhas from '../admin/view/BI/Campanhas';
 import BiContatos from '../admin/view/BI/Contatos';
+import BiPerfisAtividade from '../admin/view/BI/PerfisAtividade';
 import OutroComponente from "../admin/view/OutroComponente";
 import Users from "../admin/view/usuarios/Users";
 import Cadernos from "../admin/view/cadernos/Cadernos";
@@ -145,15 +147,18 @@ function Rotas() {
                     />
                     <Route path="admin/bi" element={
                         <PrivateRoute role={1}>
-                            <BIPage />
+                            <BILayout />
                         </PrivateRoute>}
-                    />
-                    <Route path="admin/bi/ufs" element={<PrivateRoute role={1}><BiUfs /></PrivateRoute>} />
-                    <Route path="admin/bi/cadernos" element={<PrivateRoute role={1}><BiCadernos /></PrivateRoute>} />
-                    <Route path="admin/bi/atividades" element={<PrivateRoute role={1}><BiAtividades /></PrivateRoute>} />
-                    <Route path="admin/bi/id" element={<PrivateRoute role={1}><BiId /></PrivateRoute>} />
-                    <Route path="admin/bi/campanhas" element={<PrivateRoute role={1}><BiCampanhas /></PrivateRoute>} />
-                    <Route path="admin/bi/contatos" element={<PrivateRoute role={1}><BiContatos /></PrivateRoute>} />
+                    >
+                        <Route index element={<BIDashboard />} />
+                        <Route path="ufs" element={<BiUfs />} />
+                        <Route path="cadernos" element={<BiCadernos />} />
+                        <Route path="id" element={<BiId />} />
+                        <Route path="atividades" element={<BiAtividades />} />
+                        <Route path="perfis-por-atividade" element={<BiPerfisAtividade />} />
+                        <Route path="campanhas" element={<BiCampanhas />} />
+                        <Route path="contatos" element={<BiContatos />} />
+                    </Route>
                     <Route path="admin/users" element={<PrivateRoute isAdmin={true}><Users /></PrivateRoute>} />
                     <Route path="admin/Cadernos" element={<PrivateRoute isAdmin={true}><Cadernos /></PrivateRoute>} />
                     <Route path="admin/info/Cadernos" element={<PrivateRoute isAdmin={true}><InfoCadernos /></PrivateRoute>} />

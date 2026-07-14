@@ -1,77 +1,133 @@
-import React, { useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import useBiData from './useBiData';
-import BiTable from './BiTable';
-import BiCard from './BiCard';
+import React, { useMemo, useCallback } from 'react';
+import { useOutletContext } from 'react-router-dom';
+
+function formatNumber(n) {
+  return Number(n || 0).toLocaleString('pt-BR');
+}
 
 export default function IdPage() {
-  const { data, loading, error, refreshing, refresh, lastUpdated } = useBiData();
+  const { data } = useOutletContext();
+  const rows = data?.porId || [];
 
-  const cards = useMemo(() => {
-    if (!data?.porId) return [];
-    const totalTel = data.porId.reduce((s, i) => s + (i.telAtualizar || 0), 0);
-    const totalEmail = data.porId.reduce((s, i) => s + (i.emailAtualizar || 0), 0);
-    return [
-      { title: 'Total IDs', value: data.porId.length, color: '#0d6efd', icon: 'fa-hashtag' },
-      { title: 'Total Ativos', value: data.porId.reduce((s, i) => s + (i.total || 0), 0), color: '#198754', icon: 'fa-check-circle' },
-      { title: 'Total Perfis', value: data.total, color: '#6f42c1', icon: 'fa-id-card' },
-      { title: 'Campanhas', value: data.porId.reduce((s, i) => s + (i.campanhas || 0), 0), color: '#fd7e14', icon: 'fa-bullhorn' },
-      { title: 'UFs', value: data.porUf?.length || 0, color: '#dc3545', icon: 'fa-globe' },
-      { title: 'Telefones Atualizados', value: totalTel, color: '#20c997', icon: 'fa-phone' },
-    ];
-  }, [data]);
+  const totals = useMemo(() => {
+    if (!rows.length) return null;
+    return {
+      total: rows.reduce((s, r) => s + Number(r.total || 0), 0),
+      basico: rows.reduce((s, r) => s + Number(r.basico || 0), 0),
+      completo: rows.reduce((s, r) => s + Number(r.completo || 0), 0),
+      capa: rows.reduce((s, r) => s + Number(r.capa || 0), 0),
+    };
+  }, [rows]);
 
-  const columns = useMemo(() => [
-    { key: 'id', label: 'ID', render: (v) => <code>{v || '-'}</code> },
-    { key: 'descricao', label: 'Nome', render: (v) => <span style={{ maxWidth: 250, display: 'inline-block', whiteSpace: 'normal', wordBreak: 'break-word' }}>{v || '-'}</span> },
-    { key: 'total', label: 'Quantidade', className: 'text-end fw-semibold' },
-    { key: 'basico', label: 'Básicos', className: 'text-end' },
-    { key: 'completo', label: 'Completos', className: 'text-end' },
-    { key: 'capa', label: 'Capa', className: 'text-end' },
-    { key: 'telAtualizar', label: 'Telefones', className: 'text-end' },
-    { key: 'emailAtualizar', label: 'E-mails', className: 'text-end' },
-  ], []);
+  const exportar = useCallback((formato) => {
+    const headers = ['ID', 'Nome', 'Descrição', 'Valor do Desconto', 'Total de Perfis', 'Básico', 'Completo'];
+    const sep = formato === 'csv' ? ';' : '\t';
+    let content = headers.join(sep) + '\n';
+    rows.forEach(r => {
+      content += [r.id || '-', r.descricao || '-', r.descricao || '-', r.valorDesconto || 0, r.total || 0, r.basico || 0, r.completo || 0].join(sep) + '\n';
+    });
+    if (totals) {
+      content += ['TOTAL', '', '', '', totals.total, totals.basico, totals.completo].join(sep) + '\n';
+    }
+    const blob = new Blob(["\uFEFF" + content], { type: `text/${formato === 'csv' ? 'csv' : 'tab-separated-values'};charset=utf-8` });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `perfis-por-id.${formato}`;
+    a.click();
+  }, [rows, totals]);
 
-  if (loading) return (
-    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
-      <button className="buttonload"><i className="fa fa-spinner fa-spin"></i> Carregando...</button>
-    </div>
-  );
-  if (error) return <div className="alert alert-danger m-3">{error}</div>;
-  if (!data?.porId) return null;
+  const exportPdf = useCallback(async () => {
+    const { default: jsPDF } = await import('jspdf');
+    const { default: autoTable } = await import('jspdf-autotable');
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    doc.setFontSize(10);
+    doc.text('Perfis por ID', 14, 10);
+    autoTable(doc, {
+      startY: 15,
+      head: [['ID', 'Nome', 'Descrição', 'Valor Desconto', 'Total', 'Básico', 'Completo']],
+      body: rows.map(r => [r.id || '-', r.descricao || '-', r.descricao || '-', r.valorDesconto || 0, r.total || 0, r.basico || 0, r.completo || 0]),
+      foot: totals ? [['TOTAL', '', '', '', String(totals.total), String(totals.basico), String(totals.completo)]] : [],
+      theme: 'grid', styles: { fontSize: 7 },
+      footStyles: { fillColor: [220, 220, 220], textColor: [0, 0, 0], fontStyle: 'bold' },
+    });
+    doc.save('perfis-por-id.pdf');
+  }, [rows, totals]);
+
+  if (!rows.length) return <div className="p-3 text-muted">Nenhum dado disponível.</div>;
 
   return (
-    <div className="container-fluid py-3">
+    <div className="p-3">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <h4 className="m-0 fw-bold" style={{ color: '#1a1a2e' }}><i className="fa fa-hashtag me-2" style={{ color: '#0d6efd' }}></i>ID</h4>
-          <small className="text-muted">Detalhamento por ID de campanha</small>
-        </div>
-        <div className="d-flex gap-2 align-items-center">
-          <Link to="/admin/bi" className="btn btn-sm btn-outline-secondary" style={{ borderRadius: 8 }}><i className="fa fa-arrow-left me-1"></i>Dashboard</Link>
-          <small className="text-muted">{lastUpdated && <><i className="fa fa-clock-o me-1"></i>{new Date(lastUpdated).toLocaleString('pt-BR')}</>}</small>
-          <button className="btn btn-sm btn-primary" style={{ borderRadius: 8 }} onClick={refresh} disabled={refreshing}>
-            {refreshing ? <i className="fa fa-spinner fa-spin"></i> : <i className="fa fa-refresh"></i>}
+        <h5 className="m-0 fw-bold" style={{ color: '#1a1a2e' }}>
+          <i className="fa fa-hashtag me-2" style={{ color: '#0d6efd' }}></i>Perfis por ID
+        </h5>
+        <div className="d-flex gap-2">
+          <button className="btn btn-sm btn-outline-success" style={{ borderRadius: 6, fontSize: '0.75rem' }} onClick={() => exportar('csv')}>
+            <i className="fa fa-file-excel-o me-1"></i>CSV
+          </button>
+          <button className="btn btn-sm btn-outline-success" style={{ borderRadius: 6, fontSize: '0.75rem' }} onClick={() => exportar('xlsx')}>
+            <i className="fa fa-file-excel-o me-1"></i>XLSX
+          </button>
+          <button className="btn btn-sm btn-outline-danger" style={{ borderRadius: 6, fontSize: '0.75rem' }} onClick={exportPdf}>
+            <i className="fa fa-file-pdf-o me-1"></i>PDF
           </button>
         </div>
       </div>
 
-      <div className="row g-2 mb-4">
-        {cards.map((c, i) => (
-          <div key={i} className="col-6 col-md-4 col-lg-2">
-            <BiCard title={c.title} value={c.value} color={c.color} icon={<i className={`fa ${c.icon}`}></i>} />
+      <div className="row g-2 mb-3">
+        {[
+          { label: 'Total de Perfis', value: totals?.total || 0, color: '#0d6efd' },
+          { label: 'Básicos', value: totals?.basico || 0, color: '#198754' },
+          { label: 'Completos', value: totals?.completo || 0, color: '#6f42c1' },
+          { label: 'Capa', value: totals?.capa || 0, color: '#ffc107' },
+        ].map((c, i) => (
+          <div key={i} className="col-6 col-md-3">
+            <div className="card border-0 shadow-sm" style={{ borderRadius: 10 }}>
+              <div className="card-body p-2 text-center">
+                <small className="text-muted" style={{ fontSize: '0.7rem' }}>{c.label}</small>
+                <div className="fw-bold" style={{ fontSize: '1.2rem', color: c.color }}>{formatNumber(c.value)}</div>
+              </div>
+            </div>
           </div>
         ))}
       </div>
 
       <div className="card border-0 shadow-sm" style={{ borderRadius: 12 }}>
-        <div className="card-header bg-white border-bottom-0 pt-3 pb-0 px-3">
-          <small className="fw-semibold text-muted text-uppercase" style={{ fontSize: '0.7rem', letterSpacing: 0.5 }}>
-            <i className="fa fa-table me-1" style={{ color: '#0d6efd' }}></i> Tabela por ID
-          </small>
-        </div>
-        <div className="card-body p-3">
-          <BiTable columns={columns} data={data.porId} searchPlaceholder="Buscar ID ou nome..." />
+        <div className="card-body p-0" style={{ overflowX: 'auto' }}>
+          <table className="table table-striped table-hover mb-0" style={{ fontSize: '0.82rem' }}>
+            <thead style={{ background: '#1a1a2e', color: '#fff' }}>
+              <tr>
+                <th className="p-2">ID</th>
+                <th className="p-2">Nome</th>
+                <th className="p-2">Descrição</th>
+                <th className="p-2 text-end">Valor do Desconto</th>
+                <th className="p-2 text-end">Total de Perfis</th>
+                <th className="p-2 text-end">Básico</th>
+                <th className="p-2 text-end">Completo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r, i) => (
+                <tr key={i}>
+                  <td className="p-2"><code>{r.id || '-'}</code></td>
+                  <td className="p-2">{r.descricao || '-'}</td>
+                  <td className="p-2">{r.descricao || '-'}</td>
+                  <td className="p-2 text-end">{r.valorDesconto || 0}</td>
+                  <td className="p-2 text-end fw-semibold">{formatNumber(r.total)}</td>
+                  <td className="p-2 text-end">{formatNumber(r.basico)}</td>
+                  <td className="p-2 text-end">{formatNumber(r.completo)}</td>
+                </tr>
+              ))}
+              {totals && (
+                <tr style={{ background: '#e9ecef', fontWeight: 700 }}>
+                  <td className="p-2" colSpan={4}>TOTAL</td>
+                  <td className="p-2 text-end">{formatNumber(totals.total)}</td>
+                  <td className="p-2 text-end">{formatNumber(totals.basico)}</td>
+                  <td className="p-2 text-end">{formatNumber(totals.completo)}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
