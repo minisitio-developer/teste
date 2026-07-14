@@ -6,6 +6,93 @@ function formatNumber(n) {
   return Number(n || 0).toLocaleString('pt-BR');
 }
 
+function MultiSelect({ label, items, selected, onChange, search, onSearchChange, displayKey, valueKey }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    function handler(e) {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    }
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div ref={ref} style={{ position: 'relative', minWidth: 180 }}>
+      <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#555', marginBottom: 2 }}>{label}</label>
+      <div
+        onClick={() => setOpen(o => !o)}
+        style={{
+          border: '1px solid #ccc', borderRadius: 6, padding: '5px 8px', cursor: 'pointer',
+          background: '#fff', minHeight: 34, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          fontSize: '0.82rem'
+        }}
+      >
+        <span style={{ color: selected.length ? '#333' : '#999' }}>
+          {selected.length ? `${selected.length} selecionado(s)` : 'Todos'}
+        </span>
+        <i className={`fa fa-chevron-${open ? 'up' : 'down'}`} style={{ fontSize: '0.7rem', color: '#888' }}></i>
+      </div>
+      {open && (
+        <div style={{
+          position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 1050,
+          background: '#fff', border: '1px solid #ccc', borderRadius: 6, marginTop: 2,
+          maxHeight: 260, overflow: 'hidden', display: 'flex', flexDirection: 'column',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+        }}>
+          <div style={{ padding: '4px 6px', borderBottom: '1px solid #eee' }}>
+            <input
+              type="text" placeholder="Buscar..." value={search}
+              onChange={e => onSearchChange(e.target.value)}
+              style={{
+                width: '100%', border: '1px solid #ddd', borderRadius: 4, padding: '4px 6px',
+                fontSize: '0.78rem', outline: 'none'
+              }}
+            />
+          </div>
+          <div style={{ padding: '4px 6px', borderBottom: '1px solid #eee' }}>
+            <label style={{ fontSize: '0.72rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+              <input
+                type="checkbox" checked={selected.length === items.length && items.length > 0}
+                onChange={e => {
+                  if (e.target.checked && items.length) onChange(items.map(i => valueKey ? i[valueKey] : i));
+                  else onChange([]);
+                }}
+              />
+              Selecionar todos
+            </label>
+          </div>
+          <div style={{ overflowY: 'auto', flex: 1 }}>
+            {items.map((item, idx) => {
+              const val = valueKey ? item[valueKey] : item;
+              const lbl = displayKey ? item[displayKey] : String(item);
+              return (
+                <label key={idx} style={{
+                  display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px',
+                  cursor: 'pointer', fontSize: '0.78rem'
+                }}>
+                  <input
+                    type="checkbox" checked={selected.includes(val)}
+                    onChange={e => {
+                      if (e.target.checked) onChange([...selected, val]);
+                      else onChange(selected.filter(v => v !== val));
+                    }}
+                  />
+                  {lbl}
+                </label>
+              );
+            })}
+            {items.length === 0 && (
+              <div style={{ padding: '8px', color: '#999', fontSize: '0.75rem', textAlign: 'center' }}>Nenhum item</div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function PerfisAtividade() {
   const { data } = useOutletContext();
   const [ufList, setUfList] = useState([]);
@@ -140,93 +227,6 @@ export default function PerfisAtividade() {
     });
     doc.save('perfis-por-atividade.pdf');
   }, [rows, totals]);
-
-  function MultiSelect({ label, items, selected, onChange, search, onSearchChange, displayKey, valueKey }) {
-    const [open, setOpen] = useState(false);
-    const ref = useRef(null);
-
-    useEffect(() => {
-      function handler(e) {
-        if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-      }
-      document.addEventListener('mousedown', handler);
-      return () => document.removeEventListener('mousedown', handler);
-    }, []);
-
-    return (
-      <div ref={ref} style={{ position: 'relative', minWidth: 180 }}>
-        <label style={{ fontSize: '0.75rem', fontWeight: 600, color: '#555', marginBottom: 2 }}>{label}</label>
-        <div
-          onClick={() => setOpen(!open)}
-          style={{
-            border: '1px solid #ccc', borderRadius: 6, padding: '5px 8px', cursor: 'pointer',
-            background: '#fff', minHeight: 34, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            fontSize: '0.82rem'
-          }}
-        >
-          <span style={{ color: selected.length ? '#333' : '#999' }}>
-            {selected.length ? `${selected.length} selecionado(s)` : 'Todos'}
-          </span>
-          <i className={`fa fa-chevron-${open ? 'up' : 'down'}`} style={{ fontSize: '0.7rem', color: '#888' }}></i>
-        </div>
-        {open && (
-          <div style={{
-            position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 1050,
-            background: '#fff', border: '1px solid #ccc', borderRadius: 6, marginTop: 2,
-            maxHeight: 260, overflow: 'hidden', display: 'flex', flexDirection: 'column',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-          }}>
-            <div style={{ padding: '4px 6px', borderBottom: '1px solid #eee' }}>
-              <input
-                type="text" placeholder="Buscar..." value={search}
-                onChange={e => onSearchChange(e.target.value)}
-                style={{
-                  width: '100%', border: '1px solid #ddd', borderRadius: 4, padding: '4px 6px',
-                  fontSize: '0.78rem', outline: 'none'
-                }}
-              />
-            </div>
-            <div style={{ padding: '4px 6px', borderBottom: '1px solid #eee' }}>
-              <label style={{ fontSize: '0.72rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <input
-                  type="checkbox" checked={selected.length === items.length && items.length > 0}
-                  onChange={e => {
-                    if (e.target.checked && items.length) onChange(items.map(i => valueKey ? i[valueKey] : i));
-                    else onChange([]);
-                  }}
-                />
-                Selecionar todos
-              </label>
-            </div>
-            <div style={{ overflowY: 'auto', flex: 1 }}>
-              {items.map((item, idx) => {
-                const val = valueKey ? item[valueKey] : item;
-                const lbl = displayKey ? item[displayKey] : String(item);
-                return (
-                  <label key={idx} style={{
-                    display: 'flex', alignItems: 'center', gap: 4, padding: '4px 8px',
-                    cursor: 'pointer', fontSize: '0.78rem'
-                  }}>
-                    <input
-                      type="checkbox" checked={selected.includes(val)}
-                      onChange={e => {
-                        if (e.target.checked) onChange([...selected, val]);
-                        else onChange(selected.filter(v => v !== val));
-                      }}
-                    />
-                    {lbl}
-                  </label>
-                );
-              })}
-              {items.length === 0 && (
-                <div style={{ padding: '8px', color: '#999', fontSize: '0.75rem', textAlign: 'center' }}>Nenhum item</div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
 
   const totalPages = 1;
 
