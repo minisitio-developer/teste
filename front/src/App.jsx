@@ -1,3 +1,4 @@
+import React from 'react';
 import { useLocation } from 'react-router-dom';
 
 
@@ -12,6 +13,29 @@ import { masterPath } from './config/config';
 //Rotas
 import Rotas from './routes/Rotas'
 
+
+class AppErrorBoundary extends React.Component {
+  constructor(props) { super(props); this.state = { hasError: false, error: null, errorInfo: null }; }
+  static getDerivedStateFromError(error) { return { hasError: true, error }; }
+  componentDidCatch(error, errorInfo) { this.setState({ errorInfo }); console.error('AppErrorBoundary caught:', error, errorInfo); }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh', background: '#f5f6fa' }}>
+          <div className="card shadow-sm p-4" style={{ maxWidth: 600, borderRadius: 12 }}>
+            <h4 className="text-danger mb-3"><i className="fa fa-exclamation-triangle me-2"></i>Erro na aplicação</h4>
+            <p className="text-muted mb-2">Ocorreu um erro inesperado. Tente recarregar a página.</p>
+            <pre className="bg-light p-2 rounded" style={{ fontSize: '0.7rem', overflowX: 'auto', maxHeight: 300 }}>{this.state.error?.stack}</pre>
+            <button className="btn btn-primary btn-sm mt-2" onClick={() => window.location.reload()}>
+              <i className="fa fa-refresh me-1"></i>Recarregar
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 function App() {
 
@@ -57,7 +81,7 @@ function App() {
   //console.log(shouldShowCookie, location.pathname)
 
   return (
-    <div>
+    <AppErrorBoundary>
       <Rotas />
       {shouldShowCookie && (
               <CookieConsent
@@ -86,7 +110,7 @@ function App() {
       </CookieConsent>
       )}
 
-    </div>
+    </AppErrorBoundary>
 
     /*     <BrowserRouter>
           <Routes>

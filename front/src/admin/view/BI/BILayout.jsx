@@ -14,6 +14,7 @@ const menuItems = [
 
 export default function BILayout() {
   const { data, loading, refreshing, refresh, lastUpdated } = useBiData();
+  console.log('BILayout render:', { hasData: !!data, loading });
 
   return (
     <div className="d-flex" style={{ minHeight: 'calc(100vh - 60px)' }}>

@@ -530,7 +530,7 @@ module.exports = (io, loginLimiter) => {
             `;
             params.push(limit, offset);
 
-            const [rows] = await database.query(sql, { replacements: params, type: database.QueryTypes.SELECT });
+            const rows = await database.query(sql, { replacements: params, type: database.QueryTypes.SELECT });
             res.json({ success: true, rows });
         } catch (error) {
             console.error('Erro no perfis-por-atividade:', error);
