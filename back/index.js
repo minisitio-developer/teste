@@ -438,10 +438,6 @@ async function fixAutoIncrement() {
     }
 }
 
-async function runCleanup() {
-    return require('./migrations/runCleanup')();
-}
-
 // Health check (deve vir ANTES do catch-all *)
 app.get('/api/health', async (req, res) => {
     const database = require('./config/db');
@@ -462,10 +458,6 @@ server.listen(port, async () => {
         console.log('FORCE_SYNC: Schema sincronizado.');
     }
     await fixAutoIncrement();
-    if (process.env.RUN_CLEANUP === 'true') {
-        await runCleanup();
-        console.log('CLEANUP finalizado. Remova a env var RUN_CLEANUP.');
-    }
     await seedAdmin();
     await seedPin();
     await criarIndicesBusca();

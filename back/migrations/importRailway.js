@@ -2,14 +2,37 @@ const mysql = require('mysql2/promise');
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
+require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 
-const RAILWAY_HOST = 'thomas.proxy.rlwy.net';
-const RAILWAY_PORT = 38287;
-const RAILWAY_USER = 'root';
-const RAILWAY_PASS = 'mslXpGCdDFZzFBaJUdadTSwuwNsPhNYH';
-const RAILWAY_DB = 'railway';
+function getRailwayConfig() {
+  const url = process.env.DATABASE_URL || process.env.MYSQL_URL;
+  if (url) {
+    const parsed = new URL(url);
+    return {
+      host: parsed.hostname,
+      port: parseInt(parsed.port) || 3306,
+      user: parsed.username,
+      password: parsed.password,
+      database: parsed.pathname.replace('/', ''),
+    };
+  }
+  return {
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT) || 3306,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  };
+}
 
-const DUMP_DIR = 'C:\\Users\\Leôncio';
+const RAILWAY = getRailwayConfig();
+const RAILWAY_HOST = RAILWAY.host;
+const RAILWAY_PORT = RAILWAY.port;
+const RAILWAY_USER = RAILWAY.user;
+const RAILWAY_PASS = RAILWAY.password;
+const RAILWAY_DB = RAILWAY.database;
+
+const DUMP_DIR = process.env.DUMP_DIR;
 
 const FILES_TO_IMPORT = [
     { file: 'dump_struct.sql', label: ' Estrutura', limit: Infinity },
@@ -82,6 +105,10 @@ async function importSqlFile(conn, filePath, label) {
 }
 
 async function main() {
+    if (!DUMP_DIR) {
+        console.error('ERRO FATAL: Variável DUMP_DIR não definida. Defina DUMP_DIR apontando para a pasta dos arquivos SQL.');
+        process.exit(1);
+    }
     console.log('=== IMPORTACAO RAILWAY ===');
     console.log(`Host: ${RAILWAY_HOST}:${RAILWAY_PORT}`);
 
