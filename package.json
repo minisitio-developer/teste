@@ -8,7 +8,7 @@
     "start:frontend": "cd front && npm start",
     "start:dev": "cd back && npm run dev",
     "build": "cd front && npm run build",
-    "docker:up": "docker-compose up --build",
-    "docker:down": "docker-compose down"
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down"
   }
 }
