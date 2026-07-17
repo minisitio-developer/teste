@@ -30,13 +30,13 @@ async function main() {
       ssl: { rejectUnauthorized: true }
     });
   } else {
-    console.log("No DATABASE_URL found, trying local Docker MySQL on port 3307...");
+    console.log("No DATABASE_URL found, trying local Docker MySQL...");
     connection = await mysql.createConnection({
-      host: 'localhost',
-      port: 3307,
-      user: 'root',
-      password: 'root',
-      database: 'minisitio_local'
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT) || 3307,
+      user: process.env.DB_USER || 'root',
+      password: process.env.DB_PASSWORD || 'root',
+      database: process.env.DB_NAME || 'minisitio_dev'
     });
   }
   

@@ -71,10 +71,6 @@ const defaultOrigins = [
 if (process.env.ALLOWED_ORIGINS) {
     defaultOrigins.push(...process.env.ALLOWED_ORIGINS.split(','));
 }
-const railwayDomain = process.env.RAILWAY_PUBLIC_DOMAIN;
-if (railwayDomain) {
-    defaultOrigins.push(`https://${railwayDomain}`);
-}
 const allowedOrigins = defaultOrigins;
 
 // Configuração segura de Socket.IO

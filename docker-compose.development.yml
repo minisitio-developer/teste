@@ -1,9 +1,3 @@
-# ============================================================
-#   MINISITIO — Desenvolvimento Local
-#   Uso: docker compose up -d
-#   Requer: back/.env configurado (veja .env.example)
-# ============================================================
-
 services:
   db:
     image: mysql:8.0
