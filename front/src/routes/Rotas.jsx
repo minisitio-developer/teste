@@ -17,7 +17,6 @@ import ComprarAnuncio from '../views/ComprarAnuncio';
 
 
 //admin
-import Administrator from '../admin/Administrator';
 import Dashboard from '../admin/view/Dashboard';
 import BILayout from '../admin/view/BI/BILayout';
 import BIDashboard from '../admin/view/BI/Dashboard';
@@ -136,7 +135,7 @@ function Rotas() {
                 <Route element={<Layout />}>
                     <Route path="admin" element={
                         <PrivateRoute role={1}>
-                            <Administrator />
+                            <Dashboard />
                         </PrivateRoute>}
                     />
 

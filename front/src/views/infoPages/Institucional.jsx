@@ -22,6 +22,7 @@ import Listar from '../painelAnuciante/Listar';
 import Editar from '../painelAnuciante/Editar';
 import UserNav from '../painelAnuciante/UserNav';
 import DadosPessoais from '../painelAnuciante/DadosPessoais';
+import PageLayout from '../../components/PageLayout';
 
 
 function Institucional() {
@@ -69,7 +70,7 @@ function Institucional() {
 
 
     return (
-        <div className="painel-admin institucional">
+        <PageLayout className="painel-admin institucional">
 
             {showSpinner && <button className="buttonload">
                 <i className="fa fa-spinner fa-spin"></i>Carregando
@@ -153,7 +154,7 @@ function Institucional() {
                 <Nav styleclassName="Nav" />
                 <Footer />
             </footer>
-        </div >
+        </PageLayout>
     );
 }
 

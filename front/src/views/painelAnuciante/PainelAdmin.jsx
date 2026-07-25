@@ -27,6 +27,7 @@ import Legenda from './Legenda';
 import useIsMobile from '../../admin/functions/useIsMobile';
 
 import { AuthContext } from "../../context/AuthContext";
+import PageLayout from "../../components/PageLayout";
 
 
 function PainelAdmin() {
@@ -197,7 +198,7 @@ function PainelAdmin() {
     }, [anunciosPainel]);
 
     return (
-        <div className="painel-admin">
+        <PageLayout className="painel-admin">
 
             {showSpinner && <button className="buttonload">
                 <i className="fa fa-spinner fa-spin"></i>Carregando
@@ -352,7 +353,7 @@ function PainelAdmin() {
                 <Nav styleclassName="Nav" />
                 <Footer />
             </footer>
-        </div >
+        </PageLayout>
     );
 }
 

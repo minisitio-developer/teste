@@ -112,6 +112,9 @@ function UploadImage(props) {
       // Enviar a imagem para o servidor
       fetch(`${masterPath.url}/upload-image?cod=${props.codigoUser}&local=logoParceiro`, {
         method: 'POST',
+        headers: {
+          authorization: `Bearer ${sessionStorage.getItem('userTokenAccess')}`
+        },
         body: formData
       }).then(res => res.json())
         .then(response => {

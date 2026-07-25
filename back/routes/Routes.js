@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 //Controllers
 const BemVindo = require('../controllers/BemVindo');
@@ -68,6 +69,7 @@ module.exports = (io, loginLimiter) => {
 
     //Admin
     router.post('/api/admin/usuario/create', auth, Users.create);
+    router.post('/api/portal/usuario/create', Users.create);
     router.post('/api/admin/usuario/update/:id', auth, Users.update);
     router.put('/api/admin/usuario/status/:id', auth, Users.updateStatus);
     router.get('/api/admin/usuario/edit/:id', auth, Users.buscarUsuario);
@@ -98,6 +100,7 @@ module.exports = (io, loginLimiter) => {
     router.post('/api/admin/desconto/create', auth, Admin.criarIds);
     router.delete('/api/admin/desconto/delete/:id', auth, Admin.deleteIds);
     router.get('/api/admin/desconto/buscar/:id', auth, Admin.buscarId);
+    router.get('/api/portal/desconto/buscar/:id', Admin.buscarId);
     router.get('/api/admin/desconto/aplicar/:id', auth, Admin.aplicarDesconto);
     router.get('/api/admin/desconto/read/all', auth, Admin.buscarAllId);
     router.get('/api/admin/desconto/usuario/buscar/:id', auth, Admin.buscarUsuarioId);
@@ -116,6 +119,7 @@ module.exports = (io, loginLimiter) => {
     router.get('/api/admin/espacos/read', auth, EspacosController.listarEspacos);
     router.get('/api/admin/anuncio/edit/:id', auth, EspacosController.listarAnuncioId);
     router.post('/api/admin/anuncio/create', auth, EspacosController.criarAnuncio);
+    router.post('/api/portal/anuncio/create', EspacosController.criarAnuncio);
     router.put('/api/admin/anuncio/status/:id', auth, EspacosController.updateAnuncioStatus);
     router.put('/api/admin/anuncio/moderacao/:id', auth, EspacosController.atualizarModeracao);
     router.delete('/api/admin/anuncio/delete/:id', auth, EspacosController.deleteAnuncio);
@@ -676,19 +680,55 @@ module.exports = (io, loginLimiter) => {
 
 
     //EMAIL FALE COM O DONO
-    // Configuração do multer para armazenar o arquivo em uma pasta local
+    // Configuracao do multer para armazenar anexos de contato
+    const anexoEmailDir = path.join(__dirname, '../public/upload/anexoEmail/');
+    const allowedAttachmentTypes = new Set([
+        'application/pdf',
+        'image/jpeg',
+        'image/png',
+        'image/webp'
+    ]);
+
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, path.join(__dirname, '../public/upload/anexoEmail/')); // Pasta onde os arquivos serão salvos
+            fs.mkdirSync(anexoEmailDir, { recursive: true });
+            cb(null, anexoEmailDir);
         },
         filename: (req, file, cb) => {
-            cb(null, Date.now() + path.extname(file.originalname)); // Nome único para cada arquivo
+            const ext = path.extname(file.originalname).toLowerCase();
+            cb(null, `${Date.now()}-${Math.round(Math.random() * 1E9)}${ext}`);
         }
     });
 
-    const upload = multer({ storage });
+    const upload = multer({
+        storage,
+        fileFilter: (req, file, cb) => {
+            if (allowedAttachmentTypes.has(file.mimetype)) {
+                return cb(null, true);
+            }
 
-    router.post('/api/fale-com-dono', upload.single('anexo'), async (req, res) => {
+            return cb(new Error('Tipo de arquivo nao permitido'));
+        },
+        limits: {
+            fileSize: 5 * 1024 * 1024,
+            files: 1
+        }
+    });
+
+    const uploadFaleComDono = (req, res, next) => {
+        upload.single('anexo')(req, res, (err) => {
+            if (!err) return next();
+
+            if (err instanceof multer.MulterError) {
+                const status = err.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
+                return res.status(status).json({ success: false, message: 'Anexo invalido ou muito grande' });
+            }
+
+            return res.status(400).json({ success: false, message: err.message || 'Anexo invalido' });
+        });
+    };
+
+    router.post('/api/fale-com-dono', uploadFaleComDono, async (req, res) => {
         console.log(req.body);
 
         if (req.body.email == '') {

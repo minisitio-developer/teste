@@ -165,7 +165,9 @@ app.use('/api/files/campanha', express.static(path.resolve(__dirname, 'public', 
 
 app.get('/api/files/:folder/:filename', (req, res) => {
     const { folder, filename } = req.params;
-    if (!filename) return res.status(400).end();
+    if (!filename || filename === 'undefined' || filename === 'null' || filename.trim() === '') {
+        return res.status(404).end();
+    }
 
     const baseDir = path.resolve(IMG_BASE, folder);
     const localPath = path.resolve(baseDir, filename);
@@ -253,8 +255,9 @@ app.get('/outapi', (req, res) => {
 }); */
 
 const ImportController = require('./controllers/ImportController');
+const auth = require('./middlewares/authentication');
 const importCtrl = ImportController(io);
-app.post('/api/admin/anuncio/import/:socketId', importCtrl.upload, importCtrl.importar);
+app.post('/api/admin/anuncio/import/:socketId', auth, importCtrl.upload, importCtrl.importar);
 
 const database = require('./config/db');
 const Sequelize = require('sequelize');
@@ -340,6 +343,16 @@ cron.schedule('0 7 * * *', async () => {
 });
 
 
+// Health check (deve vir ANTES do catch-all *)
+app.get('/api/health', async (req, res) => {
+    const database = require('./config/db');
+    try {
+        await database.authenticate();
+        res.json({ status: 'ok', db: 'connected', uptime: process.uptime() });
+    } catch (e) {
+        res.status(503).json({ status: 'error', db: 'disconnected' });
+    }
+});
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -433,17 +446,6 @@ async function fixAutoIncrement() {
         console.error('FIX AUTO_INCREMENT falhou (normal se a tabela já existir ou sem permissão):', err.message);
     }
 }
-
-// Health check (deve vir ANTES do catch-all *)
-app.get('/api/health', async (req, res) => {
-    const database = require('./config/db');
-    try {
-        await database.authenticate();
-        res.json({ status: 'ok', db: 'connected', uptime: process.uptime() });
-    } catch (e) {
-        res.status(503).json({ status: 'error', db: 'disconnected' });
-    }
-});
 
 server.listen(port, async () => {
     console.log("rodando na porta: ", port);

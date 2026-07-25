@@ -11,7 +11,7 @@ module.exports = async function expExcel(dados, res, hrnow, teste1) {
     let ws = wb.addWorksheet(`Sheet${sheetIndex}`); // Criando a primeira aba
 
     const headingColumnNames = [
-        "codUsuario", "codTipoPessoa", "descCPFCNPJ", "descNome", "descEmail", "senha",
+        "codUsuario", "codTipoPessoa", "descCPFCNPJ", "descNome", "descEmail",
          "codTipoUsuario",  "codUf", "codCidade", "dtCadastro",  "ativo"
     ];
 

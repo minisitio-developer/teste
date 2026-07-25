@@ -16,7 +16,7 @@ function Footer(props) {
                         {/* </ul> */}
                     </div>
                     <div className='col-md-6'>
-                        <h6 className='title-footer d-flex justify-content-center align-items-center'>© Copyright - My Card City - 2015-2025 ({version.version})</h6>
+                        <h6 className='title-footer d-flex justify-content-center align-items-center'>© Copyright - Minisitio - 2015-2025 ({version.version})</h6>
                     </div>
 
                 </div>

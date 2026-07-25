@@ -233,7 +233,7 @@ function Busca(props) {
                     "uf": uf,
                     "cidade": cadernoCidade,
                     "atividade": valor_da_busca,
-                    "name": "mycardcity",
+                    "name": "Minisitio",
                     "telefone": "(61) 3255-1285",
                     "nu_documento": "23.707.648/0001-99",
                     "codigoCaderno": codigoCaderno

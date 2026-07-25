@@ -37,6 +37,7 @@ import MapContainer from "../components/MapContainer";
 import TagsInput from "../admin/components/TagsInput";
 import AlertMsg from "../components/Alerts/AlertMsg";
 import Header from "../admin/view/Header";
+import PageLayout from "../components/PageLayout";
 
 //FUNCTION EXTERNA
 import { criarAnuncio } from "./comprar-anuncio/criarAnuncio";
@@ -332,7 +333,7 @@ function ComprarAnuncio({ isAdmin }) {
   };
 
   return (
-    <div className="App">
+    <PageLayout className="App">
       {/*   {isAdmin &&
         <header style={{ position: "fixed", zIndex: "999" }} className='w-100'>
           <Header />
@@ -1100,7 +1101,7 @@ function ComprarAnuncio({ isAdmin }) {
           <Footer />
         </footer>
       }
-    </div>
+    </PageLayout>
   );
 }
 

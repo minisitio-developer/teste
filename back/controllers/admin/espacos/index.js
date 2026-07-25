@@ -3294,7 +3294,7 @@ module.exports = {
                 }
             });
 
-            res.json({ success: true, message: `Anúncio ${listaAnuncios.dataValues.codAnuncio} criado com sucesso!` });
+            res.json({ success: true, message: listaAnuncios });
 
             // Executa a query em segundo plano
 
@@ -4394,7 +4394,7 @@ module.exports = {
         a.codAnuncio, a.codOrigem, a.codDuplicado, a.descCPFCNPJ, a.descAnuncio, 
         a.codTipoAnuncio, a.codCaderno, a.codUf, a.activate, a.descPromocao, 
         a.createdAt, a.dueDate, a.codDesconto, a.codAtividade, a.periodo,
-        u.descNome, u.descCPFCNPJ, u.senha, u.descEmail, u.descTelefone  -- Pegando informações do usuário
+        u.descNome, u.descCPFCNPJ, u.descEmail, u.descTelefone  -- Pegando informações do usuário
     FROM anuncio AS a 
     LEFT JOIN usuario AS u ON a.descCPFCNPJ = u.descCPFCNPJ
     WHERE a.codCaderno = :caderno
@@ -4407,7 +4407,7 @@ module.exports = {
                 a.codAnuncio, a.codOrigem, a.codDuplicado, a.descCPFCNPJ, a.descAnuncio, 
                 a.codTipoAnuncio, a.codCaderno, a.codUf, a.activate, a.descPromocao, 
                 a.createdAt, a.dueDate, a.codDesconto, a.codAtividade, a.periodo, a.page,
-                u.descNome, u.descCPFCNPJ, u.senha, u.descEmail, u.descTelefone  -- Pegando informações do usuário
+                u.descNome, u.descCPFCNPJ, u.descEmail, u.descTelefone  -- Pegando informações do usuário
             FROM anuncio AS a 
             LEFT JOIN usuario AS u ON a.descCPFCNPJ = u.descCPFCNPJ
             WHERE a.codAtividade = :itemSearch AND a.codCaderno = :caderno
@@ -4419,7 +4419,7 @@ module.exports = {
                 a.codAnuncio, a.codOrigem, a.codDuplicado, a.descCPFCNPJ, a.descAnuncio, 
                 a.codTipoAnuncio, a.codCaderno, a.codUf, a.activate, a.descPromocao, 
                 a.createdAt, a.dueDate, a.codDesconto, a.codAtividade, a.periodo, a.page,
-                u.descNome, u.descCPFCNPJ, u.senha, u.descEmail, u.descTelefone  -- Pegando informações do usuário
+                u.descNome, u.descCPFCNPJ, u.descEmail, u.descTelefone  -- Pegando informações do usuário
             FROM anuncio AS a 
             LEFT JOIN usuario AS u ON a.descCPFCNPJ = u.descCPFCNPJ
             WHERE a.codAnuncio = :itemSearch AND a.codCaderno = :caderno
@@ -4431,7 +4431,7 @@ module.exports = {
                 a.codAnuncio, a.codOrigem, a.codDuplicado, a.descCPFCNPJ, a.descAnuncio, 
                 a.codTipoAnuncio, a.codCaderno, a.codUf, a.activate, a.descPromocao, 
                 a.createdAt, a.dueDate, a.codDesconto, a.codAtividade, a.periodo, a.page,
-                u.descNome, u.descCPFCNPJ, u.senha, u.descEmail, u.descTelefone  -- Pegando informações do usuário
+                u.descNome, u.descCPFCNPJ, u.descEmail, u.descTelefone  -- Pegando informações do usuário
             FROM anuncio AS a 
             LEFT JOIN usuario AS u ON a.descCPFCNPJ = u.descCPFCNPJ
             WHERE a.descAnuncio = :itemSearch AND a.codCaderno = :caderno
@@ -4444,7 +4444,7 @@ module.exports = {
                 a.codAnuncio, a.codOrigem, a.codDuplicado, a.descCPFCNPJ, a.descAnuncio, 
                 a.codTipoAnuncio, a.codCaderno, a.codUf, a.activate, a.descPromocao, 
                 a.createdAt, a.dueDate, a.codDesconto, a.codAtividade, a.periodo, a.page,
-                u.descNome, u.descCPFCNPJ, u.senha, u.descEmail, u.descTelefone  -- Pegando informações do usuário
+                u.descNome, u.descCPFCNPJ, u.descEmail, u.descTelefone  -- Pegando informações do usuário
             FROM anuncio AS a 
             LEFT JOIN usuario AS u ON a.descCPFCNPJ = u.descCPFCNPJ
             WHERE a.codUf = :itemSearch
@@ -4457,7 +4457,7 @@ module.exports = {
                 a.codAnuncio, a.codOrigem, a.codDuplicado, a.descCPFCNPJ, a.descAnuncio, 
                 a.codTipoAnuncio, a.codCaderno, a.codUf, a.activate, a.descPromocao, 
                 a.createdAt, a.dueDate, a.codDesconto, a.codAtividade, a.periodo, a.page,
-                u.descNome, u.descCPFCNPJ, u.senha, u.descEmail, u.descTelefone  -- Pegando informações do usuário
+                u.descNome, u.descCPFCNPJ, u.descEmail, u.descTelefone  -- Pegando informações do usuário
             FROM anuncio AS a 
             LEFT JOIN usuario AS u ON a.descCPFCNPJ = u.descCPFCNPJ
             WHERE a.descCPFCNPJ = :itemSearch AND a.codCaderno = :caderno
@@ -4470,7 +4470,7 @@ module.exports = {
                 a.codAnuncio, a.codOrigem, a.codDuplicado, a.descCPFCNPJ, a.descAnuncio, 
                 a.codTipoAnuncio, a.codCaderno, a.codUf, a.activate, a.descPromocao, 
                 a.createdAt, a.dueDate, a.codDesconto, a.codAtividade, a.periodo, a.page,
-                u.descNome, u.descCPFCNPJ, u.senha, u.descEmail, u.descTelefone  -- Pegando informações do usuário
+                u.descNome, u.descCPFCNPJ, u.descEmail, u.descTelefone  -- Pegando informações do usuário
             FROM anuncio AS a 
             LEFT JOIN usuario AS u ON a.descCPFCNPJ = u.descCPFCNPJ
             WHERE a.codDesconto = :itemSearch
@@ -4520,7 +4520,7 @@ module.exports = {
             a.codAnuncio, a.codOrigem, a.codDuplicado, a.descCPFCNPJ, a.descAnuncio, 
             a.codTipoAnuncio, a.codCaderno, a.codUf, a.activate, a.descPromocao, 
             a.createdAt, a.dueDate, a.codDesconto, a.codAtividade, a.periodo,
-            u.descNome, u.descCPFCNPJ, u.senha, u.descEmail, u.descTelefone  -- Pegando informações do usuário
+            u.descNome, u.descCPFCNPJ, u.descEmail, u.descTelefone  -- Pegando informações do usuário
         FROM anuncio AS a 
         LEFT JOIN usuario AS u ON a.descCPFCNPJ = u.descCPFCNPJ
         WHERE a.codCaderno = :caderno
@@ -4569,7 +4569,6 @@ module.exports = {
                 { header: 'ID', key: 'desconto', width: 10 },
                 { header: 'USUARIO/DECISOR', key: 'user', width: 30 },
                 { header: 'LOGIN', key: 'loginUser', width: 30 },
-                { header: 'SENHA', key: 'senhaUser', width: 10 },
                 { header: 'EMAIL', key: 'emailUser', width: 30 },
                 { header: 'CONTATO', key: 'contatoUser', width: 30 },
                 { header: 'LINK_PERFIL', key: 'linkPerfil', width: 30 },
@@ -4608,7 +4607,6 @@ module.exports = {
                     //teste: item.loginUser,
                     user: item.descNome,
                     loginUser: item.descCPFCNPJ,
-                    senhaUser: item.senha,
                     emailUser: item.descEmail,
                     contatoUser: item.descTelefone,
                     //linkPerfil: `${masterPath.domain}/perfil/${item.codAnuncio}`,
@@ -4649,7 +4647,7 @@ module.exports = {
                 "COD", "COD_OR", "DUPLI", "CNPJ", "NOME", "TIPO", "CADERNO",
                 "UF", "STATUS", "DATA_PAG", "VALOR", "DESCONTO",
                 "CAD. PARA CONF.", "CONFIRMADO", "DATA_FIM", "TEMP. VALE PR. TIPO",
-                "ID", "USUARIO/DECISOR", "LOGIN", "SENHA", "EMAIL", "CONTATO",
+                "ID", "USUARIO/DECISOR", "LOGIN", "EMAIL", "CONTATO",
                 "LINK_PERFIL", "ATIVIDADE PRINCIPAL"
             ];
 
@@ -4770,7 +4768,6 @@ module.exports = {
                         attributes: [
                             'descNome',
                             'descCPFCNPJ',
-                            'senha',
                             'descTelefone',
                             'descEmail'],
                         limit: 10000,
@@ -5037,7 +5034,7 @@ module.exports = {
                 "COD", "COD_OR", "DUPLI", "CNPJ", "NOME", "TIPO", "CADERNO",
                 "UF", "STATUS", "DATA_PAG", "VALOR", "DESCONTO",
                 "CAD. PARA CONF.", "CONFIRMADO", "DATA_FIM", "TEMP. VALE PR. TIPO",
-                "ID", "USUARIO/DECISOR", "LOGIN", "SENHA", "EMAIL", "CONTATO",
+                "ID", "USUARIO/DECISOR", "LOGIN", "EMAIL", "CONTATO",
                 "LINK_PERFIL", "ATIVIDADE PRINCIPAL"
             ];
 
@@ -5158,7 +5155,6 @@ module.exports = {
                         attributes: [
                             'descNome',
                             'descCPFCNPJ',
-                            'senha',
                             'descTelefone',
                             'descEmail'],
                         limit: 10000,
@@ -5519,7 +5515,7 @@ module.exports = {
                 "COD", "COD_OR", "DUPLI", "CNPJ", "NOME", "TIPO", "CADERNO",
                 "UF", "STATUS", "DATA_PAG", "VALOR", "DESCONTO",
                 "CAD. PARA CONF.", "CONFIRMADO", "DATA_FIM", "TEMP. VALE PR. TIPO",
-                "ID", "USUARIO/DECISOR", "LOGIN", "SENHA", "EMAIL", "CONTATO",
+                "ID", "USUARIO/DECISOR", "LOGIN", "EMAIL", "CONTATO",
                 "LINK_PERFIL", "ATIVIDADE PRINCIPAL"
             ];
 
@@ -5626,7 +5622,6 @@ module.exports = {
                     attributes: [
                         'descNome',
                         'descCPFCNPJ',
-                        'senha',
                         'descTelefone',
                         'descEmail'],
                     /*      order: [

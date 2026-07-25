@@ -271,7 +271,6 @@ module.exports = {
                         doc: item.descCPFCNPJ,
                         nome: item.descNome,
                         email: item.descEmail,
-                        senha: item.senha,
                         tipoUser: item.codTipoUsuario,
                         uf: item.codUf,
                         cidade: item.codCidade,
@@ -1729,7 +1728,8 @@ WHERE anuncio.codUf = :estado AND anuncio.codCaderno = :caderno;
             }
         });
 
-        const descontoBusca = await Descontos.count();
+        const ultimoIdDesconto = await Descontos.max('idDesconto');
+        const descontoBusca = (Number(ultimoIdDesconto) || 0) + 1;
 
         const masters = await Usuarios.count({
             where: {

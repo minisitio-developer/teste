@@ -72,7 +72,11 @@ module.exports = {
                   AND MATCH(t.tagValue) AGAINST(:ftTermo IN BOOLEAN MODE)
             )
         )
-    ORDER BY a.codAtividade ASC, a.codTipoAnuncio DESC, a.createdAt ASC, a.descAnuncio ASC
+    ORDER BY
+      CASE WHEN a.codTipoAnuncio = 3 THEN 0 ELSE 1 END ASC,
+      a.codAtividade ASC,
+      a.createdAt ASC,
+      a.descAnuncio ASC
     LIMIT :limit OFFSET :offset;`, {
                     replacements: {
                         termo, ftTermo,
@@ -96,7 +100,11 @@ module.exports = {
             OR atv.atividade LIKE :termo
             OR atv.nomeAmigavel LIKE :termo
         )
-    ORDER BY a.codAtividade ASC, a.codTipoAnuncio DESC, a.createdAt ASC, a.descAnuncio ASC
+    ORDER BY
+      CASE WHEN a.codTipoAnuncio = 3 THEN 0 ELSE 1 END ASC,
+      a.codAtividade ASC,
+      a.createdAt ASC,
+      a.descAnuncio ASC
     LIMIT :limit OFFSET :offset;`, {
                     replacements: {
                         termo,
@@ -204,7 +212,7 @@ module.exports = {
                     ['isCapital', 'ASC'],
                     ['nomeCaderno', 'ASC']
                 ],
-                limit: uf ? 500 : 5000,
+                limit: uf ? 1000 : 5000,
             });
             return res.json(cadernos);
         } catch (error) {
@@ -288,7 +296,13 @@ module.exports = {
                     ]
                 },
                 limit: porPagina,
-                offset: offset
+                offset: offset,
+                order: [
+                    [Sequelize.literal("CASE WHEN codTipoAnuncio = 3 THEN 0 ELSE 1 END"), "ASC"],
+                    ["codAtividade", "ASC"],
+                    ["createdAt", "ASC"],
+                    ["descAnuncio", "ASC"]
+                ]
             });
 
             const totalItens = anuncios.count;
@@ -476,7 +490,9 @@ module.exports = {
                 FROM anuncio a
                 LEFT JOIN atividade atv ON atv.atividade = a.codAtividade
                 WHERE ${whereClause}
-                ORDER BY a.descAnuncio ASC
+                ORDER BY
+                    CASE WHEN a.codTipoAnuncio = 3 THEN 0 ELSE 1 END ASC,
+                    a.descAnuncio ASC
                 LIMIT :limit OFFSET :offset
             `;
 

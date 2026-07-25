@@ -46,7 +46,7 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
 
     function criarUsuario() {
         const obj = {
-            "TipoPessoa": pegarElemento('#descTipoPessoa-pf').checked ? "pf" : "pj",
+            "TipoPessoa": pegarElemento('#descTipoPessoa-pf').checked ? "F" : "J",
             "CPFCNPJ": pegarElemento('#descCPFCNPJ').replace(/[.\-\/]/g, ''),
             "Nome": pegarElemento('#descNomeAutorizante'),
             "Email": pegarElemento('#descEmailAutorizante'),
@@ -72,7 +72,7 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
 
         //console.log(obj)
 
-        fetch(`${masterPath.url}/admin/usuario/create`, {
+        fetch(`${masterPath.url}/portal/usuario/create`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(obj),
@@ -173,7 +173,7 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
         }
 
         //console.log(obj);  /admin/usuario/criar-anuncio
-        fetch(`${masterPath.url}/admin/anuncio/create`, {
+        fetch(`${masterPath.url}/portal/anuncio/create`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(obj),
@@ -249,7 +249,7 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
                         } else {
                             //console.log("segundo dasdfaskhjfsdafhjasdbfnjaksdf", descontoAprovado)
 
-                            fetch(`${masterPath.url}/admin/desconto/buscar/${codDesconto}`)
+                            fetch(`${masterPath.url}/portal/desconto/buscar/${codDesconto}`)
                                 .then((x) => x.json())
                                 .then((res) => {
 

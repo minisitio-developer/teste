@@ -78,23 +78,62 @@ const FormCadastro = () => {
     }, []);
 
     function gerarIdMaster(e) {
-        setShowSpinner(true);
-        let codigoDoMaster = e.target.value;
-        usuarios.find((item) => {
-            if (item.codUsuario === codigoDoMaster) {
-                fetch(`${masterPath.url}/admin/desconto/ddd/${item.codUf}`, {
-                    headers: { "authorization": 'Bearer ' + tokenAuth }
-                })
-                    .then((x) => x.json())
-                    .then((res) => {
-                        //console.log(res.data.ddd, String(item.codUsuario).padStart(3, "0"), String(res.qtdeIds).padStart(4, "0"))
-                        setHash(`${res.data.ddd}.${String(res.masters).padStart(3, "0")}.${String(res.qtdeIds).padStart(4, "0")}`);
-                        setShowSpinner(false);
-                    })
-            }
+        const codigoDoMaster = e.target.value;
+
+        if (!codigoDoMaster) {
+            setHash(false);
+            setShowSpinner(false);
+            return;
         }
 
-        )
+        const usuarioSelecionado = usuarios.find(
+            (item) => String(item.codUsuario) === String(codigoDoMaster)
+        );
+
+        if (!usuarioSelecionado) {
+            console.error("Usuario selecionado nao encontrado:", codigoDoMaster);
+            setHash(false);
+            setShowSpinner(false);
+            return;
+        }
+
+        setShowSpinner(true);
+
+        fetch(`${masterPath.url}/admin/desconto/ddd/${usuarioSelecionado.codUf}`, {
+            headers: { "authorization": 'Bearer ' + tokenAuth }
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP ${response.status}`);
+                }
+
+                return response.json();
+            })
+            .then((res) => {
+                if (!res || !res.data || !res.data.ddd) {
+                    throw new Error("Resposta invalida ao gerar o codigo do ID");
+                }
+
+                setHash(
+                    `${res.data.ddd}.` +
+                    `${String(res.masters).padStart(3, "0")}.` +
+                    `${String(res.qtdeIds).padStart(4, "0")}`
+                );
+            })
+            .catch((err) => {
+                console.error("Erro ao gerar codigo do ID:", err);
+                setHash(false);
+
+                Swal.fire({
+                    title: 'Falha!',
+                    text: 'Nao foi possivel gerar o codigo do ID.',
+                    icon: 'error',
+                    confirmButtonText: 'Entendi'
+                });
+            })
+            .finally(() => {
+                setShowSpinner(false);
+            });
     };
 
 
@@ -311,16 +350,16 @@ const FormCadastro = () => {
 
                         <div className="form-group d-flex flex-column align-items-center py-3">
                             <label htmlFor="patrocinador" className="w-50 px-1">Habilitar Patrocinador ?</label>
-                            <select name="patrocinador" id="patrocinador" className="w-50 py-1" onChange={(e) => setPatrocinio(e.target.value)}>
+                            <select name="patrocinador" id="patrocinador" className="w-50 py-1" onChange={(e) => setPatrocinio(Number(e.target.value))}>
                                 <option value="0">Não</option>
                                 <option value="1">Sim</option>
                             </select>
                         </div>
                         {patrocinio === 1 &&
                             <div className="form-group d-flex flex-column align-items-center py-3">
-                                <FieldsetPatrocinador numeroPatrocinador={1} linkPatrocinio={handleChange} miniPreview={true} setImgs={setImgs} />
-                                <FieldsetPatrocinador numeroPatrocinador={2} linkPatrocinio={handleChange} miniPreview={true} setImgs={setImgs} />
-                                <FieldsetPatrocinador numeroPatrocinador={3} linkPatrocinio={handleChange} miniPreview={true} setImgs={setImgs} />
+                                <FieldsetPatrocinador codigoUser={hash} numeroPatrocinador={1} linkPatrocinio={handleChange} miniPreview={true} setImgs={setImgs} />
+                                <FieldsetPatrocinador codigoUser={hash} numeroPatrocinador={2} linkPatrocinio={handleChange} miniPreview={true} setImgs={setImgs} />
+                                <FieldsetPatrocinador codigoUser={hash} numeroPatrocinador={3} linkPatrocinio={handleChange} miniPreview={true} setImgs={setImgs} />
                                 {/*  <label className="w-50 px-1">Imagem:</label> */}
                                 {/*  <ChooseFile codigoUser={param} largura={"w-50"} preview={true} /> */}
                             </div>

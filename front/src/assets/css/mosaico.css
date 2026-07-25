@@ -21,4 +21,20 @@
 @media (max-width: 768px) {
   .header .header-new-mosaico,
   .header-new-mosaico { max-width: 540px; padding: 8px 12px; }
+
+  .logo-new-mosaico {
+    height: 40px !important;
+  }
+
+  .logo-new-mosaico img {
+    height: 30px !important;
+  }
+
+  .header-navigation li a {
+    font-size: 11px;
+  }
+
+  .header-navigation li {
+    margin: 0 0 0 10px;
+  }
 }

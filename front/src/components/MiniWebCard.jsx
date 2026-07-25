@@ -268,7 +268,7 @@ function MiniWebCard(props) {
                                 {[{ img: props.ids.descImagem, link: props.ids.descLink },
                                 { img: props.ids.descImagem2, link: props.ids.descLink2 },
                                 { img: props.ids.descImagem3, link: props.ids.descLink3 }]
-                                    .filter(item => item.img) // Filtra itens com imagem válida
+                                    .filter(item => item.img && item.img !== 'undefined' && item.img !== 'null') // Filtra itens com imagem válida
                                     .map((item, index) => (
                                         <a
                                             key={index}

@@ -14,6 +14,13 @@ const Usuario = require('../models/table_usuarios');
 const bcrypt = require('bcryptjs');
 const { validateCPF, validateCNPJ, validateEmail, identifyDocument } = require('../validations');
 
+function normalizarTipoPessoa(tipoPessoa) {
+    const value = String(tipoPessoa || '').trim().toUpperCase();
+    if (value === 'PF' || value === 'F') return 'F';
+    if (value === 'PJ' || value === 'J') return 'J';
+    return null;
+}
+
 
 module.exports = {
     create: async (req, res) => {
@@ -37,6 +44,7 @@ module.exports = {
             dtCadastro2,
             dtAlteracao,
             ativo } = req.body;
+        const tipoPessoaNormalizado = normalizarTipoPessoa(TipoPessoa);
 
         // Validação de entrada
         if (!CPFCNPJ || typeof CPFCNPJ !== 'string' || CPFCNPJ.length > 20) {
@@ -58,7 +66,7 @@ module.exports = {
         if (!Email || !validateEmail(Email)) {
             return res.status(400).json({ success: false, message: "E-mail inválido" });
         }
-        if (!TipoPessoa || !['F', 'J'].includes(TipoPessoa)) {
+        if (!tipoPessoaNormalizado) {
             return res.status(400).json({ success: false, message: "Tipo de pessoa inválido (F ou J)" });
         }
 
@@ -72,7 +80,7 @@ module.exports = {
         const senhaHash = await bcrypt.hash(senhaGerada, salt);
 
         const dadosUsuario = {
-            "codTipoPessoa": TipoPessoa,
+            "codTipoPessoa": tipoPessoaNormalizado,
             "descCPFCNPJ": CPFCNPJ,
             "descNome": Nome,
             "descEmail": Email,

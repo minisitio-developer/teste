@@ -15,6 +15,7 @@ import Mosaico from '../../components/Mosaico';
 import Busca from '../../components/Busca';
 import Nav from '../../components/Nav';
 import Footer from '../../components/Footer';
+import PageLayout from '../../components/PageLayout';
 
 const AssinanteCadastro = (props) => {
   //state
@@ -292,7 +293,7 @@ const AssinanteCadastro = (props) => {
 
 
   return (
-    <div className="content-child-form">
+    <PageLayout className="content-child-form">
         <header>
         <Mosaico logoTop={true} borda="none" />
       </header>
@@ -501,7 +502,7 @@ const AssinanteCadastro = (props) => {
         <Nav styleClass="Nav" />
         <Footer />
       </footer>
-    </div>
+    </PageLayout>
   );
 };
 
