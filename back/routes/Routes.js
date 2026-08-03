@@ -665,8 +665,31 @@ module.exports = (io, loginLimiter) => {
     //site
     router.post('/api/admin/usuario/criar-anuncio', Users.criarAnuncio);
     router.get('/api/pa', Users.qtdaAnuncio);
-    router.post('/api/upload-image', auth, uploadUser.single('image'), Upload.uploadImg);
-    router.post('/api/upload-pdf', auth, uploadPdf.single('file'), Upload.uploadPdf);
+    const handleUpload = (uploadMiddleware, fieldName) => (req, res, next) => {
+        uploadMiddleware.single(fieldName)(req, res, (err) => {
+            if (!err) return next();
+
+            if (err instanceof multer.MulterError) {
+                const status = err.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
+                return res.status(status).json({
+                    success: false,
+                    erro: true,
+                    mensagem: err.code === 'LIMIT_FILE_SIZE'
+                        ? 'Arquivo muito grande. O limite é de 5MB.'
+                        : 'Upload inválido.'
+                });
+            }
+
+            return res.status(400).json({
+                success: false,
+                erro: true,
+                mensagem: err.message || 'Upload inválido.'
+            });
+        });
+    };
+
+    router.post('/api/upload-image', auth, handleUpload(uploadUser, 'image'), Upload.uploadImg);
+    router.post('/api/upload-pdf', auth, handleUpload(uploadPdf, 'file'), Upload.uploadPdf);
     router.get('/api/list-image', auth, Upload.listFiles);
 
     //ACÕES DO USUARIO

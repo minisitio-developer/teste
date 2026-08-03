@@ -37,8 +37,16 @@ export async function uploadImageFile({ apiUrl, file, cod = "", local = "descIma
   const formData = new FormData();
   formData.append("image", file);
 
-  const response = await fetch(`${apiUrl}/upload-image?cod=${cod}&local=${local}`, {
+  const token = sessionStorage.getItem("userTokenAccess");
+  const headers = token ? { authorization: `Bearer ${token}` } : undefined;
+  const params = new URLSearchParams({
+    cod: cod || "",
+    local: local || "descImagem",
+  });
+
+  const response = await fetch(`${apiUrl}/upload-image?${params.toString()}`, {
     method: "POST",
+    headers,
     body: formData,
   });
 

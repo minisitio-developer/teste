@@ -1,73 +1,71 @@
-const database = require('../config/db');
-const Users = require('../models/table_user_login');
 const Anuncio = require('../models/table_anuncio');
 const path = require('path');
 const fs = require('node:fs/promises');
 
 module.exports = {
     uploadImg: async (req, res) => {
-        if (req.file) {
-            if (req.query.cod) {
-                try {
-                    await Anuncio.update({
-                        descImagem: req.file.filename
-                    }, {
-                        where: {
-                            codAnuncio: req.query.cod
-                        }
-                    });
-                } catch (err) {
-                    console.error('Erro ao salvar descImagem no banco:', err.message);
-                }
-            }
-
-            return res.json({
-                success: true,
-                fileName: req.file.filename,
-                mensagem: "Upload realizado com sucesso!"
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                erro: true,
+                mensagem: 'Erro: upload não realizado. Envie uma imagem PNG ou JPG.'
             });
         }
 
-        return res.status(400).json({
-            erro: true,
-            mensagem: "Erro: Upload não realizado com sucesso, necessário enviar uma imagem PNG ou JPG!"
+        if (req.query.cod && (!req.query.local || req.query.local === 'descImagem')) {
+            try {
+                await Anuncio.update({
+                    descImagem: req.file.filename
+                }, {
+                    where: {
+                        codAnuncio: req.query.cod
+                    }
+                });
+            } catch (err) {
+                console.error('Erro ao salvar descImagem no banco:', err.message);
+            }
+        }
+
+        return res.json({
+            success: true,
+            erro: false,
+            fileName: req.file.filename,
+            mensagem: 'Upload realizado com sucesso!'
         });
-
     },
+
     uploadPdf: async (req, res) => {
-        console.log(req.query.cod, req.savedFileName, req.query.id)
+        const caminho = req.query.id
+            ? path.join(__dirname, '../public/cartaoDigital/' + req.query.id)
+            : null;
 
-        const caminho = path.join(__dirname, '../public/cartaoDigital/' + req.query.id);
-
-        apagarPdfAntigo(caminho)
-
-        async function apagarPdfAntigo(caminho) {
+        if (caminho) {
             try {
                 await fs.unlink(caminho);
             } catch (err) {
-                if (err.code === "ENOENT") {
-                    console.error(`Erro: Arquivo "${caminho}" não encontrado.`);
-                } else {
+                if (err.code !== 'ENOENT') {
                     console.error(`Erro ao apagar o arquivo "${caminho}":`, err);
                 }
             }
         }
 
-        if (req.file) {
-            return res.json({
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
                 erro: true,
-                mensagem: "Upload realizado com sucesso!",
-                name: req.savedFileName
+                mensagem: 'Erro: upload não realizado. Envie um PDF.'
             });
         }
 
-        return res.status(400).json({
-            erro: true,
-            mensagem: "Erro: Upload não realizado com sucesso, necessário enviar uma imagem PNG ou JPG!"
+        return res.json({
+            success: true,
+            erro: false,
+            mensagem: 'Upload realizado com sucesso!',
+            name: req.savedFileName
         });
-
     },
+
     listFiles: async (req, res) => {
-        res.send("ok")
+        res.send('ok');
     }
-}
+};
