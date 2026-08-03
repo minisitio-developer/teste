@@ -45,10 +45,13 @@ setMostrarLabel(false)
 
 
   const onDrop = useCallback((acceptedFiles) => {
+    const file = acceptedFiles?.[0];
+    if (!file) return;
+
     if (props.patrocinador >= 4) {
-      localStorage.setItem("imgname" + props.patrocinador, acceptedFiles[0].name);
+      localStorage.setItem("imgname" + props.patrocinador, file.name);
     } else {
-      localStorage.setItem("imgname", acceptedFiles[0].name);
+      localStorage.setItem("imgname", file.name);
     }
 
     //console.log(acceptedFiles[0])
@@ -57,16 +60,20 @@ setMostrarLabel(false)
 
 
     if (props.preview === true) {
-      document.querySelector('.comImagem img').src = URL.createObjectURL(acceptedFiles[0]);
-      document.querySelector('.semImagem').style.display = 'none';
-      document.querySelector('.comImagem').style.display = 'block';
+      const previewImg = document.querySelector('.comImagem img');
+      const previewSemImagem = document.querySelector('.semImagem');
+      const previewComImagem = document.querySelector('.comImagem');
+
+      if (previewImg) previewImg.src = URL.createObjectURL(file);
+      if (previewSemImagem) previewSemImagem.style.display = 'none';
+      if (previewComImagem) previewComImagem.style.display = 'block';
 
     }
 
     const formData = new FormData();
-    formData.append('file', acceptedFiles[0]);
+    formData.append('file', file);
 
-    fetch(`${masterPath.url}/upload-pdf?cod=${props.codigoUser}&local=promocao&id=${props.minisitio['cartao_digital']}`, {
+    fetch(`${masterPath.url}/upload-pdf?cod=${props.codigoUser || ""}&local=promocao&id=${props.minisitio?.cartao_digital || ""}`, {
       method: 'POST',
       body: formData
     })
@@ -77,7 +84,7 @@ setMostrarLabel(false)
 
         props.data({
           ...props.minisitio,
-          'cartao_digital': data.name // ou como vier do backend
+          'cartao_digital': data?.name || file.name // ou como vier do backend
         });
 
 

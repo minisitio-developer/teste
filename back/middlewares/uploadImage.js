@@ -1,7 +1,13 @@
 const multer = require('multer');
 const path = require('path');
 
-const ALLOWED_UPLOAD_DIRS = ['logoParceiro', 'logoCertificado', 'imgCertificado', 'logoCashBack', 'descImagem', 'promocao'];
+const ALLOWED_UPLOAD_DIRS = ['logoParceiro', 'logoCertificado', 'imgCertificado', 'logoCashBack', 'descImagem', 'promocao', 'adminInstitucional'];
+
+function getValidCod(req) {
+    return req.query.cod && req.query.cod !== 'undefined' && req.query.cod !== 'null'
+        ? req.query.cod
+        : null;
+}
 
 module.exports = (multer({
     storage: multer.diskStorage({
@@ -17,39 +23,52 @@ module.exports = (multer({
 
 
             if (req.query.local == 'logoParceiro') {
-                if (req.query.cod) {
-                    cb(null, req.query.cod + "_" + Date.now().toString() + path.extname(file.originalname));
+                const cod = getValidCod(req);
+                if (cod) {
+                    cb(null, cod + "_" + Date.now().toString() + path.extname(file.originalname));
                 } else {
                     cb(null, "new_" + Date.now().toString() + path.extname(file.originalname));
                 }
 
             } else if (req.query.local == "logoCertificado") {
-                if (req.query.cod) {
-                    cb(null, req.query.cod + "_" + Date.now().toString() + path.extname(file.originalname));
+                const cod = getValidCod(req);
+                if (cod) {
+                    cb(null, cod + "_" + Date.now().toString() + path.extname(file.originalname));
                 } else {
                     cb(null, "new_" + Date.now().toString() + path.extname(file.originalname));
                 }
             } else if (req.query.local == "imgCertificado") {
-                if (req.query.cod) {
-                    cb(null, req.query.cod + "_" + Date.now().toString() + path.extname(file.originalname));
+                const cod = getValidCod(req);
+                if (cod) {
+                    cb(null, cod + "_" + Date.now().toString() + path.extname(file.originalname));
                 } else {
                     cb(null, "new_" + Date.now().toString() + path.extname(file.originalname));
                 }
             } else if (req.query.local == "logoCashBack") {
-                if (req.query.cod) {
-                    cb(null, req.query.cod + "_" + Date.now().toString() + path.extname(file.originalname));
+                const cod = getValidCod(req);
+                if (cod) {
+                    cb(null, cod + "_" + Date.now().toString() + path.extname(file.originalname));
                 } else {
                     cb(null, "new_" + Date.now().toString() + path.extname(file.originalname));
                 }
             } else if (req.query.local == "descImagem") {
-                if (req.query.cod) {
-                    cb(null, req.query.cod + "_" + Date.now().toString() + path.extname(file.originalname));
+                const cod = getValidCod(req);
+                if (cod) {
+                    cb(null, cod + "_" + Date.now().toString() + path.extname(file.originalname));
                 } else {
                     cb(null, "new_" + Date.now().toString() + path.extname(file.originalname));
                 }
             } else if (req.query.local == "promocao") {
-                if (req.query.cod) {
-                    cb(null, req.query.cod + "_" + Date.now().toString() + path.extname(file.originalname));
+                const cod = getValidCod(req);
+                if (cod) {
+                    cb(null, cod + "_" + Date.now().toString() + path.extname(file.originalname));
+                } else {
+                    cb(null, "new_" + Date.now().toString() + path.extname(file.originalname));
+                }
+            } else if (req.query.local == "adminInstitucional") {
+                const cod = getValidCod(req);
+                if (cod) {
+                    cb(null, cod + "_" + Date.now().toString() + path.extname(file.originalname));
                 } else {
                     cb(null, "new_" + Date.now().toString() + path.extname(file.originalname));
                 }

@@ -47,10 +47,10 @@ function UploadImage(props) {
     }
 
     // Verifica as dimensões da imagem (100x100)
-    if (props.origin === 'descImagem') {
+    const file = acceptedFiles?.[0];
+    if (!file) return;
 
-      const file = acceptedFiles[0];
-      if (!file) return;
+    if (props.origin === 'descImagem') {
 
       validarDimensaoImagem(file, 2000, 1000)
         .then((aproved) => {
@@ -66,25 +66,29 @@ function UploadImage(props) {
 
     function enviarImg() {
       if (props.patrocinador > 1 && props.patrocinador < 4) {
-        localStorage.setItem("imgname" + props.patrocinador, acceptedFiles[0].name);
+        localStorage.setItem("imgname" + props.patrocinador, file.name);
       } else {
-        localStorage.setItem("imgname", acceptedFiles[0].name);
+        localStorage.setItem("imgname", file.name);
       }
 
 
-      setImagem(acceptedFiles[0]);
-      localStorage.setItem("imgname", acceptedFiles[0].name);
-      setNomeImg(acceptedFiles[0].name);
+      setImagem(file);
+      localStorage.setItem("imgname", file.name);
+      setNomeImg(file.name);
 
-      document.querySelector('.comImagem img').src = URL.createObjectURL(acceptedFiles[0]);
-      document.querySelector('.semImagem').style.display = 'none';
-      document.querySelector('.comImagem').style.display = 'block';
+      const previewImg = document.querySelector('.comImagem img');
+      const previewSemImagem = document.querySelector('.semImagem');
+      const previewComImagem = document.querySelector('.comImagem');
+
+      if (previewImg) previewImg.src = URL.createObjectURL(file);
+      if (previewSemImagem) previewSemImagem.style.display = 'none';
+      if (previewComImagem) previewComImagem.style.display = 'block';
 
       const formData = new FormData();
-      formData.append('image', acceptedFiles[0]);
+      formData.append('image', file);
 
       // Enviar a imagem para o servidor
-      fetch(`${masterPath.url}/upload-image?cod=${props.codigoUser}&local=${props.local}`, {
+      fetch(`${masterPath.url}/upload-image?cod=${props.codigoUser}&local=${props.local || 'descImagem'}`, {
               method: 'POST',
               body: formData
             }).then(x => x.json())
@@ -94,10 +98,15 @@ function UploadImage(props) {
                 } */
                 //console.log('Imagem enviada com sucesso!', response);
       
-                 props.data(prev => ({
-                ...prev,
-                [props.origin]: response.fileName.replace(/\s+/g, "-")
-              }));
+                const fileName = response?.fileName || file.name;
+                const normalizedFileName = fileName.replace(/\s+/g, "-");
+
+                if (typeof props.data === 'function' && props.origin) {
+                  props.data(prev => ({
+                    ...prev,
+                    [props.origin]: normalizedFileName
+                  }));
+                }
       
                 setMostrarLabel(false);
                 setMostrarMiniPreview(true);
@@ -132,7 +141,7 @@ function UploadImage(props) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop, accept: { "image/png": [], "image/jpeg": [] },
     /* accept: { "image/png": [], "image/jpeg": [], "image/webp": [] }, */
-    maxSize: 1 * 1024 * 1024,
+    maxSize: 5 * 1024 * 1024,
   });
 
   const limparInputImg = () => {

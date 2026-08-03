@@ -42,9 +42,6 @@ import PageLayout from "../components/PageLayout";
 //FUNCTION EXTERNA
 import { criarAnuncio } from "./comprar-anuncio/criarAnuncio";
 
-//LIBS
-import Swal from 'sweetalert2';
-
 function ComprarAnuncio({ isAdmin }) {
   //States
   const [ufSelected, setUf] = useState(0);
@@ -58,7 +55,7 @@ function ComprarAnuncio({ isAdmin }) {
   const [showMap, setShowMap] = useState("none");
   const [precoFixo, setPrecoFixo] = useState(10);
   const [descValor, setDescValor] = useState(0);
-  const [cpfCnpjValue, setcpfCnpjValue] = useState(null);
+  const [cpfCnpjValue, setcpfCnpjValue] = useState("");
   const [descontoAtivado, setDescontoAtivado] = useState(false);
   const [tagValue, setTagValue] = useState([]);
   const [showSpinner, setShowSpinner] = useState(false);
@@ -139,7 +136,7 @@ function ComprarAnuncio({ isAdmin }) {
         setDescEndereco(event.target.value);
         break;
       case "descTelefone":
-        const novoValorTel = event.target.value.replace(/\D/g, '');
+        const novoValorTel = (event.target.value || "").replace(/\D/g, '');
 
         if (novoValorTel.length > 0) {
           const valorComMascara = `(${novoValorTel.substring(0, 2)}) ${novoValorTel.substring(2, 6)}-${novoValorTel.substring(6, 10)}`;
@@ -149,7 +146,7 @@ function ComprarAnuncio({ isAdmin }) {
         }
         break;
       case "descCelular":
-        const novoValor = event.target.value.replace(/\D/g, '');
+        const novoValor = (event.target.value || "").replace(/\D/g, '');
 
         if (novoValor.length > 0) {
           const valorComMascara = `(${novoValor.substring(0, 2)}) ${novoValor.substring(2, 7)}-${novoValor.substring(7, 11)}`;
@@ -241,7 +238,7 @@ function ComprarAnuncio({ isAdmin }) {
 
   const handleCpfCnpjChange = (event) => {
     // Obter apenas os números da entrada de dados
-    let data = event.target.value.replace(/\D/g, "");
+    let data = (event.target.value || "").replace(/\D/g, "");
 
     // Verificar o comprimento dos dados para definir se é CPF ou CNPJ
     if (personType === 'pj') {
@@ -305,8 +302,8 @@ function ComprarAnuncio({ isAdmin }) {
   }
 
   function changeRadioCheck(e) {
-    let tipoPerfil = e.target.value;
-    setRadioCheck(e.target.value);
+    let tipoPerfil = Number(e.target.value);
+    setRadioCheck(tipoPerfil);
 
     if (tipoPerfil === 1) {
       setShowMap("none");

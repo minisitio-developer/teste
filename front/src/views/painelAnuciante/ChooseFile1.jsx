@@ -166,7 +166,10 @@ function UploadImage(props) {
       formData.append('image', acceptedFiles[0]);
 
       // Enviar a imagem para o servidor
-      fetch(`${masterPath.url}/upload-image?cod=${props.dt.codAnuncio}&local=${props.local}`, {
+      const codAnuncio = props.dt?.codAnuncio || props.codigoUser || "";
+      const localUpload = props.local || "descImagem";
+
+      fetch(`${masterPath.url}/upload-image?cod=${codAnuncio}&local=${localUpload}`, {
         method: 'POST',
         body: formData
       })
@@ -175,21 +178,24 @@ function UploadImage(props) {
 
           console.log('Imagem enviada com sucesso!', response);
 
+          const fileName = response?.fileName || acceptedFiles[0]?.name || "";
+          const normalizedFileName = fileName.replace(/\s+/g, "-");
+
           if (props.origin === 'logoPromocao') {
 
             props.data(prev => ({
               ...prev,
-              [props.origin]: response.fileName.replace(/\s+/g, "-"), //acceptedFiles[0].name,
+              [props.origin]: normalizedFileName, //acceptedFiles[0].name,
               promoc: {
                 ...prev.promoc, // Mantém o que já existia no objeto promoc se houver
-                banner: response.fileName.replace(/\s+/g, "-") //acceptedFiles[0].name
+                banner: normalizedFileName //acceptedFiles[0].name
               }
             }));
 
           } else {
             props.data(prev => ({
               ...prev,
-              [props.origin]: response.fileName.replace(/\s+/g, "-")//acceptedFiles[0].name,
+              [props.origin]: normalizedFileName//acceptedFiles[0].name,
             }));
           }
 

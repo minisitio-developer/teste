@@ -41,9 +41,6 @@ import AlertMsg from "../../../components/Alerts/AlertMsg";
 import { criarAnuncio } from "../../../views/comprar-anuncio/criarAnuncio";
 
 
-//LIBS
-import Swal from 'sweetalert2';
-
 function ComprarAnuncio() {
   //States
   const [ufSelected, setUf] = useState(0);
@@ -56,7 +53,7 @@ function ComprarAnuncio() {
   const [cep, setCep] = useState();
   const [showMap, setShowMap] = useState("none");
   const [precoFixo, setPrecoFixo] = useState(5);
-  const [cpfCnpjValue, setcpfCnpjValue] = useState(null);
+  const [cpfCnpjValue, setcpfCnpjValue] = useState("");
   const [descontoAtivado, setDescontoAtivado] = useState(false);
   const [tagValue, setTagValue] = useState([]);
   const [showSpinner, setShowSpinner] = useState(false);
@@ -96,13 +93,6 @@ function ComprarAnuncio() {
         //decodificar()
       });
 
-      Swal.fire({
-        title: "The Internet?",
-        text: "That thing is still around?",
-        icon: "question"
-      });
-
-
   }, []);
 
 
@@ -122,7 +112,7 @@ function ComprarAnuncio() {
         setDescEndereco(event.target.value);
         break;
       case "descTelefone":
-        const novoValorTel = event.target.value.replace(/\D/g, '');
+        const novoValorTel = (event.target.value || "").replace(/\D/g, '');
 
         if (novoValorTel.length > 0) {
           const valorComMascara = `(${novoValorTel.substring(0, 2)}) ${novoValorTel.substring(2, 6)}-${novoValorTel.substring(6, 10)}`;
@@ -132,7 +122,7 @@ function ComprarAnuncio() {
         }
         break;
       case "descCelular":
-        const novoValor = event.target.value.replace(/\D/g, '');
+        const novoValor = (event.target.value || "").replace(/\D/g, '');
 
         if (novoValor.length > 0) {
           const valorComMascara = `(${novoValor.substring(0, 2)}) ${novoValor.substring(2, 7)}-${novoValor.substring(7, 11)}`;
@@ -174,7 +164,7 @@ function ComprarAnuncio() {
 
   const handleCpfCnpjChange = (event) => {
     // Obter apenas os números da entrada de dados
-    let data = event.target.value.replace(/\D/g, "");
+    let data = (event.target.value || "").replace(/\D/g, "");
 
     // Verificar o comprimento dos dados para definir se é CPF ou CNPJ
     if (personType === 'pj') {
@@ -266,7 +256,7 @@ function ComprarAnuncio() {
                       name="codTipoAnuncio"
                       id="codTipoAnuncio-1"
                       value="1"
-                      onClick={(e) => { setRadioCheck(e.target.value); setShowMap("none") }}
+                      onClick={(e) => { setRadioCheck(Number(e.target.value)); setShowMap("none") }}
                       checked={radioCheck === 1}
                       className="mx-1"
                     />
@@ -289,7 +279,7 @@ function ComprarAnuncio() {
                       name="codTipoAnuncio"
                       id="codTipoAnuncio-3"
                       value="3"
-                      onClick={(e) => setRadioCheck(e.target.value)}
+                      onClick={(e) => setRadioCheck(Number(e.target.value))}
                       checked={radioCheck === 3}
                       className="mx-1"
                     />
