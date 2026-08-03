@@ -60,17 +60,25 @@ function UploadImage(props) {
     const formData = new FormData();
     formData.append('image', file);
 
-    fetch(`${masterPath.url}/upload-image?cod=${props.minisitio.codAnuncio}&local=${props.local}`, {
+    const codAnuncio = props.minisitio?.codAnuncio || props.codigoUser || "";
+    const localUpload = props.local || "descImagem";
+
+    fetch(`${masterPath.url}/upload-image?cod=${codAnuncio}&local=${localUpload}`, {
       method: 'POST',
       body: formData
     })
       .then(x => x.json())
       .then((res) => {
         console.log("result: ", res);
-        props.data(prev => ({
-          ...prev,
-          [props.origin]: res.fileName.replace(/\s+/g, "-")
-        }));
+        const fileName = res?.fileName || file.name || "";
+        const normalizedFileName = fileName.replace(/\s+/g, "-");
+
+        if (typeof props.data === "function" && props.origin) {
+          props.data(prev => ({
+            ...prev,
+            [props.origin]: normalizedFileName
+          }));
+        }
 
         setMostrarMiniPreview(true);
         setMostrarLabel(true)
