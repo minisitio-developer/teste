@@ -35,8 +35,9 @@ module.exports = {
     },
 
     uploadPdf: async (req, res) => {
-        const caminho = req.query.id
-            ? path.join(__dirname, '../public/cartaoDigital/' + req.query.id)
+        const previousFileName = req.query.id ? path.basename(req.query.id) : null;
+        const caminho = previousFileName
+            ? path.join(__dirname, '../public/cartaoDigital/' + previousFileName)
             : null;
 
         if (caminho) {
