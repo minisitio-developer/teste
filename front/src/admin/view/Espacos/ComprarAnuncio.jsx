@@ -139,7 +139,11 @@ function ComprarAnuncio() {
     let codId = e.target.value;
 
     if (codId.length === 11 || codId.length === 12) {
-      fetch(`${masterPath.url}/admin/desconto/buscar/${codId}`)
+      fetch(`${masterPath.url}/admin/desconto/buscar/${codId}`, {
+        headers: {
+          "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess')
+        }
+      })
         .then((x) => x.json())
         .then((res) => {
           console.log("desconto ", res)

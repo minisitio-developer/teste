@@ -37,6 +37,7 @@ const uploadPdf = require('../middlewares/uploadPdf');
 const RecuperarSenha = require('../controllers/RecuperarSenha.js');
 const database = require('../config/db.js');
 const redisClient = require('../config/redis.js');
+const { validateEmail } = require('../validations');
 
 
 
@@ -69,7 +70,7 @@ module.exports = (io, loginLimiter) => {
 
     //Admin
     router.post('/api/admin/usuario/create', auth, Users.create);
-    router.post('/api/portal/usuario/create', Users.create);
+    router.post('/api/portal/usuario/create', Users.createPortal);
     router.post('/api/admin/usuario/update/:id', auth, Users.update);
     router.put('/api/admin/usuario/status/:id', auth, Users.updateStatus);
     router.get('/api/admin/usuario/edit/:id', auth, Users.buscarUsuario);
@@ -663,7 +664,8 @@ module.exports = (io, loginLimiter) => {
     router.get('/api/admin/anuncio/progress', auth, Buscador.progressImport);
 
     //site
-    router.post('/api/admin/usuario/criar-anuncio', Users.criarAnuncio);
+    router.post('/api/admin/usuario/criar-anuncio', auth, Users.criarAnuncio);
+    router.post('/api/portal/usuario/criar-anuncio', Users.criarAnuncio);
     router.get('/api/pa', Users.qtdaAnuncio);
     const handleUpload = (uploadMiddleware, fieldName) => (req, res, next) => {
         uploadMiddleware.single(fieldName)(req, res, (err) => {
@@ -752,29 +754,41 @@ module.exports = (io, loginLimiter) => {
     };
 
     router.post('/api/fale-com-dono', uploadFaleComDono, async (req, res) => {
-        console.log(req.body);
+        const email = String(req.body.email || '').trim();
+        const codAnuncio = Number(req.body.id);
 
-        if (req.body.email == '') {
-            res.json({ success: false, message: "email não enviado" });
-            return;
+        if (!validateEmail(email)) {
+            return res.status(400).json({ success: false, message: "email invalido" });
+        }
+
+        if (!Number.isInteger(codAnuncio) || codAnuncio <= 0) {
+            return res.status(400).json({ success: false, message: "anuncio invalido" });
         }
 
         const anuncio = await Anuncio.findOne({
             where: {
-                codAnuncio: req.body.id
+                codAnuncio
             }
         });
 
-        const filename = req.file ? req.file.filename : false
-
-        const emailReturn = await faleComDono(req.body, anuncio ? anuncio.descEmailAutorizante : null, filename);
-        if (anuncio && anuncio.descEmailAutorizante) {
-            await faleComDonoCliente(req.body, anuncio.descNomeAutorizante);
+        if (!anuncio || !anuncio.descEmailAutorizante) {
+            return res.status(404).json({ success: false, message: "anuncio nao encontrado" });
         }
-        if (emailReturn) {
-            res.json({ success: true, message: "email enviado" });
-        } else {
-            res.json({ success: false, message: "email não enviado" });
+
+        const filename = req.file ? req.file.filename : false;
+        const body = { ...req.body, email };
+
+        try {
+            const emailReturn = await faleComDono(body, anuncio.descEmailAutorizante, filename);
+            await faleComDonoCliente(body, anuncio.descNomeAutorizante);
+            if (emailReturn) {
+                res.json({ success: true, message: "email enviado" });
+            } else {
+                res.json({ success: false, message: "email não enviado" });
+            }
+        } catch (err) {
+            console.error('Erro no fale-com-dono:', err.message);
+            return res.status(500).json({ success: false, message: "email nao enviado" });
         }
     });
 

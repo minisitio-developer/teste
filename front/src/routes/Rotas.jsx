@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import '../App.css';
@@ -65,7 +66,6 @@ import PinEditar from "../admin/view/Pin/FormEdit";
 import BuscarProfissionais from "../admin/view/BuscarProfissionais/BuscarProfissionais";
 
 //IMPORT CALHAU
-import Calhau from "../admin/view/Calhau/Calhau";
 import CalhauCadastro from "../admin/view/Calhau/FormCadastro";
 
 //IMPORT configuracoes do portal
@@ -105,9 +105,11 @@ import ForgotPassword from "../admin/components/ForgotPassword";
 import ResetPassword from "../admin/components/ResetPassword";
 import Promocao from "../views/campanha/Promocao";
 import TokenInvalido from "../views/campanha/_components/404";
-import Campanha from "../admin/view/Campanha/Campanha";
 
 import Layout from "../layouts/Layout";
+
+const Calhau = lazy(() => import("../admin/view/Calhau/Calhau"));
+const Campanha = lazy(() => import("../admin/view/Campanha/Campanha"));
 
 
 function Rotas() {
@@ -115,6 +117,7 @@ function Rotas() {
         /*  <BrowserRouter>  */
 
         <TemaProvider> {/* Movido o TemaProvider para fora de Routes */}
+            <Suspense fallback={null}>
             <Routes>
                 <Route path="/">
                     <Route index element={<Home />} />
@@ -233,6 +236,7 @@ function Rotas() {
                 <Route path="*" element={<NotFound />} />
 
             </Routes>
+            </Suspense>
         </TemaProvider>
 
         /*  </BrowserRouter>  */

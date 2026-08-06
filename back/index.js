@@ -69,7 +69,12 @@ const defaultOrigins = [
     'https://minisitio-developer.github.io',
 ];
 if (process.env.ALLOWED_ORIGINS) {
-    defaultOrigins.push(...process.env.ALLOWED_ORIGINS.split(','));
+    defaultOrigins.push(
+        ...process.env.ALLOWED_ORIGINS
+            .split(',')
+            .map(origin => origin.trim())
+            .filter(Boolean)
+    );
 }
 const allowedOrigins = defaultOrigins;
 

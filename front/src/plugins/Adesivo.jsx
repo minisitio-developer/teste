@@ -1,15 +1,13 @@
-import React, { useEffect, useRef } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import React, { useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { QRCodeCanvas } from 'qrcode.react';
 import '../assets/css/adesivo.css';
 import { masterPath } from '../config/config';
-import html2canvas from 'html2canvas';
 
 function Adesivo() {
     const qrRef = useRef(null);
 
     const [searchParams] = useSearchParams();
-    const imgParam = searchParams.get('image');
     const idParam = searchParams.get('id');
 
     // Função para imprimir o QR Code
@@ -27,7 +25,6 @@ function Adesivo() {
         printWindow.print();
         printWindow.close();
 
-        console.log(image)
     };
 
     /*     // Função para baixar o QR Code como imagem
@@ -43,6 +40,7 @@ function Adesivo() {
     // Função para baixar a imagem
     const handleDownload = async () => {
         const element = qrRef.current;
+        const { default: html2canvas } = await import('html2canvas');
 
         // Usando html2canvas para capturar o elemento
         const canvas = await html2canvas(element);
@@ -56,10 +54,6 @@ function Adesivo() {
         link.download = 'qr_code_image.png'; // Nome do arquivo a ser baixado
         link.click();
     };
-
-    useEffect(() => {
-        console.log(`local/${encodeURIComponent(imgParam)}?id=${idParam}`)
-    }, [])
 
     return (
         <div className='adesivo-container'>

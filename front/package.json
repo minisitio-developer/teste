@@ -46,7 +46,7 @@
     "react-input-mask": "^2.0.4",
     "react-masonry-css": "^1.0.16",
     "react-metatags-hook": "^2.0.0",
-    "react-router-dom": "^6.21.1",
+    "react-router-dom": "^6.30.4",
     "react-to-print": "^3.0.6",
     "recharts": "^2.15.0",
     "socket.io-client": "^4.8.1",
@@ -55,8 +55,7 @@
     "tailwind-merge": "^3.3.1",
     "tw-animate-css": "^1.3.4",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4",
-    "xlsx": "^0.18.5"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "vite",

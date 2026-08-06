@@ -30,7 +30,7 @@ function WebcardThumb(props) {
         };
 
         function buscarUserId() {
-            fetch(`${masterPath.url}/admin/desconto/buscar/${props.data.hash}`)
+            fetch(`${masterPath.url}/portal/desconto/buscar/${props.data.hash}`)
                 .then((x) => x.json())
                 .then((res) => {
                     //console.log(res, props.data)
@@ -50,7 +50,7 @@ function WebcardThumb(props) {
     useEffect(() => {
 
         function buscarUserId() {
-            fetch(`${masterPath.url}/admin/desconto/buscar/${props.data.codDesconto}`)
+            fetch(`${masterPath.url}/portal/desconto/buscar/${props.data.codDesconto}`)
                 .then((x) => x.json())
                 .then((res) => {
                     if (res.success) {

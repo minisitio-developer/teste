@@ -28,7 +28,23 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
     }
 
     setShowSpinner(true);
-    document.querySelector('.form-create').style.filter = 'blur(2px)';
+    const formCreate = document.querySelector('.form-create');
+    if (formCreate) {
+        formCreate.style.filter = 'blur(2px)';
+    }
+
+    function finalizarComErro(message = "Nao foi possivel concluir o cadastro. Tente novamente.") {
+        setShowSpinner(false);
+        if (formCreate) {
+            formCreate.style.filter = 'none';
+        }
+        Swal.fire({
+            title: "Erro",
+            text: message,
+            icon: "error",
+            confirmButtonText: "OK"
+        });
+    }
 
     fetch(`${masterPath.url}/portal/usuario/buscar/${pegarElemento('#descCPFCNPJ').replace(/[.\-\/]/g, '')}`)
         .then((x) => x.json())
@@ -43,6 +59,7 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
             };
 
         })
+        .catch(() => finalizarComErro("Nao foi possivel consultar o usuario. Verifique sua conexao e tente novamente."))
 
     function criarUsuario() {
         const obj = {
@@ -50,8 +67,6 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
             "CPFCNPJ": pegarElemento('#descCPFCNPJ').replace(/[.\-\/]/g, ''),
             "Nome": pegarElemento('#descNomeAutorizante'),
             "Email": pegarElemento('#descEmailAutorizante'),
-            "senha": '12345',
-            "hashCode": 0,
             "Value": 0,
             "TipoUsuario": isCapa ? "5" : "3",
             "Telefone": pegarElemento('#descTelefone'),
@@ -70,8 +85,6 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
 
 
 
-        //console.log(obj)
-
         fetch(`${masterPath.url}/portal/usuario/create`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -79,15 +92,15 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
         })
             .then((x) => x.json())
             .then((res) => {
-                if (res.success) {
+                if (res.success && res.message?.codUsuario) {
                     cadastrarAnuncio(res.message.codUsuario)
 
                 } else {
-                    console.log("Esse usuário já está cadastrado!");
+                    finalizarComErro(typeof res.message === 'string' ? res.message : "Nao foi possivel criar o usuario.");
                 }
-                //console.log(res);
                 //setShowSpinner(false);
-            });
+            })
+            .catch(() => finalizarComErro("Falha ao criar usuario. Tente novamente."));
     }
 
     function pegarElemento(elemento) {
@@ -172,7 +185,6 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
             return;
         }
 
-        //console.log(obj);  /admin/usuario/criar-anuncio
         fetch(`${masterPath.url}/portal/anuncio/create`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -180,6 +192,11 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
         })
             .then((x) => x.json())
             .then((res) => {
+                if (!res.success || !res.message?.codAnuncio) {
+                    finalizarComErro(typeof res.message === 'string' ? res.message : "Nao foi possivel criar o anuncio.");
+                    return;
+                }
+
                 const codAnuncio = res.message.codAnuncio
                 //setShowSpinner(false);
                 // Remover um item do localStorage
@@ -194,8 +211,6 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
                     icon: "success",
                     didOpen: () => { setShowSpinner(false); }
                 }).then(result => {
-                    //console.log("primeiro dasdfaskhjfsdafhjasdbfnjaksdf", descontoAtivado, radioCheck, res.message.codAnuncio)
-
                     let idPerfil = res.message.codAnuncio;
                     let codDesconto = res.message.codDesconto;
                     let descontoAprovado = false;
@@ -203,7 +218,6 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
                     /*          fetch(`${masterPath.url}/pagamento/create/${idPerfil}`)
                                  .then((x) => x.json())
                                  .then((response) => {
-                                     console.log(response)
                                  }) */
 
 
@@ -212,43 +226,33 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
                             let valorBruto = precoFixo;
                             /*              if (descontoAtivado && radioCheck === 4) {
                                              window.open(`/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`, '_blank');
-                                             console.log("1");
                                          } else if (radioCheck === 1) {
                                              window.open(`/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`, '_blank');
-                                             console.log("2");
                                          } else {
                                              window.open(`https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=712696516-cad9b026-5622-4fe2-921c-3d2d336a6d82`, '_blank');
-                                             console.log("3");
                                          } */
                             if (descontoAtivado && radioCheck === 4 && valorBruto <= 0) {
                                 //window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
                                 window.location.href = import.meta.env.VITE_BASE_URL + `/perfil/${codAnuncio}`;
-                                console.log("1");
                             } else if (descontoAtivado && radioCheck === 3 && valorBruto <= 0) {
                                 //window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
                                 window.location.href = import.meta.env.VITE_BASE_URL + `/perfil/${codAnuncio}`;
-                                console.log("1");
                             } else if (radioCheck === 1 && valorBruto <= 0) {
                                 //window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
                                 window.location.href = import.meta.env.VITE_BASE_URL + `/perfil/${codAnuncio}`;
-                                console.log("2");
                             } else {
-                                //console.log("entrou aqui", descontoAtivado, radioCheck, valorBruto)
                                 fetch(`${masterPath.url}/pagamento/create/${idPerfil}`)
                                     .then((x) => x.json())
                                     .then((response) => {
                                         window.location.href = response.url;
 
                                     })
-                                    .catch(err => console.log(err))
-                                console.log("3");
+                                    .catch(() => finalizarComErro("Nao foi possivel gerar o pagamento. Tente novamente."))
                             }
 
                             return;
 
                         } else {
-                            //console.log("segundo dasdfaskhjfsdafhjasdbfnjaksdf", descontoAprovado)
-
                             fetch(`${masterPath.url}/portal/desconto/buscar/${codDesconto}`)
                                 .then((x) => x.json())
                                 .then((res) => {
@@ -266,15 +270,12 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
                                         if (descontoAtivado && radioCheck === 4 && valorBruto <= 0) {
                                             //window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
                                             window.location.href = import.meta.env.VITE_BASE_URL + `/perfil/${codAnuncio}`;
-                                            console.log("1");
                                         } else if (descontoAtivado && radioCheck === 3 && valorBruto <= 0) {
                                             //window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
                                             window.location.href = import.meta.env.VITE_BASE_URL + `/perfil/${codAnuncio}`;
-                                            console.log("1");
                                         } else if (radioCheck === 1 && valorBruto <= 0) {
                                             //window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
                                             window.location.href = import.meta.env.VITE_BASE_URL + `/perfil/${codAnuncio}`;
-                                            console.log("2");
                                         } else {
                                             fetch(`${masterPath.url}/pagamento/create/${idPerfil}`)
                                                 .then((x) => x.json())
@@ -282,10 +283,9 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
                                                     window.location.href = response.url;
 
                                                 })
-                                                .catch(err => console.log(err))
+                                                .catch(() => finalizarComErro("Nao foi possivel gerar o pagamento. Tente novamente."))
                                             //window.location.href = `https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=712696516-cad9b026-5622-4fe2-921c-3d2d336a6d82`;
 
-                                            console.log("3");
                                         }
                                     } else {
                                         if (radioCheck === 3) {
@@ -295,7 +295,7 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
                                                     window.location.href = response.url;
 
                                                 })
-                                                .catch(err => console.log(err))
+                                                .catch(() => finalizarComErro("Nao foi possivel gerar o pagamento. Tente novamente."))
                                         } else {
                                             //window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(obj.descCPFCNPJ)}`;
                                             window.location.href = import.meta.env.VITE_BASE_URL + `/perfil/${codAnuncio}`;
@@ -308,7 +308,8 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
                     //}
 
                 });
-            });
+            })
+            .catch(() => finalizarComErro("Falha ao criar anuncio. Tente novamente."));
     }
 
 

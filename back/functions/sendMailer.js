@@ -4,6 +4,15 @@ const config = require('../config/config');
 
 const SMTP_CONFIG = require('../config/smtp');
 
+function escapeHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     secure: false,
@@ -47,16 +56,21 @@ async function sendMailError(data, msg, msgErro, nu_painel, status) {
 };
 
 async function faleComDono(data, emailAutorizante, filename) {
+    const nome = escapeHtml(data.nome);
+    const email = escapeHtml(data.email);
+    const option = escapeHtml(data.option);
+    const mensagem = escapeHtml(data.mensagem);
 
     //variaveis do corpo de envio do email com variação de idiomas para o novo aluno      
 
     if (filename) {
         const mailSentPT = await transporter.sendMail({
-            from: `${data.nome} <${data.email}>`,
+            from: `Minisitio <${SMTP_CONFIG.auth.user}>`,
+            replyTo: data.email,
             //from: `kledisom <dev@ziiz.com.br>`,
             to: ['dev@ziiz.com.br', emailAutorizante, 'contatobr@mycardcity.net'],
-            subject: `${data.option}`,
-            text: `${data.option}`,
+            subject: option,
+            text: option,
             html: `
             <head>
         <meta charset="UTF-8">
@@ -65,12 +79,12 @@ async function faleComDono(data, emailAutorizante, filename) {
         <title>Pedido Recebido!</title>
     </head>
     <body>
-        <p>De: <strong>${data.nome}</strong> &lt;${data.email}&gt;</p>
-        <p>Assunto: <strong>${data.option}</strong></p>
+        <p>De: <strong>${nome}</strong> &lt;${email}&gt;</p>
+        <p>Assunto: <strong>${option}</strong></p>
         
         <p>Nova mensagem de contato!</p>
     
-            <p>${data.mensagem}</p>
+            <p>${mensagem}</p>
     
     
         <hr>
@@ -87,11 +101,12 @@ async function faleComDono(data, emailAutorizante, filename) {
         return true;
     } else {
         const mailSentPT = await transporter.sendMail({
-            from: `${data.nome} <${data.email}>`,
+            from: `Minisitio <${SMTP_CONFIG.auth.user}>`,
+            replyTo: data.email,
             //from: `kledisom <dev@ziiz.com.br>`,
             to: ['dev@ziiz.com.br', emailAutorizante, 'contatobr@mycardcity.net'],
-            subject: `${data.option}`,
-            text: `${data.option}`,
+            subject: option,
+            text: option,
             html: `
             <head>
         <meta charset="UTF-8">
@@ -100,12 +115,12 @@ async function faleComDono(data, emailAutorizante, filename) {
         <title>Pedido Recebido!</title>
     </head>
     <body>
-        <p>De: <strong>${data.nome}</strong> &lt;${data.email}&gt;</p>
-        <p>Assunto: <strong>${data.option}</strong></p>
+        <p>De: <strong>${nome}</strong> &lt;${email}&gt;</p>
+        <p>Assunto: <strong>${option}</strong></p>
         
         <p>Nova mensagem de contato!</p>
     
-            <p>${data.mensagem}</p>
+            <p>${mensagem}</p>
     
     
         <hr>

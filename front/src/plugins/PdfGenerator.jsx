@@ -1,7 +1,14 @@
 import React, { useRef, useImperativeHandle, forwardRef } from "react";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import '../assets/css/PdfGenerator.css';
+
+async function carregarDependenciasPdf() {
+    const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+        import("jspdf"),
+        import("html2canvas")
+    ]);
+
+    return { jsPDF, html2canvas };
+}
 
 // Usa forwardRef para permitir que o pai acesse a função do filho
 const PdfGenerator = forwardRef((props, ref) => {
@@ -9,9 +16,9 @@ const PdfGenerator = forwardRef((props, ref) => {
 
     // Função que será exposta para o componente pai
     useImperativeHandle(ref, () => ({
-        generatePdf() {
+        async generatePdf() {
             const input = contentRef.current;
-            console.log(input)
+            const { jsPDF, html2canvas } = await carregarDependenciasPdf();
 
             html2canvas(input).then((canvas) => {
                 const imgData = canvas.toDataURL("image/png");

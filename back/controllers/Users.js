@@ -23,6 +23,22 @@ function normalizarTipoPessoa(tipoPessoa) {
 
 
 module.exports = {
+    createPortal: async (req, res) => {
+        const tipoUsuarioSolicitado = String(req.body.TipoUsuario || '').trim();
+        req.body = {
+            ...req.body,
+            CPFCNPJ: String(req.body.CPFCNPJ || '').replace(/[.\-\/]/g, ''),
+            TipoUsuario: tipoUsuarioSolicitado === '5' ? '5' : '3',
+            hashCode: 0,
+            Value: 0,
+            RepresentanteConvenio: req.body.RepresentanteConvenio || 'portal',
+            usuarioCod: 0,
+            ativo: '1'
+        };
+
+        return module.exports.create(req, res);
+    },
+
     create: async (req, res) => {
         // await database.sync(); // REMOVED: sync should not run per-request
 

@@ -8,6 +8,7 @@
     "start:frontend": "cd front && npm start",
     "start:dev": "cd back && npm run dev",
     "build": "cd front && npm run build",
+    "test:smoke": "node --test scripts/smoke/critical-contracts.test.js",
     "docker:up": "docker compose up --build",
     "docker:down": "docker compose down"
   }

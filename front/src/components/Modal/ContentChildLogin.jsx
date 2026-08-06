@@ -161,7 +161,7 @@ const ContentChildLogin = (props) => {
     }
 
     //console.log(obj);  /admin/usuario/criar-anuncio
-    fetch(`${masterPath.url}/admin/anuncio/create`, {
+    fetch(`${masterPath.url}/portal/anuncio/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(obj),
