@@ -258,3 +258,16 @@ test('innovation voice and route helpers use browser-native fallbacks', () => {
   assert.match(fullWebCard, /<SpeakProfileButton/, 'FullWebCard must expose profile speech');
   assert.match(fullWebCard, /<RouteAssistButton/, 'FullWebCard must expose route assistance');
 });
+
+test('near me search uses opt-in geolocation and local distance ranking', () => {
+  const resultados = read('front/src/components/Resultados.jsx');
+  const cardlist = read('front/src/components/Cardlist.jsx');
+  const geoDistance = read('front/src/utils/geoDistance.js');
+
+  assert.match(resultados, /navigator\.geolocation\.getCurrentPosition/, 'near me must request geolocation on demand');
+  assert.match(resultados, /Perto de mim/, 'results must expose near-me action');
+  assert.match(resultados, /distanceKm\(userLocation, a\)/, 'results must sort by local distance calculation');
+  assert.match(cardlist, /props\.distancia/, 'result cards must display distance when available');
+  assert.match(geoDistance, /earthRadiusKm = 6371/, 'distance helper must use haversine radius');
+  assert.doesNotMatch(resultados + geoDistance, /AIza/, 'near-me search must not embed Google API keys');
+});

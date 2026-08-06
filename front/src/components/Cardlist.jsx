@@ -99,6 +99,12 @@ function Cardlist(props) {
                     <h4 className="d-flex font-20 border-bottom border-secondary p-2">
                       {/* <i className="fa fa-tags"></i> */}
                       <div className="endereco descTitle">{props.anuncio.descAnuncio}</div>
+                      {props.distancia && (
+                        <span className="badge bg-success ms-auto align-self-center" title="Distancia estimada ate voce">
+                          <i className="fa fa-location-arrow me-1"></i>
+                          {props.distancia}
+                        </span>
+                      )}
 
                     </h4>
                   </div>
