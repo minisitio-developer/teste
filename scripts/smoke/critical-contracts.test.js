@@ -84,6 +84,7 @@ test('public frontend flows do not call admin creation endpoints', () => {
 test('contact owner endpoint validates input and does not log request body', () => {
   const routes = read('back/routes/Routes.js');
   const mailer = read('back/functions/sendMailer.js');
+  const backendPackageJson = JSON.parse(read('back/package.json'));
 
   const routeStart = routes.indexOf("router.post('/api/fale-com-dono'");
   const routeEnd = routes.indexOf('//ROTINAS', routeStart);
@@ -96,6 +97,8 @@ test('contact owner endpoint validates input and does not log request body', () 
 
   assert.match(mailer, /function escapeHtml\(value\)/, 'mailer must escape user-provided HTML');
   assert.match(mailer, /replyTo:\s*data\.email/, 'mailer must use replyTo for contact owner messages');
+  assert.doesNotMatch(mailer, /\braw\s*:/, 'mailer must not use raw message payloads');
+  assert.match(backendPackageJson.dependencies.nodemailer, /\^9\./, 'backend must use Nodemailer 9 or newer');
 });
 
 test('main public purchase flow guards API failures before redirecting', () => {
