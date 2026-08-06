@@ -242,6 +242,18 @@ test('allowed origins from env are trimmed and empty entries ignored', () => {
   assert.match(index, /process\.env\.ALLOWED_ORIGINS\s*\.split\(','\)/, 'ALLOWED_ORIGINS must be split from env');
   assert.match(index, /\.map\(origin => origin\.trim\(\)\)/, 'ALLOWED_ORIGINS entries must be trimmed');
   assert.match(index, /\.filter\(Boolean\)/, 'empty ALLOWED_ORIGINS entries must be ignored');
+  assert.match(index, /const allowedOrigins = \[\.\.\.new Set\(defaultOrigins\)\]/, 'allowed origins must be deduplicated');
+});
+
+test('backend http hardening keeps headers, rate limits, and static cache predictable', () => {
+  const index = read('back/index.js');
+
+  assert.match(index, /app\.disable\('x-powered-by'\)/, 'backend must hide Express powered-by header');
+  assert.match(index, /process\.env\.API_RATE_LIMIT_MAX \|\| 1000/, 'api rate limit must be tunable from env');
+  assert.match(index, /standardHeaders:\s*'draft-8'/, 'api rate limit must emit standard headers');
+  assert.match(index, /legacyHeaders:\s*false/, 'api rate limit must disable legacy headers');
+  assert.match(index, /IMAGE_PROXY_TIMEOUT_MS \|\| 7000/, 'legacy image proxy must have a bounded timeout');
+  assert.match(index, /max-age=31536000, immutable/, 'versioned frontend assets must receive immutable cache headers');
 });
 
 test('innovation voice and route helpers use browser-native fallbacks', () => {
