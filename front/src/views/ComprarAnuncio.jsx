@@ -38,6 +38,7 @@ import TagsInput from "../admin/components/TagsInput";
 import AlertMsg from "../components/Alerts/AlertMsg";
 import Header from "../admin/view/Header";
 import PageLayout from "../components/PageLayout";
+import ProfileAssistantPanel from "../components/ProfileAssistantPanel";
 
 //FUNCTION EXTERNA
 import { criarAnuncio } from "./comprar-anuncio/criarAnuncio";
@@ -539,7 +540,7 @@ function ComprarAnuncio({ isAdmin }) {
                 </div>
 
                 {/* <Marcadores /> */}
-                {radioCheck != 1 && <TagsInput tagValue={setTagValue} />}
+                {radioCheck != 1 && <TagsInput tagValue={setTagValue} tags={tagValue} />}
 
 
 
@@ -696,6 +697,16 @@ function ComprarAnuncio({ isAdmin }) {
               style={{ display: "block" }}
             >
               <div className="input-icon margin-top-10">
+                <i className="fa fa-align-left"></i>
+                <textarea
+                  name="descDescricao"
+                  id="descDescricao"
+                  className="form-control"
+                  placeholder="Digite a descricao do perfil"
+                  rows="4"
+                />
+              </div>
+              <div className="input-icon margin-top-10">
                 <i className="fa fa-youtube"></i>
                 <input
                   type="text"
@@ -738,6 +749,12 @@ function ComprarAnuncio({ isAdmin }) {
                 />{" "}
               </div>
             </div>}
+            {radioCheck != 1 && (
+              <ProfileAssistantPanel
+                onApplyTags={setTagValue}
+                hasImage={Boolean(minisitio?.descImagem)}
+              />
+            )}
             {/* Detalhes do anuncio */}
 
             {/* Autorizante */}

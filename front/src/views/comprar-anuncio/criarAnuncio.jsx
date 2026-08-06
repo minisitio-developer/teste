@@ -125,7 +125,7 @@ export function criarAnuncio(tagValue, personType, radioCheck, setShowSpinner, d
             descEndereco: buscarElemento("descEndereco"),
             descTelefone: buscarElemento("descTelefone"),
             descCelular: buscarElemento("descCelular"),
-            descDescricao: "",
+            descDescricao: buscarElemento("descDescricao") || "",
             descSite: "www.oficinadetortas.com.br",
             descSkype: null,
             descPromocao: descValor,

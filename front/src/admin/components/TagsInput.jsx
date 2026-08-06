@@ -5,11 +5,16 @@ function TagsInput(props) {
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
-    if (props.value != undefined && props.value.length > 0) {
-      console.log("tags input", props.value)
-      setTags(JSON.parse(props.value));
+    if (Array.isArray(props.tags)) {
+      setTags(props.tags);
+      return;
     }
-  }, [props.value]);
+
+    if (props.value != undefined && props.value.length > 0) {
+      const parsedTags = Array.isArray(props.value) ? props.value : JSON.parse(props.value);
+      setTags(parsedTags);
+    }
+  }, [props.value, props.tags]);
 
 /*   useEffect(() => {
     if (!props.hasUserInteracted.current) return;
@@ -33,22 +38,26 @@ function TagsInput(props) {
   };
 
   const handleInputKeyDown = (e) => {
-    props.tagValue(tags)
     if (e.key === 'Enter' && inputValue.trim() !== '') {
       e.preventDefault();
       if (tags.length < 10 && !tags.includes(inputValue.trim())) {
-        setTags([...tags, inputValue.trim()]);
+        const nextTags = [...tags, inputValue.trim()];
+        setTags(nextTags);
         setInputValue('');
-        props.tagValue(tags)
+        props.tagValue(nextTags)
       }
     } else if (e.key === 'Backspace' && !inputValue && tags.length) {
-      setTags(tags.slice(0, -1));
+      const nextTags = tags.slice(0, -1);
+      setTags(nextTags);
+      props.tagValue(nextTags);
 
     }
   };
 
   const removeTag = (indexToRemove) => {
-    setTags(tags.filter((_, index) => index !== indexToRemove));
+    const nextTags = tags.filter((_, index) => index !== indexToRemove);
+    setTags(nextTags);
+    props.tagValue(nextTags);
   };
 
   return (

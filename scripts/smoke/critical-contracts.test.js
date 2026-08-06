@@ -271,3 +271,23 @@ test('near me search uses opt-in geolocation and local distance ranking', () => 
   assert.match(geoDistance, /earthRadiusKm = 6371/, 'distance helper must use haversine radius');
   assert.doesNotMatch(resultados + geoDistance, /AIza/, 'near-me search must not embed Google API keys');
 });
+
+test('profile assistant improves advertiser form without external AI dependency', () => {
+  const assistant = read('front/src/components/ProfileAssistantPanel.jsx');
+  const assistantUtils = read('front/src/utils/profileAssistant.js');
+  const comprarAnuncio = read('front/src/views/ComprarAnuncio.jsx');
+  const criarAnuncio = read('front/src/views/comprar-anuncio/criarAnuncio.jsx');
+  const tagsInput = read('front/src/admin/components/TagsInput.jsx');
+
+  assert.match(assistant, /Assistente IA do perfil/, 'advertiser form must expose the profile assistant');
+  assert.match(assistant, /buildProfileSuggestions/, 'assistant must use deterministic suggestion builder');
+  assert.match(assistant, /applyValue\("descDescricao"/, 'assistant must apply generated description to form');
+  assert.match(assistantUtils, /export function buildProfileSuggestions/, 'suggestion builder must be reusable and testable');
+  assert.match(assistantUtils, /missingFields/, 'suggestion builder must return a completion checklist');
+  assert.doesNotMatch(assistant + assistantUtils, /fetch\(/, 'assistant must not call external services during purchase flow');
+  assert.doesNotMatch(assistant + assistantUtils, /OPENAI_API_KEY|VITE_OPENAI|AIza/, 'assistant must not embed AI or map API keys');
+  assert.match(comprarAnuncio, /<ProfileAssistantPanel/, 'purchase form must render profile assistant');
+  assert.match(comprarAnuncio, /id="descDescricao"/, 'purchase form must provide a description field');
+  assert.match(criarAnuncio, /descDescricao:\s*buscarElemento\("descDescricao"\) \|\| ""/, 'purchase payload must send assisted description');
+  assert.match(tagsInput, /Array\.isArray\(props\.tags\)/, 'tags input must accept assistant-provided tags');
+});
