@@ -7,109 +7,74 @@ import 'font-awesome/css/font-awesome.min.css';
 import PrivateRoute from "./PrivateRoute";
 
 
-import Home from '../views/Home';
-import Pesquisa from '../views/Pesquisa';
-import Caderno from '../views/Caderno';
-import TodosCaderno from '../views/cadernos/geral/Caderno';
-import CadernoGeral from '../views/CadernoGeral';
-import WebCard from '../views/WebCard';
-import Login from '../views/Login';
-import ComprarAnuncio from '../views/ComprarAnuncio';
-
-
-//admin
-import Dashboard from '../admin/view/Dashboard';
-import BILayout from '../admin/view/BI/BILayout';
-import BIDashboard from '../admin/view/BI/Dashboard';
-import BiUfs from '../admin/view/BI/Ufs';
-import BiCadernos from '../admin/view/BI/Cadernos';
-import BiId from '../admin/view/BI/Id';
-import BiAtividades from '../admin/view/BI/Atividades';
-import BiCampanhas from '../admin/view/BI/Campanhas';
-import BiContatos from '../admin/view/BI/Contatos';
-import BiPerfisAtividade from '../admin/view/BI/PerfisAtividade';
-import OutroComponente from "../admin/view/OutroComponente";
-import Users from "../admin/view/usuarios/Users";
-import Cadernos from "../admin/view/cadernos/Cadernos";
-import CadernosEdit from "../admin/view/cadernos/FormEdit";
-import InfoCadernos from "../admin/view/InfoCadernos";
-
-//MODULO DE ATIVIDADES
-import Atividades from "../admin/view/Atividades/Atividades";
-import FormCadastroAtividade from "../admin/view/Atividades/FormCadastroAtividade";
-import FormEditAtividade from "../admin/view/Atividades/FormEditAtividade";
-
-
-import FormCadastro from "../admin/view/usuarios/FormCadastro";
-import FormEditar from "../admin/view/usuarios/FormEditar";
-import FormCadernos from "../admin/view/cadernos/FormCadastroCadernos";
-
-import GerenciarIds from "../admin/view/gerenciar_id/GerenciarIds";
-import GerenciarIdCadastro from "../admin/view/gerenciar_id/FormCadastro";
-import GerenciarIdEditar from "../admin/view/gerenciar_id/FormEdit";
-
-import Espacos from "../admin/view/Espacos/Espacos";
-import AnuncioEditar from "../admin/view/Espacos/FormEdit";
-//import AnuncioCadastro from "../admin/view/Espacos/ComprarAnuncio";//-------------
-import AnuncioCadastro from "../views/ComprarAnuncio";//-------------
-import EspacosImport from "../admin/view/Espacos/EspacosImport";
-
-import Pagamentos from "../admin/view/Pagamentos/Pagamentos";
-import ConfigPay from "../admin/view/Pagamentos/ConfigPay";
-
-//IMPORT PIN
-import Pin from "../admin/view/Pin/Pin";
-import PinCadastro from "../admin/view/Pin/FormCadastro";
-import PinEditar from "../admin/view/Pin/FormEdit";
-
-//IMPORT BUSCAR PROFISSIONAIS
-import BuscarProfissionais from "../admin/view/BuscarProfissionais/BuscarProfissionais";
-
-//IMPORT CALHAU
-import CalhauCadastro from "../admin/view/Calhau/FormCadastro";
-
-//IMPORT configuracoes do portal
-import ConfiguracoesPortal from "../admin/view/ConfiguracoesPortal/ConfiguracoesPortal";
-import AdminInstitucional from "../admin/view/ConfiguracoesPortal/Institucioanl/Institucional";
-import AdminContato from "../admin/view/ConfiguracoesPortal/Contato/index";
-
-//IMPORT DUPLICIDADES
-import Duplicidades from "../admin/view/Duplicidades/Duplicidades";
-
-//PAINEL ADMIN ANUNCIANTE
-import PainelAdmin from "../views/painelAnuciante/PainelAdmin";
-
-//AREA DO ASSINANTE
-import AssinanteCadastro from "../views/area-assinante/AssinanteCadastro";
-import AtualizarPerfil from "../views/comprar-anuncio/AtualizarPerfil";
-//IMPORTS PLUGINS
-
-import Qrcode from "../plugins/Qrcode";
-import Adesivo from "../plugins/Adesivo";
-
-//INFOS PAGES
-import Institucional from "../views/infoPages/Institucional";
-import Contato from "../views/infoPages/Contato";
-import PoliticaPrivacidade from "../views/infoPages/PoliticaPrivacidade";
-
-//PROMOCAO
-import Promocoes from "../views/promocao/Pesquisa";
-
-
 import { TemaProvider } from '../context/BuscaContext';
 import { QrcodeCadernoProvider } from "../context/QrcodeCadernoContext";
 
-//PAGINA 404
-import NotFound from '../views/NotFound';
-import ForgotPassword from "../admin/components/ForgotPassword";
-import ResetPassword from "../admin/components/ResetPassword";
-import Promocao from "../views/campanha/Promocao";
-import TokenInvalido from "../views/campanha/_components/404";
-
 import Layout from "../layouts/Layout";
+import Home from '../views/Home';
 
+const Pesquisa = lazy(() => import('../views/Pesquisa'));
+const Caderno = lazy(() => import('../views/Caderno'));
+const TodosCaderno = lazy(() => import('../views/cadernos/geral/Caderno'));
+const CadernoGeral = lazy(() => import('../views/CadernoGeral'));
+const WebCard = lazy(() => import('../views/WebCard'));
+const Login = lazy(() => import('../views/Login'));
+const ComprarAnuncio = lazy(() => import('../views/ComprarAnuncio'));
+const Dashboard = lazy(() => import('../admin/view/Dashboard'));
+const BILayout = lazy(() => import('../admin/view/BI/BILayout'));
+const BIDashboard = lazy(() => import('../admin/view/BI/Dashboard'));
+const BiUfs = lazy(() => import('../admin/view/BI/Ufs'));
+const BiCadernos = lazy(() => import('../admin/view/BI/Cadernos'));
+const BiId = lazy(() => import('../admin/view/BI/Id'));
+const BiAtividades = lazy(() => import('../admin/view/BI/Atividades'));
+const BiCampanhas = lazy(() => import('../admin/view/BI/Campanhas'));
+const BiContatos = lazy(() => import('../admin/view/BI/Contatos'));
+const BiPerfisAtividade = lazy(() => import('../admin/view/BI/PerfisAtividade'));
+const OutroComponente = lazy(() => import("../admin/view/OutroComponente"));
+const Users = lazy(() => import("../admin/view/usuarios/Users"));
+const Cadernos = lazy(() => import("../admin/view/cadernos/Cadernos"));
+const CadernosEdit = lazy(() => import("../admin/view/cadernos/FormEdit"));
+const InfoCadernos = lazy(() => import("../admin/view/InfoCadernos"));
+const Atividades = lazy(() => import("../admin/view/Atividades/Atividades"));
+const FormCadastroAtividade = lazy(() => import("../admin/view/Atividades/FormCadastroAtividade"));
+const FormEditAtividade = lazy(() => import("../admin/view/Atividades/FormEditAtividade"));
+const FormCadastro = lazy(() => import("../admin/view/usuarios/FormCadastro"));
+const FormEditar = lazy(() => import("../admin/view/usuarios/FormEditar"));
+const FormCadernos = lazy(() => import("../admin/view/cadernos/FormCadastroCadernos"));
+const GerenciarIds = lazy(() => import("../admin/view/gerenciar_id/GerenciarIds"));
+const GerenciarIdCadastro = lazy(() => import("../admin/view/gerenciar_id/FormCadastro"));
+const GerenciarIdEditar = lazy(() => import("../admin/view/gerenciar_id/FormEdit"));
+const Espacos = lazy(() => import("../admin/view/Espacos/Espacos"));
+const AnuncioEditar = lazy(() => import("../admin/view/Espacos/FormEdit"));
+const AnuncioCadastro = ComprarAnuncio;
+const EspacosImport = lazy(() => import("../admin/view/Espacos/EspacosImport"));
+const Pagamentos = lazy(() => import("../admin/view/Pagamentos/Pagamentos"));
+const ConfigPay = lazy(() => import("../admin/view/Pagamentos/ConfigPay"));
+const Pin = lazy(() => import("../admin/view/Pin/Pin"));
+const PinCadastro = lazy(() => import("../admin/view/Pin/FormCadastro"));
+const PinEditar = lazy(() => import("../admin/view/Pin/FormEdit"));
+const BuscarProfissionais = lazy(() => import("../admin/view/BuscarProfissionais/BuscarProfissionais"));
 const Calhau = lazy(() => import("../admin/view/Calhau/Calhau"));
+const CalhauCadastro = lazy(() => import("../admin/view/Calhau/FormCadastro"));
+const ConfiguracoesPortal = lazy(() => import("../admin/view/ConfiguracoesPortal/ConfiguracoesPortal"));
+const AdminInstitucional = lazy(() => import("../admin/view/ConfiguracoesPortal/Institucioanl/Institucional"));
+const AdminContato = lazy(() => import("../admin/view/ConfiguracoesPortal/Contato/index"));
+const Duplicidades = lazy(() => import("../admin/view/Duplicidades/Duplicidades"));
 const Campanha = lazy(() => import("../admin/view/Campanha/Campanha"));
+const PainelAdmin = lazy(() => import("../views/painelAnuciante/PainelAdmin"));
+const AssinanteCadastro = lazy(() => import("../views/area-assinante/AssinanteCadastro"));
+const AtualizarPerfil = lazy(() => import("../views/comprar-anuncio/AtualizarPerfil"));
+const Qrcode = lazy(() => import("../plugins/Qrcode"));
+const Adesivo = lazy(() => import("../plugins/Adesivo"));
+const Institucional = lazy(() => import("../views/infoPages/Institucional"));
+const Contato = lazy(() => import("../views/infoPages/Contato"));
+const PoliticaPrivacidade = lazy(() => import("../views/infoPages/PoliticaPrivacidade"));
+const Promocoes = lazy(() => import("../views/promocao/Pesquisa"));
+const NotFound = lazy(() => import('../views/NotFound'));
+const ForgotPassword = lazy(() => import("../admin/components/ForgotPassword"));
+const ResetPassword = lazy(() => import("../admin/components/ResetPassword"));
+const Promocao = lazy(() => import("../views/campanha/Promocao"));
+const TokenInvalido = lazy(() => import("../views/campanha/_components/404"));
 
 
 function Rotas() {

@@ -222,6 +222,9 @@ test('selected admin-only screens stay lazy-loaded from route table', () => {
   assert.match(routes, /const Campanha = lazy\(\(\) => import\(["']\.\.\/admin\/view\/Campanha\/Campanha["']\)\)/, 'Campanha route must be lazy-loaded');
   assert.doesNotMatch(routes, /^import Calhau from/m, 'Calhau must not be statically imported');
   assert.doesNotMatch(routes, /^import Campanha from/m, 'Campanha must not be statically imported');
+  assert.doesNotMatch(routes, /^import .* from ['"]\.\.\/admin\/view\//m, 'admin views must not be statically imported into the public route bundle');
+  assert.match(routes, /const Dashboard = lazy\(\(\) => import\(['"]\.\.\/admin\/view\/Dashboard['"]\)\)/, 'admin dashboard must be lazy-loaded');
+  assert.match(routes, /const ComprarAnuncio = lazy\(\(\) => import\(['"]\.\.\/views\/ComprarAnuncio['"]\)\)/, 'purchase form must be lazy-loaded outside its route');
 });
 
 test('frontend bi table does not depend on vulnerable xlsx package', () => {
