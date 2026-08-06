@@ -7,6 +7,7 @@ import Busca from '../components/Busca';
 import Resultados from '../components/Resultados';
 import Nav from '../components/Nav';
 import Footer from '../components/Footer';
+import PageLayout from '../components/PageLayout';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -15,7 +16,7 @@ function Pesquisa() {
   const { caderno, estado } = useParams();
 
   return (
-    <div className="App">
+    <PageLayout className="App">
       <header>
         <Mosaico logoTop={true} borda="none" />
       </header>
@@ -31,7 +32,7 @@ function Pesquisa() {
 
 
 
-    </div >
+    </PageLayout>
   );
 }
 

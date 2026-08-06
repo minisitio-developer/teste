@@ -21,6 +21,7 @@ import MiniWebCardSimples from '../components/MiniWebCardSimples';
 import MosaicoWebCard from '../components/MosaicoWebCard';
 import SafeImage from '../components/SafeMosaico';
 import ButtonCapa from '../components/ButtonCapa';
+import PageLayout from '../components/PageLayout';
 
 //CONTEXT
 import { QrcodeCadernoContext } from '../context/QrcodeCadernoContext';
@@ -1157,7 +1158,7 @@ function Caderno() {
 
 
   return (
-    <div className="App caderno">
+    <PageLayout className="App caderno">
 
       <header>
         <Mosaico logoTop={true} borda="flex" /* mosaicoImg={mosaicoImg} */ />
@@ -1497,7 +1498,7 @@ function Caderno() {
         <Nav styleClass="Nav" />
         <Footer />
       </footer>
-    </div >
+    </PageLayout>
   );
 }
 

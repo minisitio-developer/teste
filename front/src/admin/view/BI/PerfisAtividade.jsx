@@ -98,6 +98,7 @@ export default function PerfisAtividade() {
   const [ufList, setUfList] = useState([]);
   const [cadernoList, setCadernoList] = useState([]);
   const [atividadeList, setAtividadeList] = useState([]);
+  console.log('PerfisAtividade render:', { ufList, cadernoList, atividadeList });
 
   const [selectedUfs, setSelectedUfs] = useState([]);
   const [selectedCadernos, setSelectedCadernos] = useState([]);

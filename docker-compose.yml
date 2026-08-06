@@ -1,4 +1,28 @@
+# ============================================================
+#   MINISITIO — Desenvolvimento Local
+#   Uso: docker compose up -d
+#   Requer: back/.env configurado (veja .env.example)
+# ============================================================
+
 services:
+  db:
+    image: mysql:8.0
+    command: --innodb-redo-log-capacity=536870912
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-minisitio_dev}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data_dev:/var/lib/mysql
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
   backend:
     build:
       context: ./back
@@ -18,7 +42,7 @@ services:
       retries: 3
       start_period: 15s
     volumes:
-      - backup_data:/app/backups
+      - backup_data_dev:/app/backups
 
   frontend:
     build:
@@ -36,25 +60,6 @@ services:
       timeout: 10s
       retries: 3
 
-  db:
-    image: mysql:8.0
-    command: --innodb-redo-log-capacity=536870912
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
-      MYSQL_DATABASE: ${DB_NAME:-minisitio_local}
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - .:/dump
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-
 volumes:
-  mysql_data:
-  backup_data:
+  mysql_data_dev:
+  backup_data_dev:

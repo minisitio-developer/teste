@@ -37,12 +37,11 @@ import MapContainer from "../components/MapContainer";
 import TagsInput from "../admin/components/TagsInput";
 import AlertMsg from "../components/Alerts/AlertMsg";
 import Header from "../admin/view/Header";
+import PageLayout from "../components/PageLayout";
+import ProfileAssistantPanel from "../components/ProfileAssistantPanel";
 
 //FUNCTION EXTERNA
 import { criarAnuncio } from "./comprar-anuncio/criarAnuncio";
-
-//LIBS
-import Swal from 'sweetalert2';
 
 function ComprarAnuncio({ isAdmin }) {
   //States
@@ -57,7 +56,7 @@ function ComprarAnuncio({ isAdmin }) {
   const [showMap, setShowMap] = useState("none");
   const [precoFixo, setPrecoFixo] = useState(10);
   const [descValor, setDescValor] = useState(0);
-  const [cpfCnpjValue, setcpfCnpjValue] = useState(null);
+  const [cpfCnpjValue, setcpfCnpjValue] = useState("");
   const [descontoAtivado, setDescontoAtivado] = useState(false);
   const [tagValue, setTagValue] = useState([]);
   const [showSpinner, setShowSpinner] = useState(false);
@@ -138,7 +137,7 @@ function ComprarAnuncio({ isAdmin }) {
         setDescEndereco(event.target.value);
         break;
       case "descTelefone":
-        const novoValorTel = event.target.value.replace(/\D/g, '');
+        const novoValorTel = (event.target.value || "").replace(/\D/g, '');
 
         if (novoValorTel.length > 0) {
           const valorComMascara = `(${novoValorTel.substring(0, 2)}) ${novoValorTel.substring(2, 6)}-${novoValorTel.substring(6, 10)}`;
@@ -148,7 +147,7 @@ function ComprarAnuncio({ isAdmin }) {
         }
         break;
       case "descCelular":
-        const novoValor = event.target.value.replace(/\D/g, '');
+        const novoValor = (event.target.value || "").replace(/\D/g, '');
 
         if (novoValor.length > 0) {
           const valorComMascara = `(${novoValor.substring(0, 2)}) ${novoValor.substring(2, 7)}-${novoValor.substring(7, 11)}`;
@@ -240,7 +239,7 @@ function ComprarAnuncio({ isAdmin }) {
 
   const handleCpfCnpjChange = (event) => {
     // Obter apenas os números da entrada de dados
-    let data = event.target.value.replace(/\D/g, "");
+    let data = (event.target.value || "").replace(/\D/g, "");
 
     // Verificar o comprimento dos dados para definir se é CPF ou CNPJ
     if (personType === 'pj') {
@@ -304,8 +303,8 @@ function ComprarAnuncio({ isAdmin }) {
   }
 
   function changeRadioCheck(e) {
-    let tipoPerfil = e.target.value;
-    setRadioCheck(e.target.value);
+    let tipoPerfil = Number(e.target.value);
+    setRadioCheck(tipoPerfil);
 
     if (tipoPerfil === 1) {
       setShowMap("none");
@@ -332,7 +331,7 @@ function ComprarAnuncio({ isAdmin }) {
   };
 
   return (
-    <div className="App">
+    <PageLayout className="App">
       {/*   {isAdmin &&
         <header style={{ position: "fixed", zIndex: "999" }} className='w-100'>
           <Header />
@@ -541,7 +540,7 @@ function ComprarAnuncio({ isAdmin }) {
                 </div>
 
                 {/* <Marcadores /> */}
-                {radioCheck != 1 && <TagsInput tagValue={setTagValue} />}
+                {radioCheck != 1 && <TagsInput tagValue={setTagValue} tags={tagValue} />}
 
 
 
@@ -698,6 +697,16 @@ function ComprarAnuncio({ isAdmin }) {
               style={{ display: "block" }}
             >
               <div className="input-icon margin-top-10">
+                <i className="fa fa-align-left"></i>
+                <textarea
+                  name="descDescricao"
+                  id="descDescricao"
+                  className="form-control"
+                  placeholder="Digite a descricao do perfil"
+                  rows="4"
+                />
+              </div>
+              <div className="input-icon margin-top-10">
                 <i className="fa fa-youtube"></i>
                 <input
                   type="text"
@@ -740,6 +749,12 @@ function ComprarAnuncio({ isAdmin }) {
                 />{" "}
               </div>
             </div>}
+            {radioCheck != 1 && (
+              <ProfileAssistantPanel
+                onApplyTags={setTagValue}
+                hasImage={Boolean(minisitio?.descImagem)}
+              />
+            )}
             {/* Detalhes do anuncio */}
 
             {/* Autorizante */}
@@ -1100,7 +1115,7 @@ function ComprarAnuncio({ isAdmin }) {
           <Footer />
         </footer>
       }
-    </div>
+    </PageLayout>
   );
 }
 

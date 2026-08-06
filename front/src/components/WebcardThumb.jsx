@@ -30,7 +30,7 @@ function WebcardThumb(props) {
         };
 
         function buscarUserId() {
-            fetch(`${masterPath.url}/admin/desconto/buscar/${props.data.hash}`)
+            fetch(`${masterPath.url}/portal/desconto/buscar/${props.data.hash}`)
                 .then((x) => x.json())
                 .then((res) => {
                     //console.log(res, props.data)
@@ -50,7 +50,7 @@ function WebcardThumb(props) {
     useEffect(() => {
 
         function buscarUserId() {
-            fetch(`${masterPath.url}/admin/desconto/buscar/${props.data.codDesconto}`)
+            fetch(`${masterPath.url}/portal/desconto/buscar/${props.data.codDesconto}`)
                 .then((x) => x.json())
                 .then((res) => {
                     if (res.success) {
@@ -98,7 +98,7 @@ function WebcardThumb(props) {
         }
     }
     var partner = (img) => {
-        if (img !== false && img !== null && img !== 'null' && img !== 'undefined') {
+        if (img !== false && img !== null && img !== undefined && img !== '' && img !== 'null' && img !== 'undefined') {
             return true;
         } else {
             return false;

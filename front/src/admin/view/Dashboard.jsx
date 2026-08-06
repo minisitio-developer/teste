@@ -339,7 +339,7 @@ function Dashboard() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.porUf.map(uf => (
+                                        {(data.porUf || []).map(uf => (
                                             <tr key={uf.codUf}>
                                                 <td><strong>{uf.codUf}</strong></td>
                                                 <td className="text-end">{formatNumber(uf.total)}</td>
@@ -642,7 +642,7 @@ function Dashboard() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.porMes.map(mes => (
+                                        {(data.porMes || []).map(mes => (
                                             <tr key={mes.mes}>
                                                 <td><strong>{mes.mes}</strong></td>
                                                 <td className="text-end">{formatNumber(mes.total)}</td>

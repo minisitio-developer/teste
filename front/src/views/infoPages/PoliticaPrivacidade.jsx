@@ -4,10 +4,11 @@ import Nav from '../../components/Nav';
 import Footer from '../../components/Footer';
 
 import '../../assets/css/PainelAdminAnunciante.css';
+import PageLayout from '../../components/PageLayout';
 
 function PoliticaPrivacidade() {
     return (
-        <div className="painel-admin">
+        <PageLayout className="painel-admin">
             <header>
                 <Mosaico logoTop={true} borda="flex" mosaicoImg={[]} />
             </header>
@@ -55,7 +56,7 @@ function PoliticaPrivacidade() {
                 <Nav styleclassName="Nav" />
                 <Footer />
             </footer>
-        </div>
+        </PageLayout>
     );
 }
 

@@ -14,6 +14,7 @@ import Footer from '../../components/Footer';
 
 //COMPONENTS
 import AlertMsg from "../../components/Alerts/AlertMsg";
+import PageLayout from "../../components/PageLayout";
 
 
 
@@ -72,7 +73,7 @@ function Contato() {
 
 
     return (
-        <div className="painel-admin area-contato">
+        <PageLayout className="painel-admin area-contato">
 
 {alert && <AlertMsg message={"Email Enviado"}/>}
 
@@ -161,7 +162,7 @@ function Contato() {
                 <Nav styleclassName="Nav" />
                 <Footer />
             </footer>
-        </div >
+        </PageLayout>
     );
 }
 

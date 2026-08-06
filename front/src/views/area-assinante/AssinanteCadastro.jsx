@@ -15,6 +15,7 @@ import Mosaico from '../../components/Mosaico';
 import Busca from '../../components/Busca';
 import Nav from '../../components/Nav';
 import Footer from '../../components/Footer';
+import PageLayout from '../../components/PageLayout';
 
 const AssinanteCadastro = (props) => {
   //state
@@ -125,7 +126,7 @@ const AssinanteCadastro = (props) => {
 
     //console.log(obj)
 
-    fetch(`${masterPath.url}/admin/usuario/create`, {
+    fetch(`${masterPath.url}/portal/usuario/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(obj),
@@ -267,7 +268,7 @@ const AssinanteCadastro = (props) => {
     }
 
     //console.log(obj);  /admin/usuario/criar-anuncio
-    fetch(`${masterPath.url}/admin/anuncio/create`, {
+    fetch(`${masterPath.url}/portal/anuncio/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(obj),
@@ -292,7 +293,7 @@ const AssinanteCadastro = (props) => {
 
 
   return (
-    <div className="content-child-form">
+    <PageLayout className="content-child-form">
         <header>
         <Mosaico logoTop={true} borda="none" />
       </header>
@@ -501,7 +502,7 @@ const AssinanteCadastro = (props) => {
         <Nav styleClass="Nav" />
         <Footer />
       </footer>
-    </div>
+    </PageLayout>
   );
 };
 

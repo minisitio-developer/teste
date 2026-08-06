@@ -1,74 +1,63 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
-const ALLOWED_UPLOAD_DIRS = ['logoParceiro', 'logoCertificado', 'imgCertificado', 'logoCashBack', 'descImagem', 'promocao'];
+const ALLOWED_UPLOAD_DIRS = ['logoParceiro', 'logoCertificado', 'imgCertificado', 'logoCashBack', 'descImagem', 'promocao', 'adminInstitucional'];
+const PREFIXED_UPLOAD_DIRS = new Set(ALLOWED_UPLOAD_DIRS);
+const ALLOWED_IMAGE_TYPES = new Set(['image/png', 'image/jpg', 'image/jpeg']);
+
+function getValidCod(req) {
+    const cod = req.query.cod;
+    return cod && cod !== 'undefined' && cod !== 'null'
+        ? String(cod).replace(/[^\w-]/g, '')
+        : null;
+}
+
+function getUploadDir(local) {
+    if (local && ALLOWED_UPLOAD_DIRS.includes(local)) {
+        return path.join(__dirname, `../public/upload/img/${local}`);
+    }
+
+    return path.join(__dirname, '../public/upload/img/');
+}
+
+function getSafeFileName(req, file) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const local = req.query.local;
+
+    if (PREFIXED_UPLOAD_DIRS.has(local)) {
+        const cod = getValidCod(req) || 'new';
+        return `${cod}_${Date.now()}${ext}`;
+    }
+
+    const parsed = path.parse(file.originalname);
+    const baseName = parsed.name
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^\w-]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 80) || 'image';
+
+    return `${baseName}${ext}`;
+}
 
 module.exports = (multer({
     storage: multer.diskStorage({
         destination: (req, file, cb) => {
-            if (req.query.local && ALLOWED_UPLOAD_DIRS.includes(req.query.local)) {
-                cb(null, path.join(__dirname, `../public/upload/img/${req.query.local}`));
-            } else {
-                cb(null, path.join(__dirname, '../public/upload/img/'));
-            }
+            const uploadDir = getUploadDir(req.query.local);
+            fs.mkdirSync(uploadDir, { recursive: true });
+            cb(null, uploadDir);
         },
         filename: (req, file, cb) => {
-            //cb(null, Date.now().toString() + "_" + file.originalname) 
-
-
-            if (req.query.local == 'logoParceiro') {
-                if (req.query.cod) {
-                    cb(null, req.query.cod + "_" + Date.now().toString() + path.extname(file.originalname));
-                } else {
-                    cb(null, "new_" + Date.now().toString() + path.extname(file.originalname));
-                }
-
-            } else if (req.query.local == "logoCertificado") {
-                if (req.query.cod) {
-                    cb(null, req.query.cod + "_" + Date.now().toString() + path.extname(file.originalname));
-                } else {
-                    cb(null, "new_" + Date.now().toString() + path.extname(file.originalname));
-                }
-            } else if (req.query.local == "imgCertificado") {
-                if (req.query.cod) {
-                    cb(null, req.query.cod + "_" + Date.now().toString() + path.extname(file.originalname));
-                } else {
-                    cb(null, "new_" + Date.now().toString() + path.extname(file.originalname));
-                }
-            } else if (req.query.local == "logoCashBack") {
-                if (req.query.cod) {
-                    cb(null, req.query.cod + "_" + Date.now().toString() + path.extname(file.originalname));
-                } else {
-                    cb(null, "new_" + Date.now().toString() + path.extname(file.originalname));
-                }
-            } else if (req.query.local == "descImagem") {
-                if (req.query.cod) {
-                    cb(null, req.query.cod + "_" + Date.now().toString() + path.extname(file.originalname));
-                } else {
-                    cb(null, "new_" + Date.now().toString() + path.extname(file.originalname));
-                }
-            } else if (req.query.local == "promocao") {
-                if (req.query.cod) {
-                    cb(null, req.query.cod + "_" + Date.now().toString() + path.extname(file.originalname));
-                } else {
-                    cb(null, "new_" + Date.now().toString() + path.extname(file.originalname));
-                }
-            } else {
-                cb(null, file.originalname);
-            }
-            //cb(null, file.originalname) 
-
-
+            cb(null, getSafeFileName(req, file));
         }
     }),
     fileFilter: (req, file, cb) => {
-        const extensaoImg = ['image/png', 'image/jpg', 'image/jpeg'].find(formatoAceito => formatoAceito == file.mimetype);
-
-        if (extensaoImg) {
+        if (ALLOWED_IMAGE_TYPES.has(file.mimetype)) {
             return cb(null, true);
         }
 
-        return cb(null, false);
+        return cb(new Error('Apenas imagens PNG ou JPG são permitidas.'), false);
     },
     limits: {
         fileSize: 5 * 1024 * 1024 // 5MB max

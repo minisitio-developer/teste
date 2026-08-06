@@ -1,6 +1,13 @@
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import '../assets/css/PdfGenerator.css';
+
+async function carregarDependenciasPdf() {
+    const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+        import("jspdf"),
+        import("html2canvas")
+    ]);
+
+    return { jsPDF, html2canvas };
+}
 
 export function limparCPFouCNPJ(cpfOuCnpj) {
     if (cpfOuCnpj) {
@@ -9,7 +16,8 @@ export function limparCPFouCNPJ(cpfOuCnpj) {
 
 }
 
-export const generatePdf = () => {
+export const generatePdf = async () => {
+    const { jsPDF, html2canvas } = await carregarDependenciasPdf();
     // Criar um elemento temporário para capturar o conteúdo
     const contentDiv = document.createElement("div");
     contentDiv.innerHTML = '';
@@ -45,7 +53,8 @@ export const generatePdf = () => {
     });
 };
 
-export const generatePdfold = (props) => {
+export const generatePdfold = async (props) => {
+    const { jsPDF, html2canvas } = await carregarDependenciasPdf();
     // Criar um elemento temporário para capturar o conteúdo
     const contentDiv = document.createElement("div");
     contentDiv.innerHTML = `

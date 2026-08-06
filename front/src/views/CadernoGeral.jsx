@@ -19,6 +19,7 @@ import QrcodeMosaico from '../plugins/QrcodeMosaico';
 import SafeImage from '../components/SafeMosaico';
 import ButtonCapa from '../components/ButtonCapa';
 import { getCapaFallback } from '../config/capaFallbacks';
+import PageLayout from '../components/PageLayout';
 
 import { Modal, Button } from 'react-bootstrap';
 import { QrCode } from "lucide-react";
@@ -195,7 +196,7 @@ function Caderno(props) {
 
 
   return (
-    <div className="App caderno-geral">
+    <PageLayout className="App caderno-geral">
 
       {loading &&
         <button className="buttonload" style={{ display: "block" }}>
@@ -334,7 +335,7 @@ function Caderno(props) {
         <Nav styleclassName="Nav" />
         <Footer />
       </footer>
-    </div >
+    </PageLayout>
   );
 }
 

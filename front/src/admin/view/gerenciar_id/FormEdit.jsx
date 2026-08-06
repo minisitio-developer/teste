@@ -91,7 +91,7 @@ const FormEdit = () => {
                                 img_2: res[0].descImagem2,
                                 img_3: res[0].descImagem3
                             });
-                            setPatrocinio(res[0].patrocinador_ativo);
+                            setPatrocinio(Number(res[0].patrocinador_ativo));
                             setSaldoValue(res[0].saldo);
                             setSaldo(res[0].utilizar_saldo);
 
@@ -388,7 +388,7 @@ const FormEdit = () => {
                             <label htmlFor="patrocinador" className="w-50 px-1">Habilitar Patrocinador ?</label>
                             <select name="patrocinador" id="patrocinador" className="form-select w-50 py-1"
                                 value={patrocinio}
-                                onChange={(e) => setPatrocinio(e.target.value)}>
+                                onChange={(e) => setPatrocinio(Number(e.target.value))}>
                                 <option value="1">Sim</option>
                                 <option value="0">Não</option>
                             </select>

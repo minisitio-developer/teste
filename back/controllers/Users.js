@@ -14,8 +14,31 @@ const Usuario = require('../models/table_usuarios');
 const bcrypt = require('bcryptjs');
 const { validateCPF, validateCNPJ, validateEmail, identifyDocument } = require('../validations');
 
+function normalizarTipoPessoa(tipoPessoa) {
+    const value = String(tipoPessoa || '').trim().toUpperCase();
+    if (value === 'PF' || value === 'F') return 'F';
+    if (value === 'PJ' || value === 'J') return 'J';
+    return null;
+}
+
 
 module.exports = {
+    createPortal: async (req, res) => {
+        const tipoUsuarioSolicitado = String(req.body.TipoUsuario || '').trim();
+        req.body = {
+            ...req.body,
+            CPFCNPJ: String(req.body.CPFCNPJ || '').replace(/[.\-\/]/g, ''),
+            TipoUsuario: tipoUsuarioSolicitado === '5' ? '5' : '3',
+            hashCode: 0,
+            Value: 0,
+            RepresentanteConvenio: req.body.RepresentanteConvenio || 'portal',
+            usuarioCod: 0,
+            ativo: '1'
+        };
+
+        return module.exports.create(req, res);
+    },
+
     create: async (req, res) => {
         // await database.sync(); // REMOVED: sync should not run per-request
 
@@ -37,6 +60,7 @@ module.exports = {
             dtCadastro2,
             dtAlteracao,
             ativo } = req.body;
+        const tipoPessoaNormalizado = normalizarTipoPessoa(TipoPessoa);
 
         // Validação de entrada
         if (!CPFCNPJ || typeof CPFCNPJ !== 'string' || CPFCNPJ.length > 20) {
@@ -58,7 +82,7 @@ module.exports = {
         if (!Email || !validateEmail(Email)) {
             return res.status(400).json({ success: false, message: "E-mail inválido" });
         }
-        if (!TipoPessoa || !['F', 'J'].includes(TipoPessoa)) {
+        if (!tipoPessoaNormalizado) {
             return res.status(400).json({ success: false, message: "Tipo de pessoa inválido (F ou J)" });
         }
 
@@ -72,7 +96,7 @@ module.exports = {
         const senhaHash = await bcrypt.hash(senhaGerada, salt);
 
         const dadosUsuario = {
-            "codTipoPessoa": TipoPessoa,
+            "codTipoPessoa": tipoPessoaNormalizado,
             "descCPFCNPJ": CPFCNPJ,
             "descNome": Nome,
             "descEmail": Email,

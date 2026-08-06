@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 //Controllers
 const BemVindo = require('../controllers/BemVindo');
@@ -36,6 +37,7 @@ const uploadPdf = require('../middlewares/uploadPdf');
 const RecuperarSenha = require('../controllers/RecuperarSenha.js');
 const database = require('../config/db.js');
 const redisClient = require('../config/redis.js');
+const { validateEmail } = require('../validations');
 
 
 
@@ -68,6 +70,7 @@ module.exports = (io, loginLimiter) => {
 
     //Admin
     router.post('/api/admin/usuario/create', auth, Users.create);
+    router.post('/api/portal/usuario/create', Users.createPortal);
     router.post('/api/admin/usuario/update/:id', auth, Users.update);
     router.put('/api/admin/usuario/status/:id', auth, Users.updateStatus);
     router.get('/api/admin/usuario/edit/:id', auth, Users.buscarUsuario);
@@ -98,6 +101,7 @@ module.exports = (io, loginLimiter) => {
     router.post('/api/admin/desconto/create', auth, Admin.criarIds);
     router.delete('/api/admin/desconto/delete/:id', auth, Admin.deleteIds);
     router.get('/api/admin/desconto/buscar/:id', auth, Admin.buscarId);
+    router.get('/api/portal/desconto/buscar/:id', Admin.buscarId);
     router.get('/api/admin/desconto/aplicar/:id', auth, Admin.aplicarDesconto);
     router.get('/api/admin/desconto/read/all', auth, Admin.buscarAllId);
     router.get('/api/admin/desconto/usuario/buscar/:id', auth, Admin.buscarUsuarioId);
@@ -116,6 +120,7 @@ module.exports = (io, loginLimiter) => {
     router.get('/api/admin/espacos/read', auth, EspacosController.listarEspacos);
     router.get('/api/admin/anuncio/edit/:id', auth, EspacosController.listarAnuncioId);
     router.post('/api/admin/anuncio/create', auth, EspacosController.criarAnuncio);
+    router.post('/api/portal/anuncio/create', EspacosController.criarAnuncio);
     router.put('/api/admin/anuncio/status/:id', auth, EspacosController.updateAnuncioStatus);
     router.put('/api/admin/anuncio/moderacao/:id', auth, EspacosController.atualizarModeracao);
     router.delete('/api/admin/anuncio/delete/:id', auth, EspacosController.deleteAnuncio);
@@ -530,7 +535,7 @@ module.exports = (io, loginLimiter) => {
             `;
             params.push(limit, offset);
 
-            const [rows] = await database.query(sql, { replacements: params, type: database.QueryTypes.SELECT });
+            const rows = await database.query(sql, { replacements: params, type: database.QueryTypes.SELECT });
             res.json({ success: true, rows });
         } catch (error) {
             console.error('Erro no perfis-por-atividade:', error);
@@ -659,10 +664,34 @@ module.exports = (io, loginLimiter) => {
     router.get('/api/admin/anuncio/progress', auth, Buscador.progressImport);
 
     //site
-    router.post('/api/admin/usuario/criar-anuncio', Users.criarAnuncio);
+    router.post('/api/admin/usuario/criar-anuncio', auth, Users.criarAnuncio);
+    router.post('/api/portal/usuario/criar-anuncio', Users.criarAnuncio);
     router.get('/api/pa', Users.qtdaAnuncio);
-    router.post('/api/upload-image', auth, uploadUser.single('image'), Upload.uploadImg);
-    router.post('/api/upload-pdf', auth, uploadPdf.single('file'), Upload.uploadPdf);
+    const handleUpload = (uploadMiddleware, fieldName) => (req, res, next) => {
+        uploadMiddleware.single(fieldName)(req, res, (err) => {
+            if (!err) return next();
+
+            if (err instanceof multer.MulterError) {
+                const status = err.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
+                return res.status(status).json({
+                    success: false,
+                    erro: true,
+                    mensagem: err.code === 'LIMIT_FILE_SIZE'
+                        ? 'Arquivo muito grande. O limite é de 5MB.'
+                        : 'Upload inválido.'
+                });
+            }
+
+            return res.status(400).json({
+                success: false,
+                erro: true,
+                mensagem: err.message || 'Upload inválido.'
+            });
+        });
+    };
+
+    router.post('/api/upload-image', auth, handleUpload(uploadUser, 'image'), Upload.uploadImg);
+    router.post('/api/upload-pdf', auth, handleUpload(uploadPdf, 'file'), Upload.uploadPdf);
     router.get('/api/list-image', auth, Upload.listFiles);
 
     //ACÕES DO USUARIO
@@ -676,42 +705,90 @@ module.exports = (io, loginLimiter) => {
 
 
     //EMAIL FALE COM O DONO
-    // Configuração do multer para armazenar o arquivo em uma pasta local
+    // Configuracao do multer para armazenar anexos de contato
+    const anexoEmailDir = path.join(__dirname, '../public/upload/anexoEmail/');
+    const allowedAttachmentTypes = new Set([
+        'application/pdf',
+        'image/jpeg',
+        'image/png',
+        'image/webp'
+    ]);
+
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, path.join(__dirname, '../public/upload/anexoEmail/')); // Pasta onde os arquivos serão salvos
+            fs.mkdirSync(anexoEmailDir, { recursive: true });
+            cb(null, anexoEmailDir);
         },
         filename: (req, file, cb) => {
-            cb(null, Date.now() + path.extname(file.originalname)); // Nome único para cada arquivo
+            const ext = path.extname(file.originalname).toLowerCase();
+            cb(null, `${Date.now()}-${Math.round(Math.random() * 1E9)}${ext}`);
         }
     });
 
-    const upload = multer({ storage });
+    const upload = multer({
+        storage,
+        fileFilter: (req, file, cb) => {
+            if (allowedAttachmentTypes.has(file.mimetype)) {
+                return cb(null, true);
+            }
 
-    router.post('/api/fale-com-dono', upload.single('anexo'), async (req, res) => {
-        console.log(req.body);
+            return cb(new Error('Tipo de arquivo nao permitido'));
+        },
+        limits: {
+            fileSize: 5 * 1024 * 1024,
+            files: 1
+        }
+    });
 
-        if (req.body.email == '') {
-            res.json({ success: false, message: "email não enviado" });
-            return;
+    const uploadFaleComDono = (req, res, next) => {
+        upload.single('anexo')(req, res, (err) => {
+            if (!err) return next();
+
+            if (err instanceof multer.MulterError) {
+                const status = err.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
+                return res.status(status).json({ success: false, message: 'Anexo invalido ou muito grande' });
+            }
+
+            return res.status(400).json({ success: false, message: err.message || 'Anexo invalido' });
+        });
+    };
+
+    router.post('/api/fale-com-dono', uploadFaleComDono, async (req, res) => {
+        const email = String(req.body.email || '').trim();
+        const codAnuncio = Number(req.body.id);
+
+        if (!validateEmail(email)) {
+            return res.status(400).json({ success: false, message: "email invalido" });
+        }
+
+        if (!Number.isInteger(codAnuncio) || codAnuncio <= 0) {
+            return res.status(400).json({ success: false, message: "anuncio invalido" });
         }
 
         const anuncio = await Anuncio.findOne({
             where: {
-                codAnuncio: req.body.id
+                codAnuncio
             }
         });
 
-        const filename = req.file ? req.file.filename : false
-
-        const emailReturn = await faleComDono(req.body, anuncio ? anuncio.descEmailAutorizante : null, filename);
-        if (anuncio && anuncio.descEmailAutorizante) {
-            await faleComDonoCliente(req.body, anuncio.descNomeAutorizante);
+        if (!anuncio || !anuncio.descEmailAutorizante) {
+            return res.status(404).json({ success: false, message: "anuncio nao encontrado" });
         }
-        if (emailReturn) {
-            res.json({ success: true, message: "email enviado" });
-        } else {
-            res.json({ success: false, message: "email não enviado" });
+
+        const filename = req.file ? req.file.filename : false;
+        const body = { ...req.body, email };
+
+        try {
+            const emailReturn = await faleComDono(body, anuncio.descEmailAutorizante, filename);
+            await faleComDonoCliente(body, anuncio.descNomeAutorizante);
+            if (emailReturn) {
+                res.json({ success: true, message: "email enviado" });
+            } else {
+                res.json({ success: false, message: "email não enviado" });
+            }
+        } catch (err) {
+            console.error('Erro no fale-com-dono:', err.message);
+            return res.status(500).json({ success: false, message: "email nao enviado" });
         }
     });
 

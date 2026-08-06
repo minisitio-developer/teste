@@ -17,7 +17,8 @@ function Mosaico(props) {
 
     const logoHeader = {
         margin: "none !important",
-        height: "40px"
+        height: "40px",
+        maxWidth: "100%"
     }
     const assineAgora = {
         background: "#ffcc29",

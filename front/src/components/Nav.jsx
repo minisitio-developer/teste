@@ -38,9 +38,6 @@ function Nav(props) {
                     <li className="nav-item">
                         <a className="nav-link disabled" href="#">MINISITIO PIN: {pin}</a>
                     </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="/admin/dashboard" style={{fontWeight:'bold', color:'#ffc107'}}>DASHBOARD</a>
-                    </li>
                 </ul>
             </div>
         </div>

@@ -7,9 +7,30 @@ import Swal from 'sweetalert2';
 
 export function checkoutUpdate(radioCheck, descontoAtivado, minisitio, codDescontoInserido, precoFixo) {
 
+    function mostrarErroPagamento() {
+        Swal.fire({
+            title: 'Erro',
+            text: 'Nao foi possivel gerar o pagamento. Tente novamente mais tarde.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+
+    function redirecionarPagamento(url) {
+        fetch(url)
+            .then((x) => x.json())
+            .then((response) => {
+                if (!response.url) {
+                    throw new Error('URL de pagamento ausente');
+                }
+                window.location.href = response.url;
+            })
+            .catch(mostrarErroPagamento);
+    }
 
 
-    fetch(`${masterPath.url}/admin/desconto/buscar/${codDescontoInserido}`)
+
+    fetch(`${masterPath.url}/portal/desconto/buscar/${codDescontoInserido}`)
         .then((x) => x.json())
         .then((res) => {
             minisitio.codTipoAnuncio = String(radioCheck);
@@ -20,35 +41,18 @@ export function checkoutUpdate(radioCheck, descontoAtivado, minisitio, codDescon
                     descontoAprovado = true
                 }
 
-              /*   let valorBruto = 10 - res.IdsValue[0].desconto;
-                console.log("valorBruto", valorBruto) */
-
                 let valorBruto = precoFixo;
 
                 if (descontoAtivado && radioCheck === 3 && valorBruto <= 0 ) {
                     // window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(minisitio.descCPFCNPJ)}`;
                     atualizarMinisitio()
-                    console.log("1");
                 } else {
-                    fetch(`${masterPath.url}/pagamento/create/${minisitio.codAnuncio}/${codDescontoInserido}`)
-                        .then((x) => x.json())
-                        .then((response) => {
-                            window.location.href = response.url;
-
-                        })
-                        .catch(err => console.log(err))
+                    redirecionarPagamento(`${masterPath.url}/pagamento/create/${minisitio.codAnuncio}/${codDescontoInserido}`)
                     //window.location.href = `https://www.mercadopago.com.br/checkout/v1/redirect?pref_id=712696516-cad9b026-5622-4fe2-921c-3d2d336a6d82`;
 
-                    console.log("3");
                 }
             } else {
-                fetch(`${masterPath.url}/pagamento/create/${minisitio.codAnuncio}`)
-                    .then((x) => x.json())
-                    .then((response) => {
-                        window.location.href = response.url;
-
-                    })
-                    .catch(err => console.log(err))
+                redirecionarPagamento(`${masterPath.url}/pagamento/create/${minisitio.codAnuncio}`)
                 //window.location.href = import.meta.env.VITE_BASE_URL + `/ver-anuncios/${limparCPFouCNPJ(minisitio.descCPFCNPJ)}`;
             }
         })

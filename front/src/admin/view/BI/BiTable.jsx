@@ -1,5 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
-import * as XLSX from 'xlsx';
+import React, { useState, useMemo } from 'react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
@@ -88,17 +87,22 @@ export default function BiTable({
 
   const exportExcel = () => {
     if (!filtered.length) return;
-    const rows = filtered.map(row => {
-      const obj = {};
-      columns.forEach(c => {
-        obj[c.label || c.key] = c.accessor ? c.accessor(row) : (row[c.key] ?? '');
-      });
-      return obj;
-    });
-    const ws = XLSX.utils.json_to_sheet(rows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Relatorio');
-    XLSX.writeFile(wb, 'relatorio.xlsx');
+    const headers = columns.map(c => c.label || c.key);
+    const csv = [
+      headers.join(';'),
+      ...filtered.map(row =>
+        columns.map(c => {
+          const val = c.accessor ? c.accessor(row) : row[c.key];
+          return val != null ? String(val).replace(/;/g, ',') : '';
+        }).join(';')
+      )
+    ].join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'relatorio-excel.csv';
+    a.click();
+    URL.revokeObjectURL(a.href);
   };
 
   const exportPDF = () => {
@@ -132,7 +136,7 @@ export default function BiTable({
               <button className="btn btn-sm btn-outline-success" onClick={exportCSV} title="Exportar CSV">
                 <i className="fa fa-file-text-o me-1"></i>CSV
               </button>
-              <button className="btn btn-sm btn-outline-primary" onClick={exportExcel} title="Exportar Excel">
+              <button className="btn btn-sm btn-outline-primary" onClick={exportExcel} title="Exportar CSV compatível com Excel">
                 <i className="fa fa-table me-1"></i>Excel
               </button>
               <button className="btn btn-sm btn-outline-danger" onClick={exportPDF} title="Exportar PDF">

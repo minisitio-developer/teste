@@ -1,28 +1,45 @@
-# Node
+# ============================================
+# Node / dependências
+# ============================================
 node_modules/
 npm-debug.log
 yarn-error.log
-package-lock.json
 yarn.lock
 
-# Builds e arquivos de build
+back/node_modules/
+front/node_modules/
+
+# ============================================
+# Builds
+# ============================================
 build/
 dist/
 out/
 .next/
 .nuxt/
 .output/
+front/build/
 
-# Configurações locais / segredos
+# ============================================
+# Segredos e configurações locais (NUNCA versionar)
+# ============================================
 .env
 .env.*
 !.env.example
 *.local
 
+back/.env
+front/.env
+front/src/.env
+
+# ============================================
 # Logs
+# ============================================
 *.log
 
-# Arquivos de Sistema
+# ============================================
+# Sistema
+# ============================================
 .DS_Store
 Thumbs.db
 .vscode/
@@ -30,38 +47,46 @@ Thumbs.db
 *.swp
 *.swo
 
-# Dependências específicas do projeto
-back/node_modules/
-front/node_modules/
-back/.env
-front/.env
-front/build/
-front/src/.env
-
-# Dumps de banco de dados (NUNCA versionar - arquivos gigantes e dados sensíveis)
-dump.sql
-dump.sql.gz
+# ============================================
+# Dumps de banco (gigantes + dados sensíveis)
+# ============================================
+*.sql
 *.sql.gz
+*.sql.zip
 back/promocao.sql
 back/seed_uf.sql
 
-# Scripts locais temporários
+# ============================================
+# Scripts / ferramentas locais
+# ============================================
 scripts/
 
-# Backups do banco de dados
+# ============================================
+# Backups
+# ============================================
 back/backups/
 
-# Railway IaC / agentes
+# ============================================
+# Railway (projeto antigo, manter apenas local)
+# ============================================
 .railway/
+railway.json
+
+# ============================================
+# Agentes IA locais
+# ============================================
 .agents/
 
-# Documentos locais
+# ============================================
+# Documentos do projeto (versionar só .md)
+# ============================================
 *.doc
 *.docx
 *.pdf
-!railway.json
 
-# Arquivos grandes (campanhas, zips, versões antigas)
+# ============================================
+# Arquivos grandes / campanhas
+# ============================================
 back/public/upload/campanha/
 back/version/
 *.zip

@@ -14,6 +14,7 @@ process.on('uncaughtException', (err) => {
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const app = express();
+app.disable('x-powered-by');
 app.use(cookieParser());
 app.set('trust proxy', 1);
 const port = Number(process.env.PORT || 3032);
@@ -69,13 +70,14 @@ const defaultOrigins = [
     'https://minisitio-developer.github.io',
 ];
 if (process.env.ALLOWED_ORIGINS) {
-    defaultOrigins.push(...process.env.ALLOWED_ORIGINS.split(','));
+    defaultOrigins.push(
+        ...process.env.ALLOWED_ORIGINS
+            .split(',')
+            .map(origin => origin.trim())
+            .filter(Boolean)
+    );
 }
-const railwayDomain = process.env.RAILWAY_PUBLIC_DOMAIN;
-if (railwayDomain) {
-    defaultOrigins.push(`https://${railwayDomain}`);
-}
-const allowedOrigins = defaultOrigins;
+const allowedOrigins = [...new Set(defaultOrigins)];
 
 // Configuração segura de Socket.IO
 const socketOptions = {
@@ -97,8 +99,8 @@ app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 // ========== APLICAR CORS SEGURO ==========
 const corsMiddleware = (req, res, next) => {
     const origin = req.headers.origin;
-    if (allowedOrigins.includes('*')) {
-        res.setHeader('Access-Control-Allow-Origin', origin || '*');
+    if (allowedOrigins.includes('*') && origin) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
     } else if (allowedOrigins.includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
     }
@@ -114,7 +116,9 @@ app.use(corsMiddleware);
 
 const limiter = rateLimit({
     windowMs: 1 * 60 * 1000,
-    max: 10000,
+    max: Number(process.env.API_RATE_LIMIT_MAX || 1000),
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
     message: 'Muitas requisicoes, tente novamente mais tarde'
 });
 
@@ -169,7 +173,9 @@ app.use('/api/files/campanha', express.static(path.resolve(__dirname, 'public', 
 
 app.get('/api/files/:folder/:filename', (req, res) => {
     const { folder, filename } = req.params;
-    if (!filename) return res.status(400).end();
+    if (!filename || filename === 'undefined' || filename === 'null' || filename.trim() === '') {
+        return res.status(404).end();
+    }
 
     const baseDir = path.resolve(IMG_BASE, folder);
     const localPath = path.resolve(baseDir, filename);
@@ -189,7 +195,7 @@ app.get('/api/files/:folder/:filename', (req, res) => {
     const remoteUrl = `${OLD_SERVER}/api/files/${folder}/${encodeURIComponent(filename)}`;
     console.log(`[IMG-PROXY] Buscando do servidor antigo: ${remoteUrl}`);
 
-    https.get(remoteUrl, (proxyRes) => {
+    const proxyReq = https.get(remoteUrl, (proxyRes) => {
         if (proxyRes.statusCode !== 200) {
             proxyRes.resume();
             return res.status(404).end();
@@ -211,7 +217,13 @@ app.get('/api/files/:folder/:filename', (req, res) => {
             console.error(`[IMG-PROXY] Erro no stream:`, err.message);
             if (!res.headersSent) res.status(500).end();
         });
-    }).on('error', (err) => {
+    });
+
+    proxyReq.setTimeout(Number(process.env.IMAGE_PROXY_TIMEOUT_MS || 7000), () => {
+        proxyReq.destroy(new Error('Timeout ao buscar imagem remota'));
+    });
+
+    proxyReq.on('error', (err) => {
         console.error(`[IMG-PROXY] Erro ao buscar ${remoteUrl}:`, err.message);
         if (!res.headersSent) res.status(404).end();
     });
@@ -219,7 +231,14 @@ app.get('/api/files/:folder/:filename', (req, res) => {
 
 // Servir frontend build para produção
 const frontBuildPath = path.join(__dirname, '..', 'front', 'build');
-app.use(express.static(frontBuildPath));
+app.use(express.static(frontBuildPath, {
+    maxAge: '1h',
+    setHeaders: (res, filePath) => {
+        if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+            res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        }
+    },
+}));
 
 app.get('/api/files/2/download/:filename', (req, res) => {
     const filename = path.basename(req.params.filename);
@@ -257,8 +276,9 @@ app.get('/outapi', (req, res) => {
 }); */
 
 const ImportController = require('./controllers/ImportController');
+const auth = require('./middlewares/authentication');
 const importCtrl = ImportController(io);
-app.post('/api/admin/anuncio/import/:socketId', importCtrl.upload, importCtrl.importar);
+app.post('/api/admin/anuncio/import/:socketId', auth, importCtrl.upload, importCtrl.importar);
 
 const database = require('./config/db');
 const Sequelize = require('sequelize');
@@ -344,6 +364,16 @@ cron.schedule('0 7 * * *', async () => {
 });
 
 
+// Health check (deve vir ANTES do catch-all *)
+app.get('/api/health', async (req, res) => {
+    const database = require('./config/db');
+    try {
+        await database.authenticate();
+        res.json({ status: 'ok', db: 'connected', uptime: process.uptime() });
+    } catch (e) {
+        res.status(503).json({ status: 'error', db: 'disconnected' });
+    }
+});
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -438,21 +468,6 @@ async function fixAutoIncrement() {
     }
 }
 
-async function runCleanup() {
-    return require('./migrations/runCleanup')();
-}
-
-// Health check (deve vir ANTES do catch-all *)
-app.get('/api/health', async (req, res) => {
-    const database = require('./config/db');
-    try {
-        await database.authenticate();
-        res.json({ status: 'ok', db: 'connected', uptime: process.uptime() });
-    } catch (e) {
-        res.status(503).json({ status: 'error', db: 'disconnected' });
-    }
-});
-
 server.listen(port, async () => {
     console.log("rodando na porta: ", port);
     if (process.env.FORCE_SYNC === 'true') {
@@ -462,10 +477,6 @@ server.listen(port, async () => {
         console.log('FORCE_SYNC: Schema sincronizado.');
     }
     await fixAutoIncrement();
-    if (process.env.RUN_CLEANUP === 'true') {
-        await runCleanup();
-        console.log('CLEANUP finalizado. Remova a env var RUN_CLEANUP.');
-    }
     await seedAdmin();
     await seedPin();
     await criarIndicesBusca();

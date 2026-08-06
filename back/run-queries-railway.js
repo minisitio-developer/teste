@@ -1,13 +1,30 @@
 const mysql = require('mysql2/promise');
+require('dotenv').config({ path: require('path').resolve(__dirname, '.env') });
 
-const DB_CONFIG = {
-  host: 'thomas.proxy.rlwy.net',
-  port: 38287,
-  user: 'root',
-  password: 'mslXpGCdDFZzFBaJUdadTSwuwNsPhNYH',
-  database: 'railway',
-  connectTimeout: 30000,
-};
+function getDbConfig() {
+  const url = process.env.DATABASE_URL || process.env.MYSQL_URL;
+  if (url) {
+    const parsed = new URL(url);
+    return {
+      host: parsed.hostname,
+      port: parseInt(parsed.port) || 3306,
+      user: parsed.username,
+      password: parsed.password,
+      database: parsed.pathname.replace('/', ''),
+      connectTimeout: 30000,
+    };
+  }
+  return {
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT) || 3306,
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME || 'minisitio_dev',
+    connectTimeout: 30000,
+  };
+}
+
+const DB_CONFIG = getDbConfig();
 
 async function runWithRetry(name, sql, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {

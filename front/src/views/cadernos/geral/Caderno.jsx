@@ -20,6 +20,7 @@ import MiniWebCardSimples from '../../../components/MiniWebCardSimples';
 
 import SafeImage from '../../../components/SafeMosaico';
 import ButtonCapa from '../../../components/ButtonCapa';
+import PageLayout from '../../../components/PageLayout';
 
 function Caderno() {
 
@@ -1131,7 +1132,7 @@ function Caderno() {
 
 
   return (
-    <div className="App caderno">
+    <PageLayout className="App caderno">
 
       <header>
         <Mosaico logoTop={true} borda="none" />
@@ -1466,7 +1467,7 @@ function Caderno() {
         <Nav styleClass="Nav" />
         <Footer />
       </footer>
-    </div >
+    </PageLayout>
   );
 }
 

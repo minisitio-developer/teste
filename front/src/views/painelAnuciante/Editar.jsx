@@ -75,7 +75,7 @@ function Editar(props) {
     }
 
     if (codId.length === 12) {
-      fetch(`${masterPath.url}/admin/desconto/buscar/${codId}`)
+      fetch(`${masterPath.url}/portal/desconto/buscar/${codId}`)
         .then((x) => x.json())
         .then((res) => {
           if (res.success) {
@@ -218,7 +218,7 @@ function Editar(props) {
     }
 
     if (codId.length === 12) {
-      fetch(`${masterPath.url}/admin/desconto/buscar/${codId}`)
+      fetch(`${masterPath.url}/portal/desconto/buscar/${codId}`)
         .then((x) => x.json())
         .then((res) => {
           console.log(res)

@@ -203,7 +203,11 @@ function ComprarAnuncio() {
         let codId = e.target.value;
 
         if (codId.length === 11 || codId.length === 12) {
-            fetch(`${masterPath.url}/admin/desconto/buscar/${codId}`)
+            fetch(`${masterPath.url}/admin/desconto/buscar/${codId}`, {
+                headers: {
+                    "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess')
+                }
+            })
                 .then((x) => x.json())
                 .then((res) => {
                     let valorDesconto = res.IdsValue[0].desconto;
@@ -278,7 +282,10 @@ function ComprarAnuncio() {
         if (validation) {
             const config = {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": 'Bearer ' + sessionStorage.getItem('userTokenAccess')
+                },
                 body: JSON.stringify(ids)
             };
 

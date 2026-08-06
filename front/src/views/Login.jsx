@@ -5,10 +5,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Mosaico from '../components/Mosaico';
 import ComponentLogin from '../admin/components/ComponentLogin';
 import Footer from '../components/Footer';
+import PageLayout from '../components/PageLayout';
 
 function login() {
     return (
-        <div className="login">
+        <PageLayout className="login">
             <header>
                 <Mosaico logoTop={true} borda="none" />
             </header>
@@ -20,7 +21,7 @@ function login() {
                 <Footer />
             </footer>
 
-        </div>
+        </PageLayout>
     )
 }
 

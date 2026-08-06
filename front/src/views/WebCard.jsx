@@ -15,6 +15,7 @@ import FullWebCard from '../components/FullWebCard';
 import SafeImage from '../components/SafeMosaico';
 import ButtonCapa from '../components/ButtonCapa';
 import Loading from '../components/Loading';
+import PageLayout from '../components/PageLayout';
 
 //LIB
 //import { Helmet, HelmetProvider } from "react-helmet-async";
@@ -103,7 +104,7 @@ function WebCard() {
 
     return (
         // <HelmetProvider>
-        <div className="App">
+        <PageLayout className="App">
                 <header>
                     <Mosaico logoTop={true} borda="none" mosaicoImg={true} />
                     {/* <MosaicoWebCard logoTop={true} borda="flex" mosaicoImg={mosaicoImg} nmAnuncio={nmAnuncio} /> */}
@@ -142,7 +143,7 @@ function WebCard() {
                     <Footer />
                 </footer>
           
-        </div >
+        </PageLayout>
         //</HelmetProvider>
     );
 }

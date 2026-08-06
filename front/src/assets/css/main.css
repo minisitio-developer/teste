@@ -320,4 +320,23 @@ li.assine {
     .card-metadados {
         font-size: 12px;
     }
+
+    .logo-home {
+        padding: 5px 0 !important;
+    }
+
+    .logo-home-img {
+        max-width: 120px;
+    }
+
+    .fraseHeader span {
+        font-size: 12px;
+        padding: 0 8px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-home-img {
+        max-width: 100px;
+    }
 }

@@ -31,7 +31,7 @@ useEffect(() => {
 }, [props.data, listaIds]); // <-- Só executa quando ambos estiverem prontos
 
 
-    const isValid = (value) => value !== 'null' && value !== '';
+    const isValid = (value) => value !== null && value !== undefined && value !== 'null' && value !== 'undefined' && value !== '';
     const isValidPatrocinio = (value) => {
         if (value) {
             if (value.patrocinador_ativo === '1') {
@@ -61,7 +61,7 @@ useEffect(() => {
                                     {[{ img: parceiros.descImagem, link: parceiros.descLink },
                                     { img: parceiros.descImagem2, link: parceiros.descLink2 },
                                     { img: parceiros.descImagem3, link: parceiros.descLink3 }]
-                                        .filter(item => item.img)
+                                        .filter(item => isValid(item.img))
                                         .map((item, index) => (
                                             <a
                                                 key={index}

@@ -32,6 +32,7 @@ import Footer from "../../components/Footer";
 import Tooltip from "../../components/Tooltip";
 import AlertMsg from "../../components/Alerts/AlertMsg";
 import Header from "../../admin/view/Header";
+import PageLayout from "../../components/PageLayout";
 
 //FUNCTION EXTERNA
 import { checkoutUpdate } from "./_components/checkoutUpdate";
@@ -302,7 +303,7 @@ function ComprarAnuncio({ isAdmin }) {
 
 
   return (
-    <div className="atualizar-perfil">
+    <PageLayout className="atualizar-perfil">
       {isAdmin &&
         <header style={{ position: "fixed", zIndex: "999" }} className='w-100'>
           <Header />
@@ -965,7 +966,7 @@ function ComprarAnuncio({ isAdmin }) {
           <Footer />
         </footer>
       }
-    </div>
+    </PageLayout>
   );
 }
 

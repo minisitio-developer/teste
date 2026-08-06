@@ -6,6 +6,7 @@ import Mosaico from '../components/Mosaico';
 import Busca from '../components/Busca';
 import Nav from '../components/Nav';
 import Footer from '../components/Footer';
+import PageLayout from '../components/PageLayout';
 
 function Home() {
 
@@ -15,16 +16,16 @@ function Home() {
   });
 
   return (
-    <div className="App">
+    <PageLayout className="App">
       <Mosaico logoTop={false} />
-      <div className="d-flex justify-content-center align-items-center" style={{ "padding": "10px 0" }}>
-        <a href={import.meta.env.VITE_BASE_URL + '/'}><img src="../assets/img/logo.png" alt="Logo Minisitio" style={{ maxWidth: "180px" }} /></a>
+      <div className="d-flex justify-content-center align-items-center logo-home">
+        <a href={import.meta.env.VITE_BASE_URL + '/'}><img src="../assets/img/logo.png" alt="Logo Minisitio" className="logo-home-img" /></a>
       </div>
 
       <Busca paginaAtual={"home"} />
       <Nav styleClass="none" />
       <Footer />
-    </div >
+    </PageLayout>
   );
 }
 

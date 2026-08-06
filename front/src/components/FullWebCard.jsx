@@ -27,6 +27,8 @@ import UserActions from './UserActions';
 import Socialmidia from './Socialmidia';
 import SocialShareButtons from './SocialShareButtons';
 import TemplateModalPromo from "../components/Modal/TemplateModalPromo";
+import SpeakProfileButton from './SpeakProfileButton';
+import RouteAssistButton from './RouteAssistButton';
 
 function trimUrl(url) {
     if (!url || typeof url !== 'string') return url;
@@ -138,6 +140,10 @@ function FullWebCard(props) {
                             <h2 className='titulo-cinza'>
                                 {resultLocal.descAnuncio}
                             </h2>
+                            <div className="d-flex flex-wrap gap-2 mb-3">
+                                <SpeakProfileButton profile={resultLocal} />
+                                <RouteAssistButton profile={resultLocal} />
+                            </div>
                             <div>
                                 <WebcardThumb codImg={resultLocal.descImagem} data={resultLocal} />
                             </div>
@@ -337,7 +343,7 @@ function FullWebCard(props) {
                                 <h2 className='titulo-cinza'>
                                     PARCEIRO
                                 </h2>
-                                {resultLocal.descParceiro && resultLocal.descParceiro !== "0" && resultLocal.descParceiro !== "teste" ? (
+                                {resultLocal.descParceiro && resultLocal.descParceiro !== "0" && resultLocal.descParceiro !== "teste" && resultLocal.descParceiro !== "undefined" && resultLocal.descParceiro !== "null" ? (
                                     <a href={resultLocal.descParceiroLink && resultLocal.descParceiroLink !== "0" ? trimUrl(resultLocal.descParceiroLink) : "#"} target="_blank" data-toggle="tooltip" title="parceiro" rel="noopener  noreferrer">
                                         <i className='link-cinza flex justify-center border-cinza'>
                                             <img src={`${masterPath.url}/files/logoParceiro/${resultLocal.descParceiro}`} width={150} height={58} className='rounded my-1' alt="parceiro" />
@@ -368,7 +374,7 @@ function FullWebCard(props) {
                         {/* <SocialShareButtons url={fullUrl} /> */}
                         {/* <SocialShareButtons url={`${masterPath.url}/portal/share/${codAnuncio}`} /> */}
                     </div>
-                    <UserActions path={nomeAnuncio} id={codAnuncio} doc={resultLocal.descCPFCNPJ} url={fullUrl} urlShare={`${masterPath.url}/portal/share/${codAnuncio}`} data={resultLocal} />
+                    <UserActions path={nomeAnuncio} id={codAnuncio} doc={resultLocal.descCPFCNPJ} url={fullUrl} urlShare={`${window.location.origin}/api/portal/share/${codAnuncio}`} data={resultLocal} />
                 </div>
             }
             </div>
