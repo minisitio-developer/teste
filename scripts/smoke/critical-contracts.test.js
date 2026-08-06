@@ -230,9 +230,11 @@ test('selected admin-only screens stay lazy-loaded from route table', () => {
 test('frontend bi table does not depend on vulnerable xlsx package', () => {
   const biTable = read('front/src/admin/view/BI/BiTable.jsx');
   const packageJson = read('front/package.json');
+  const backendPackageJson = read('back/package.json');
 
   assert.doesNotMatch(biTable, /from ['"]xlsx['"]/, 'BiTable must not import xlsx');
   assert.doesNotMatch(packageJson, /"xlsx"/, 'frontend package must not depend on xlsx');
+  assert.doesNotMatch(backendPackageJson, /"xlsx"/, 'backend package must not depend on unused vulnerable xlsx');
   assert.match(biTable, /relatorio-excel\.csv/, 'Excel-compatible export must use CSV fallback');
 });
 
