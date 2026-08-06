@@ -240,3 +240,21 @@ test('allowed origins from env are trimmed and empty entries ignored', () => {
   assert.match(index, /\.map\(origin => origin\.trim\(\)\)/, 'ALLOWED_ORIGINS entries must be trimmed');
   assert.match(index, /\.filter\(Boolean\)/, 'empty ALLOWED_ORIGINS entries must be ignored');
 });
+
+test('innovation voice and route helpers use browser-native fallbacks', () => {
+  const voiceSearch = read('front/src/components/VoiceSearchButton.jsx');
+  const speakProfile = read('front/src/components/SpeakProfileButton.jsx');
+  const routeAssist = read('front/src/components/RouteAssistButton.jsx');
+  const busca = read('front/src/components/Busca.jsx');
+  const fullWebCard = read('front/src/components/FullWebCard.jsx');
+
+  assert.match(voiceSearch, /window\.SpeechRecognition \|\| window\.webkitSpeechRecognition/, 'voice search must support browser recognition prefixes');
+  assert.match(voiceSearch, /if \(!supported\)/, 'voice search must degrade when unsupported');
+  assert.match(speakProfile, /speechSynthesis/, 'profile reader must use browser speech synthesis');
+  assert.match(routeAssist, /navigator\.geolocation\.getCurrentPosition/, 'route helper must request geolocation on demand');
+  assert.match(routeAssist, /https:\/\/www\.google\.com\/maps\/dir\/\?/, 'route helper must use Maps URLs without API keys');
+  assert.doesNotMatch(routeAssist, /AIza/, 'route helper must not embed Google API keys');
+  assert.match(busca, /<VoiceSearchButton/, 'Busca must expose voice search');
+  assert.match(fullWebCard, /<SpeakProfileButton/, 'FullWebCard must expose profile speech');
+  assert.match(fullWebCard, /<RouteAssistButton/, 'FullWebCard must expose route assistance');
+});

@@ -11,6 +11,7 @@ import Card from 'react-bootstrap/Card';
 import { masterPath } from '../config/config';
 import { useBusca } from '../context/BuscaContext';
 import Swal from 'sweetalert2';
+import VoiceSearchButton from './VoiceSearchButton';
 
 function Busca(props) {
 
@@ -416,6 +417,15 @@ function Busca(props) {
         }
     };
 
+    function aplicarBuscaPorVoz(transcript) {
+        const input = document.querySelector('#inputBusca');
+        if (input) {
+            input.value = transcript;
+            input.focus();
+        }
+        sessionStorage.setItem("querySearch", transcript);
+    }
+
     function abrirPromocao() {
         let qtdePromocao = promocao.length;
 
@@ -507,6 +517,9 @@ function Busca(props) {
                                     <div className="form-group input-icon">
                                         <i className="fa fa-tags"></i>
                                         <input id="inputBusca" name="inputBusca" type="text" className="form-control" placeholder="Digite nome ou atividade" onKeyDown={teclaLogin} />
+                                    </div>
+                                    <div className="d-flex justify-content-center justify-content-md-end mt-2">
+                                        <VoiceSearchButton onTranscript={aplicarBuscaPorVoz} disabled={loading} />
                                     </div>
                                 </div>
                                 {/*  <div className="col-lg-3 col-md-4 col-sm-4 col-xs-5">

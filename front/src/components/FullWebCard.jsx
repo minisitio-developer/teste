@@ -27,6 +27,8 @@ import UserActions from './UserActions';
 import Socialmidia from './Socialmidia';
 import SocialShareButtons from './SocialShareButtons';
 import TemplateModalPromo from "../components/Modal/TemplateModalPromo";
+import SpeakProfileButton from './SpeakProfileButton';
+import RouteAssistButton from './RouteAssistButton';
 
 function trimUrl(url) {
     if (!url || typeof url !== 'string') return url;
@@ -138,6 +140,10 @@ function FullWebCard(props) {
                             <h2 className='titulo-cinza'>
                                 {resultLocal.descAnuncio}
                             </h2>
+                            <div className="d-flex flex-wrap gap-2 mb-3">
+                                <SpeakProfileButton profile={resultLocal} />
+                                <RouteAssistButton profile={resultLocal} />
+                            </div>
                             <div>
                                 <WebcardThumb codImg={resultLocal.descImagem} data={resultLocal} />
                             </div>
